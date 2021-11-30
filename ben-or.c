@@ -1133,12 +1133,9 @@ int irr_poly_to_file()
 //言わずもがな
 int main(void)
 {
-  time_t t;
   unsigned short f[K + 1] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0}; //big indian
   OP g;
   int i;
-
-  srand(clock() * time(&t));
 
   //test , usage and example
   for (i = 0; i < N; i++)
