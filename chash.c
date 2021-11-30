@@ -4,8 +4,14 @@
 #include <ctype.h>
 #include <string.h>
 
+#include "global.h"
+
+
 #define str_length 128
 #define password_length 256
+
+
+
 
 char password[password_length + 1];
 
