@@ -1134,7 +1134,7 @@ int main(void)
 
   srand(clock() * time(&t));
 
-  //test and usage
+  //test , usage and example
   for (i = 0; i < N; i++)
   {
     f[K] = i;
