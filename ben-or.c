@@ -1,10 +1,9 @@
-//date : 20210325（ver.1.0）
-//date      :  20160310,20191218,20191220,20191221,20191223,20191224,20191225,20191229,20191230
+//date : 20210325（ver.1）
+//date      : 20160310,20191218,20191220,20191221,20191223,20191224,20191225,20191229,20191230
 //auther    : the queer who thinking about cryptographic future
-//code name :  一変数多項式演算ライブラリのつもり
-//code name : OVP - One Variable Polynomial library with OpenMP friendly
-//status    : majer release (ver 1.0)
-// Niederreiter Cryotosysytem by patterson's decoding
+//code name : Ben_Or's irreducibly test for polynomial over GF(2^m)
+//code name : OVP - One Variable Polynomial library
+//status    : release (ver 1.2) 20211201
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -90,7 +89,6 @@ vec o2v(OP f)
   vec a = {0};
   int i;
 
-  //#pragma omp parallel for
   for (i = 0; i < DEG; i++)
   {
     if (f.t[i].a > 0 && f.t[i].n < DEG)
@@ -130,7 +128,6 @@ void wait2(void)
 //OP型を正規化する
 OP conv(OP f)
 {
-
   return v2o(o2v(f));
 }
 
@@ -266,29 +263,6 @@ OP oadd(OP f, OP g)
   //h=conv(h);
   ////assert(op_verify(h));
   return h;
-}
-
-//項の順序を降順に揃える
-OP sort(OP f)
-{
-  oterm o = {0};
-  int i, j, k;
-
-  k = terms(f);
-  for (i = 0; i < k + 1; ++i)
-  {
-    for (j = i + 1; j < k + 1; ++j)
-    {
-      if (f.t[i].n > f.t[j].n)
-      {
-        o = f.t[i];
-        f.t[i] = f.t[j];
-        f.t[j] = o;
-      }
-    }
-  }
-
-  return f;
 }
 
 //リーディングタームを抽出(OP型）
@@ -581,14 +555,14 @@ OP omod(OP f, OP g)
   return f;
 }
 
-OP tbl[K/2+1] = {0};
+OP tbl[K / 2 + 1] = {0};
 
 void table(OP x, OP mod)
 {
   int i;
 
   tbl[0] = x;
-  for (i = 0; i < K/2; i++)
+  for (i = 0; i < K / 2; i++)
   {
     tbl[i + 1] = omod(omul(tbl[i], tbl[i]), mod);
     //printpol(o2v(tbl[i+1]));
@@ -599,7 +573,7 @@ void table(OP x, OP mod)
 
 OP opwm(OP f, OP mod, int n)
 {
- 
+
   table(f, mod);
 
   return tbl[n];
@@ -900,7 +874,7 @@ OP mkpol()
 int ben_or(OP f)
 {
   int i, n; //, pid;
-  OP s = {0}, u[K / 2] = {0}, r[K / 2] = {0};
+  OP s = {0}, u = {0}, r = {0};
   vec v = {0};
   //if GF(8192) is 2^m and m==13 or if GF(4096) and m==12 if GF(16384) is testing
   //int m = E;
@@ -909,7 +883,7 @@ int ben_or(OP f)
   v.x[1] = 1;
   s = v2o(v);
   //for (i = 0; i < K / 2; i++)
-    r[0] = s;
+  r = s;
   n = deg(o2v(f));
 
   if (LT(f).n == 0 && LT(f).a == 1)
@@ -921,17 +895,18 @@ int ben_or(OP f)
     return -1;
 
   i = 0;
-  
+
   //r(x)^{q^i} square pow mod
   for (i = 0; i < K / 2; i++)
   {
-   // irreducible over GH(8192) 2^13
-    r[0] = opowmod(r[0], f, E);
-    u[0] = oadd(r[0], s);
-    u[0] = gcd(f, u[0]);
+    // irreducible over GH(8192) 2^13
+    r = opowmod(r, f, E);
+    u = oadd(r, s);
+    u = gcd(f, u);
 
-    if (odeg(u[0]) > 0){
-    //flg[i]= -1;
+    if (odeg(u) > 0)
+    {
+      //flg[i]= -1;
       return -1;
     }
   }
@@ -1010,29 +985,22 @@ aa:
   fprintf(fp, " print(poly.is_irreducible());\n");
   j++;
 
-  if (j > 10){
+  if (j > 10)
+  {
     fclose(fp);
     exit(1);
   }
   goto aa;
 }
 
-
-int mpro()
+//sagemath仕様の既多項式をファイルに書き出す（マルチプロセス）
+int irr_poly_to_file()
 {
   OP w, x, y, z;
   int b = -1, l = -1, k1 = 0, k2 = 0, k3 = 0, k4 = 0, a = -1, c = -1, i = 0;
   FILE *f1, *f2, *f3, *f4;
   int pid[5] = {0};
 
-  /*
-  if((pid = fork())<0){
-    perror("call fork()");
-    exit(1);
-  }
-*/
-
-  //for(int i=0 ; i < 1 && (pid[i] = fork()) > 0 ; i++ )
   for (i = 0; i < 3 && (pid[i] = fork()) > 0; i++)
     printf("%d\n", pid[i]);
   //exit(1);
@@ -1050,14 +1018,10 @@ int mpro()
   fprintf(f3, "F.<X>=B[]\n");
   fprintf(f4, "B=GF(2^%d,'a')\n", E);
   fprintf(f4, "F.<X>=B[]\n");
-  //fprintf(f5,"B=GF(2^%d,'a')\n",E);
-  //fprintf(f5,"F.<X>=B[]\n");
 
   i = 0;
   while (1)
   {
-    //printf("@\n");
-    //aa:
 
     l = -1;
     w = mkpol();
@@ -1067,29 +1031,7 @@ int mpro()
     y = mkpol();
     c = -1;
     z = mkpol();
-    //d=-1;
-    //zz=mkpol();
-    /*
-  if(pid[3] > 0){
-    d=ben_or(w);
-    if(d==0 && k5<DAT){
-      printsage(o2v(zz),f5);
-      fprintf(f5," print(poly.is_irreducible());\n");
-      d=-1;
-      k5++;
-      printf("k5=%d\n",k5);
-      if(k5==DAT){
-        fclose(f5);
-      wait(&pid[0]);
-      wait(&pid[1]);
-      wait(&pid[2]);
-      wait(&pid[3]);
-        exit(1);
-      }
-      //goto aa;
-    }
-  }else
-  */
+
     if (pid[2] > 0)
     {
       l = ben_or(w);
@@ -1177,70 +1119,6 @@ int mpro()
         //goto aa;
       }
     }
-    //exit(1);
-    //wait(&pid[i]);
-    /*
-  //this is mother process
-  
-  if(pid == 0){
-    l=ben_or(w);
-    if(l==0){
-      printsage(o2v(w),f1);
-      fprintf(f1," print(poly.is_irreducible());\n");
-      l=-1;
-      k1++;
-      if(k1>50){
-        fclose(f1);
-      exit(1);
-      }
-      goto aa;
-    } 
- 
-  }//this is mother process
-  else{
-    b=ben_or(x);
-    if(b==0){
-      b=-1;
-      printsage(o2v(x),f2);
-      fprintf(f2," print(poly.is_irreducible());\n");
-      //printsage(o2v(x));
-      //printf(" print(poly.is_irreducible());\n");
-      k2++;
-      if(k2>50){
-        fclose(f2);
-      exit(1);
-      }
-      goto aa;
-    }
-  }
-  */
-  }
-
-  return 0;
-}
-
-#define P_MAX 10 //プロセス数
-
-int mine()
-{
-  int pid[P_MAX];
-
-  /*
-	子プロセス生成。子プロセスは次の行から始まるため、
-	このような記述をすると、子プロセスが子プロセスを生成しないで済む。
-	*/
-  for (int i = 0; i < P_MAX && (pid[i] = fork()) > 0; i++)
-  {
-    if (pid[i] > 0)
-    { //子プロセス
-      printf("child:%d %d\n", pid[i], i);
-      //exit(0);
-    }
-    else
-    {
-      perror("child process");
-      //exit(0);
-    }
   }
 
   return 0;
@@ -1250,15 +1128,31 @@ int mine()
 int main(void)
 {
   time_t t;
-  
-  //mine();
-  //exit(1);
+  unsigned short f[K + 1] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0}; //big indian
+  OP g;
+  int i;
 
   srand(clock() * time(&t));
-  //mpro();
-  //exit(1);
 
-  get_irrpoly();
+  //test and usage
+  for (i = 0; i < N; i++)
+  {
+    f[K] = i;
+    g = setpol(f, K + 1);
+    if (ben_or(g) == 0)
+    {
+      printpol(o2v(g));
+      printf(" is irreducible\n");
+    }
+    else
+    {
+      printf("reducible\n");
+    }
+  }
+
+  //multi_process();
+  //irr_poly_to_file();
+  //get_irrpoly();
 
   return 0;
 }
