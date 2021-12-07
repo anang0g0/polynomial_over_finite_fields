@@ -9,12 +9,13 @@ cf.https://digitalcommons.iwu.edu/cgi/viewcontent.cgi?article=1013&context=math_
 int main(void)
 {
   unsigned short f[K + 1] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0}; //big indian
-  OP g={0};
+  OP g;
   int i;
 
   //test , usage and example
   for (i = 0; i < N; i++)
   {
+    memset(&g, 0,sizeof(g));
     f[K] = i;
     g = setpol(f, K + 1);
     if (ben_or(g) == 0)
@@ -32,13 +33,17 @@ int main(void)
 }
 
 ```
+# 20211207
 
-# 20211130
-
-有限体上の多項式の既約性判定テストの実装
+初期化忘れでした。
 
 # 20211201
 
 自分にとっては、このくらいの量のプログラムを完璧にするくらいが丁度いいようです。
 
 ほかにも作りたいプログラムはありますが、シングルフォーカス特性のためにそれができてないです。
+
+# 20211130
+
+有限体上の多項式の既約性判定テストの実装
+
