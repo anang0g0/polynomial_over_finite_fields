@@ -11,8 +11,6 @@
 #define password_length 256
 
 
-
-
 char password[password_length + 1];
 
 unsigned long xor128(void)
