@@ -1140,7 +1140,7 @@ int main(void)
   //test , usage and example
   for (i = 0; i < N; i++)
   {
-    memset(&g ,0,sizeof(0));
+    memset(&g ,0,sizeof(g));
     f[K] = i;
     g = setpol(f, K + 1);
     if (ben_or(g) == 0)
