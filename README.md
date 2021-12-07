@@ -1,5 +1,7 @@
 # ben_or_irreducible_poly
 
+cf.https://digitalcommons.iwu.edu/cgi/viewcontent.cgi?article=1013&context=math_honproj
+
 # Usage
 
 ```c
