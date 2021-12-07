@@ -1134,7 +1134,7 @@ int irr_poly_to_file()
 int main(void)
 {
   unsigned short f[K + 1] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0}; //big indian
-  OP g;
+  OP g={0};
   int i;
 
   //test , usage and example
