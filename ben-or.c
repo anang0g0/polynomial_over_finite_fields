@@ -35,11 +35,11 @@ extern int mlt();
 extern int mltn();
 extern void print_trace();
 
+//データファイルの数（プロセスの数）
 #define DAT 5
-int num = 0;
 
 
-static unsigned short c[E * K + 1] = {0};
+// unsigned short c[E * K + 1] = {0};
 
 //有限体の元の逆数
 unsigned short
@@ -279,9 +279,6 @@ oterm oLT(OP f)
           s.a = f.t[j].a;
         }
 
-        //  else{
-        // t=s;
-        // }
       }
     }
   }
@@ -547,11 +544,12 @@ OP omod(OP f, OP g)
   return f;
 }
 
-OP tbl[K / 2 + 1] = {0};
+//
 
-void table(OP x, OP mod)
+void table(OP x, OP mod,OP *tbl)
 {
   int i;
+ 
 
   tbl[0] = x;
   for (i = 0; i < K / 2; i++)
@@ -565,8 +563,9 @@ void table(OP x, OP mod)
 
 OP opwm(OP f, OP mod, int n)
 {
+ OP tbl[K / 2 + 1] = {0};
 
-  table(f, mod);
+  table(f, mod,tbl);
 
   return tbl[n];
 }
@@ -705,7 +704,7 @@ OP init_pol(OP f)
 }
 
 //ランダム多項式の生成
-static void
+ void
 ginit(unsigned short *g)
 {
   int j, count = 0, k = 0;
@@ -766,19 +765,7 @@ v2i(vec v)
   return d;
 }
 
-//配列からベクトル表現の多項式へ変換する
-vec Setvec(int n)
-{
-  int i;
-  vec v = {0};
 
-  for (i = 0; i < n; i++)
-  {
-    v.x[n - 1 - i] = c[i];
-  }
-
-  return v;
-}
 
 //整数のべき乗
 unsigned int
@@ -794,19 +781,27 @@ ipow(unsigned int q, unsigned int u)
   return m;
 }
 
-OP ww[T] = {0};
 
+
+//配列からベクトル表現の多項式へ変換する
 //配列の値を係数として多項式に設定する
 OP setpol(unsigned short f[], int n)
 {
   OP g;
-  vec a;
+  vec c={0};  //[E * K + 1] = {0};
+  int i;
+  vec v = {0};
 
-  memset(c, 0, sizeof(c));
-  memcpy(c, f, 2 * n);
-  a = Setvec(n);
+  memset(c.x, 0, sizeof(c));
+  memcpy(c.x, f, 2 * n);
 
-  g = v2o(a);
+
+  for (i = 0; i < n; i++)
+  {
+    v.x[n - 1 - i] = c.x[i];
+  }
+
+  g = v2o(v);
 
   return g;
 }
@@ -815,7 +810,7 @@ OP mkpol()
 {
   int i, j, k, flg, ii = 0;
   OP w = {0};
-  static unsigned short g[K + 1] = {0};
+   unsigned short g[K + 1] = {0};
 
   do
   {
@@ -923,7 +918,7 @@ trace(OP f, unsigned short x)
   return u;
 }
 
-unsigned short dd[N][N] = {0};
+
 
 void get_irrpoly(void)
 {
@@ -935,7 +930,7 @@ void get_irrpoly(void)
   j = 0;
   fp = fopen("dat.sage", "w");
 
-aa:
+while(1){
 
   //printf("\n");
 
@@ -951,8 +946,7 @@ aa:
     if (ii > 300)
     {
       printf("too many tryal\n");
-      goto aa;
-      //exit(1);
+      exit(1);
     }
     printf("ben=%d\n", ii);
     ii++;
@@ -982,7 +976,8 @@ aa:
     fclose(fp);
     exit(1);
   }
-  goto aa;
+}
+
 }
 
 //sagemath仕様の既多項式をファイルに書き出す（マルチプロセス）
