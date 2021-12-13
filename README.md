@@ -2,6 +2,8 @@
 
 cf.https://digitalcommons.iwu.edu/cgi/viewcontent.cgi?article=1013&context=math_honproj
 
+阿吽酸数値計算
+
 # example
 
 ```c
