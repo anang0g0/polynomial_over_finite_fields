@@ -100,6 +100,46 @@ typedef struct pub
 
 #define R(x, n) (((x) << (n)) | ((x) >> (32 - (n))))
 
+/*
+unsigned int rotate_left(unsigned int x, int n)
+{
+  assert(0 < n && n < 32);
+  return (x << n) | (x >> (32 - n));
+}
+*/
+/*
+typedef union
+{
+  unsigned long long int u[8];
+  unsigned char d[64];
+} arrayul;
+
+typedef struct a4
+{
+  unsigned char ar[4];
+} array;
+
+typedef struct a8
+{
+  unsigned char ar[8];
+} array8;
+
+typedef struct
+{
+  unsigned int h[16];
+} array16;
+
+typedef struct aN
+{
+  unsigned char ar[N];
+} arrayn;
+
+typedef struct pub
+{
+  unsigned char a[N];
+  unsigned char b[N];
+} set;
+*/
 
 typedef struct {
   unsigned short x[N][N];

@@ -14,16 +14,16 @@ static const unsigned long long int normal[15] = {
     0b110111,
     0b1100001,
     0b11000001,
-    //0b110101001,
-    0b100011101, //sage
-                 //0b100011011",
+    // 0b110101001,
+    0b100011101, // sage
+                 // 0b100011011",
     0b1100110001,
-    //0b11000010011,
-    0b10001101111, //sage1024
+    // 0b11000010011,
+    0b10001101111, // sage1024
     0b110000001101,
-    0b1000011101011, //sage 4096
-    //0b1100101000001, /* 4096 */
-    //0b11011000000001, /* 8192 */
+    0b1000011101011, // sage 4096
+    // 0b1100101000001, /* 4096 */
+    // 0b11011000000001, /* 8192 */
     0b10000000011011, /* Classic McEliece */
     0b110000100010001,
     0b1100000000000001,
@@ -66,7 +66,7 @@ void mkgf(int n)
   unsigned int pol, N, M, L;
 
   for (i = 0; i < 13; i++)
-    pol = normal[i]; //strtoul(normal[i],(char **)NULL,2);
+    pol = normal[i]; // strtoul(normal[i],(char **)NULL,2);
 
   /* define pol */
   switch (n)
@@ -148,10 +148,10 @@ void mkgf(int n)
   {
     if (bit > L - 1) //もしbitが最大次数に達したら
     {
-      bit = bit - L; //bitから最大次数の項 x^n を消す。
+      bit = bit - L; // bitから最大次数の項 x^n を消す。
       bit = bit ^ N; //最大次数の項以下の原始多項式を bit に xorする。
     }
-    gf[i] = bit; //最初は何もしないでx^iを入れていく。
+    gf[i] = bit;      //最初は何もしないでx^iを入れていく。
     bit = (bit << 1); //原始多項式の次数を1上げる。
   }
   printf("static const unsigned short gf[%d]={", O);
