@@ -1130,7 +1130,6 @@ int irr_poly_to_file()
   return 0;
 }
 
-//言わずもがな
 int main(void)
 {
   unsigned short f[K + 1] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0}; // big indian
@@ -1140,8 +1139,9 @@ int main(void)
   // test , usage and example
   for (i = 0; i < N; i++)
   {
-    // f[K] = i;
+    memset(&g, 0, sizeof(g));
     g = mkpol();
+    // f[K] = i;
     // g = setpol(f, K + 1);
     if (ben_or(g) == 0)
     {
