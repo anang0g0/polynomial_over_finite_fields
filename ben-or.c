@@ -1,9 +1,9 @@
-//date : 20210325（ver.1）
-//date      : 20160310,20191218,20191220,20191221,20191223,20191224,20191225,20191229,20191230
-//auther    : the queer who thinking about cryptographic future
-//code name : Ben_Or's irreducibly test for polynomial over GF(2^m)
-//code name : OVP - One Variable Polynomial library
-//status    : release (ver 1.2) 20211201
+// date : 20210325（ver.1）
+// date      : 20160310,20191218,20191220,20191221,20191223,20191224,20191225,20191229,20191230
+// auther    : the queer who thinking about cryptographic future
+// code name : Ben_Or's irreducibly test for polynomial over GF(2^m)
+// code name : OVP - One Variable Polynomial library
+// status    : release (ver 1.2) 20211201
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -41,15 +41,15 @@ extern void print_trace();
 #define DAT 5
 int num = 0;
 
-//nomal bases
-//unsigned short gf[M]={0,1,2,4,8,9,11,15,7,14,5,10,13,3,6,12};
-//unsigned short fg[M]={0,1,2,13,3,10,14,8,4,5,11,6,15,12,9,7};
+// nomal bases
+// unsigned short gf[M]={0,1,2,4,8,9,11,15,7,14,5,10,13,3,6,12};
+// unsigned short fg[M]={0,1,2,13,3,10,14,8,4,5,11,6,15,12,9,7};
 
-//sage比較用
-//static const unsigned short gf[16]={0,1,2,4,8,3,6,12,11,5,10,7,14,15,13,9};
-//static const unsigned short fg[16]={0,1,2,5,3,9,6,11,4,15,10,8,7,14,12,13};
+// sage比較用
+// static const unsigned short gf[16]={0,1,2,4,8,3,6,12,11,5,10,7,14,15,13,9};
+// static const unsigned short fg[16]={0,1,2,5,3,9,6,11,4,15,10,8,7,14,12,13};
 
-//GF(2^8)
+// GF(2^8)
 static const unsigned short gf[N] = {0, 1, 2, 4, 8, 16, 32, 64, 128, 29, 58, 116, 232, 205, 135, 19, 38, 76, 152, 45, 90, 180, 117, 234, 201, 143, 3, 6, 12, 24, 48, 96, 192, 157, 39, 78, 156, 37, 74, 148, 53, 106, 212, 181, 119, 238, 193, 159, 35, 70, 140, 5, 10, 20, 40, 80, 160, 93, 186, 105, 210, 185, 111, 222, 161, 95, 190, 97, 194, 153, 47, 94, 188, 101, 202, 137, 15, 30, 60, 120, 240, 253, 231, 211, 187, 107, 214, 177, 127, 254, 225, 223, 163, 91, 182, 113, 226, 217, 175, 67, 134, 17, 34, 68, 136, 13, 26, 52, 104, 208, 189, 103, 206, 129, 31, 62, 124, 248, 237, 199, 147, 59, 118, 236, 197, 151, 51, 102, 204, 133, 23, 46, 92, 184, 109, 218, 169, 79, 158, 33, 66, 132, 21, 42, 84, 168, 77, 154, 41, 82, 164, 85, 170, 73, 146, 57, 114, 228, 213, 183, 115, 230, 209, 191, 99, 198, 145, 63, 126, 252, 229, 215, 179, 123, 246, 241, 255, 227, 219, 171, 75, 150, 49, 98, 196, 149, 55, 110, 220, 165, 87, 174, 65, 130, 25, 50, 100, 200, 141, 7, 14, 28, 56, 112, 224, 221, 167, 83, 166, 81, 162, 89, 178, 121, 242, 249, 239, 195, 155, 43, 86, 172, 69, 138, 9, 18, 36, 72, 144, 61, 122, 244, 245, 247, 243, 251, 235, 203, 139, 11, 22, 44, 88, 176, 125, 250, 233, 207, 131, 27, 54, 108, 216, 173, 71, 142};
 static const unsigned short fg[N] = {0, 1, 2, 26, 3, 51, 27, 199, 4, 224, 52, 239, 28, 105, 200, 76, 5, 101, 225, 15, 53, 142, 240, 130, 29, 194, 106, 249, 201, 9, 77, 114, 6, 139, 102, 48, 226, 37, 16, 34, 54, 148, 143, 219, 241, 19, 131, 70, 30, 182, 195, 126, 107, 40, 250, 186, 202, 155, 10, 121, 78, 229, 115, 167, 7, 192, 140, 99, 103, 222, 49, 254, 227, 153, 38, 180, 17, 146, 35, 137, 55, 209, 149, 207, 144, 151, 220, 190, 242, 211, 20, 93, 132, 57, 71, 65, 31, 67, 183, 164, 196, 73, 127, 111, 108, 59, 41, 85, 251, 134, 187, 62, 203, 95, 156, 160, 11, 22, 122, 44, 79, 213, 230, 173, 116, 244, 168, 88, 8, 113, 193, 248, 141, 129, 100, 14, 104, 75, 223, 238, 50, 198, 255, 25, 228, 166, 154, 120, 39, 185, 181, 125, 18, 69, 147, 218, 36, 33, 138, 47, 56, 64, 210, 92, 150, 189, 208, 206, 145, 136, 152, 179, 221, 253, 191, 98, 243, 87, 212, 172, 21, 43, 94, 159, 133, 61, 58, 84, 72, 110, 66, 163, 32, 46, 68, 217, 184, 124, 165, 119, 197, 24, 74, 237, 128, 13, 112, 247, 109, 162, 60, 83, 42, 158, 86, 171, 252, 97, 135, 178, 188, 205, 63, 91, 204, 90, 96, 177, 157, 170, 161, 82, 12, 246, 23, 236, 123, 118, 45, 216, 80, 175, 214, 234, 231, 232, 174, 233, 117, 215, 245, 235, 169, 81, 89, 176};
 
@@ -75,7 +75,7 @@ oinv(unsigned short a)
   exit(1);
 }
 
-//aに何をかけたらbになるか
+// aに何をかけたらbになるか
 unsigned short
 equ(unsigned short a, unsigned short b)
 {
@@ -89,7 +89,7 @@ equ(unsigned short a, unsigned short b)
   return i;
 }
 
-//OP型からベクトル型への変換
+// OP型からベクトル型への変換
 vec o2v(OP f)
 {
   vec a = {0};
@@ -131,7 +131,7 @@ void wait2(void)
   getchar();
 }
 
-//OP型を正規化する
+// OP型を正規化する
 OP conv(OP f)
 {
   return v2o(o2v(f));
@@ -193,7 +193,7 @@ void oprintpol(OP f)
   f = conv(f);
   n = odeg(f);
   printf("n=%d\n", n);
-  //printf("terms=%d\n", terms(f));
+  // printf("terms=%d\n", terms(f));
   printf("deg=%d\n", odeg(f));
 
   for (i = n; i > -1; i--)
@@ -245,12 +245,12 @@ bool op_verify(const OP f)
   return true;
 }
 
-//20200816:正規化したいところだがうまく行かない
+// 20200816:正規化したいところだがうまく行かない
 //多項式の足し算
 OP oadd(OP f, OP g)
 {
-  //f = conv(f);
-  //g = conv(g);
+  // f = conv(f);
+  // g = conv(g);
   ////assert(op_verify(f));
   ////assert(op_verify(g));
 
@@ -266,7 +266,7 @@ OP oadd(OP f, OP g)
     c.x[i] = a.x[i] ^ b.x[i];
   }
   h = v2o(c);
-  //h=conv(h);
+  // h=conv(h);
   ////assert(op_verify(h));
   return h;
 }
@@ -281,7 +281,7 @@ oterm oLT(OP f)
   s = f.t[0];
   for (i = 0; i < k + 1; i++)
   {
-    //printf("a=%d %d\n",f.t[i].a,f.t[i].n);
+    // printf("a=%d %d\n",f.t[i].a,f.t[i].n);
     if (f.t[i].a > 0)
     {
       printf("in LT=%d %d\n", s.a, s.n);
@@ -312,8 +312,8 @@ OP oterml(OP f, oterm t)
   int i;
   OP h = {0};
 
-  //f=conv(f);
-  //k = deg (o2v(f));
+  // f=conv(f);
+  // k = deg (o2v(f));
 
   for (i = 0; i < DEG; i++)
   {
@@ -322,7 +322,7 @@ OP oterml(OP f, oterm t)
   }
 
   h = conv(h);
-  //assert(op_verify(h));
+  // assert(op_verify(h));
   return h;
 }
 
@@ -331,8 +331,8 @@ OP omul(OP f, OP g)
 {
   f = conv(f);
   g = conv(g);
-  //assert(op_verify(f));
-  //assert(op_verify(g));
+  // assert(op_verify(f));
+  // assert(op_verify(g));
   int i, k, l;
   oterm t = {0};
   OP h = {0}, e = {0};
@@ -350,7 +350,7 @@ OP omul(OP f, OP g)
     e = oterml(f, t);
     h = oadd(h, e);
   }
-  //assert(op_verify(h));
+  // assert(op_verify(h));
   return h;
 }
 
@@ -360,10 +360,10 @@ oterm LT(OP f)
   int i;
   oterm t = {0};
 
-  //k = deg (o2v (f));
+  // k = deg (o2v (f));
   for (i = 0; i < DEG; i++)
   {
-    //printf("a=%d %d\n",f.t[i].a,f.t[i].n);
+    // printf("a=%d %d\n",f.t[i].a,f.t[i].n);
     if (f.t[i].a > 0)
     {
       t.n = f.t[i].n;
@@ -395,7 +395,7 @@ oterm LTdiv(OP f, oterm t)
   {
     s.n = tt.n - t.n;
     s.a = equ(t.a, tt.a);
-    //printf("%u\n",s.a);
+    // printf("%u\n",s.a);
   }
   else if (t.n == 0 && t.a > 0)
   {
@@ -431,9 +431,9 @@ void printpol(vec a)
     if (a.x[i] > 0)
     {
       printf("%u", a.x[i]);
-      //if (i > 0)
+      // if (i > 0)
       printf("x^%d", i);
-      //if (i > 0)
+      // if (i > 0)
       printf("+");
     }
   }
@@ -448,8 +448,8 @@ OP odiv(OP f, OP g)
 
   f = conv(f);
   g = conv(g);
-  //assert(op_verify(f));
-  //assert(op_verify(g));
+  // assert(op_verify(f));
+  // assert(op_verify(g));
   int i;
   OP h = {0}, tt = {0};
   oterm b = {0}, c = {0};
@@ -457,7 +457,7 @@ OP odiv(OP f, OP g)
   if (LT(f).n == 0 && LT(g).a == 0)
   {
     printf("baka^\n");
-    //return f;
+    // return f;
     exit(1);
   }
   if (LT(g).a == 0)
@@ -486,7 +486,7 @@ OP odiv(OP f, OP g)
   while (LT(f).n > 0 && LT(g).n > 0)
   {
     c = LTdiv(f, b);
-    //assert(c.n < DEG);
+    // assert(c.n < DEG);
     tt.t[i] = c;
     i++;
 
@@ -495,7 +495,7 @@ OP odiv(OP f, OP g)
     f = oadd(f, h);
     if (odeg((f)) == 0 || odeg((g)) == 0)
     {
-      //printf ("blake2\n");
+      // printf ("blake2\n");
       break;
     }
 
@@ -511,7 +511,7 @@ OP odiv(OP f, OP g)
     ret.t[i] = tt.t[tt_terms - i - 1];
   }
   ret = conv(ret);
-  //assert(op_verify(ret));
+  // assert(op_verify(ret));
   return ret;
 }
 
@@ -571,10 +571,10 @@ void table(OP x, OP mod)
   for (i = 0; i < K / 2; i++)
   {
     tbl[i + 1] = omod(omul(tbl[i], tbl[i]), mod);
-    //printpol(o2v(tbl[i+1]));
-    //printf(" =====tbl\n");
+    // printpol(o2v(tbl[i+1]));
+    // printf(" =====tbl\n");
   }
-  //exit(1);
+  // exit(1);
 }
 
 OP opwm(OP f, OP mod, int n)
@@ -607,12 +607,12 @@ v2a(oterm a)
   if (a.a == 0)
     return 0;
 
-  //printf("aa=%d\n",a.a);
+  // printf("aa=%d\n",a.a);
   for (j = 0; j < N; j++)
   {
     if (gf[j] == a.a && a.a > 0)
     {
-      //printf("j==%d\n",j);
+      // printf("j==%d\n",j);
       return j - 1;
     }
   }
@@ -635,21 +635,21 @@ void printsage(vec a, FILE *fp)
       b.a = a.x[i];
       b.n = i;
       j = v2a(b);
-      //printf("%d,==ba\n",b.a);
-      //printf ("X**%d+", i); //for GF2
+      // printf("%d,==ba\n",b.a);
+      // printf ("X**%d+", i); //for GF2
       if (i == K)
       {
-        fprintf(fp, "B('a^%d')*X**%d;", j, i); //for GF(2^m)
+        fprintf(fp, "B('a^%d')*X**%d;", j, i); // for GF(2^m)
       }
       else
       {
-        fprintf(fp, "B('a^%d')*X**%d+", j, i); //for GF(2^m)
+        fprintf(fp, "B('a^%d')*X**%d+", j, i); // for GF(2^m)
       }
     }
   }
 }
 
-//gcd
+// gcd
 OP gcd(OP xx, OP yy)
 {
   OP tt = {0}, tmp, h = {0};
@@ -725,20 +725,20 @@ ginit(unsigned short *g)
   int j, count = 0, k = 0;
   unsigned short gg[K + 1] = {0};
 
-  //printf("in ginit\n");
+  // printf("in ginit\n");
 
-  g[K] = 1;          //xor128();
-  g[0] = rand() % N; //or N
+  g[K] = 1;          // xor128();
+  g[0] = rand() % 2; // or N
   k = rand() % (K - 1);
   if (k > 0)
   {
     while (count < k)
     {
-      //printf("in whule\n");
+      // printf("in whule\n");
       j = rand() % (K);
       if (j < K && j > 0 && g[j] == 0)
       {
-        g[j] = rand() % N; //or N;
+        g[j] = rand() % 2; // or N;
         count++;
       }
     }
@@ -838,7 +838,7 @@ OP mkpol()
     flg = 0;
 
     memset(g, 0, sizeof(g));
-    //memset(ta, 0, sizeof(ta));
+    // memset(ta, 0, sizeof(ta));
     memset(w.t, 0, sizeof(w));
     ginit(g);
     ii++;
@@ -858,37 +858,37 @@ OP mkpol()
 
     //偶数項だけにならないようにする
     if ((k > 0 && flg == 0) || (k > 1 && flg == 1))
-    //if(k>0)
+    // if(k>0)
     {
       w = setpol(g, K + 1);
       j = 1;
-      //if(isquad(w)==-1)
-      //exit(1);
+      // if(isquad(w)==-1)
+      // exit(1);
     }
     // exit(1);
 
   } while (j == 0);
 
-  //printpol(o2v(w));
-  //printf(" ==g\n");
-  //exit(1);
+  // printpol(o2v(w));
+  // printf(" ==g\n");
+  // exit(1);
 
   return w;
 }
 
-//GF(2^m) then set m in this function.
+// GF(2^m) then set m in this function.
 int ben_or(OP f)
 {
   int i, n; //, pid;
   OP s = {0}, u = {0}, r = {0};
   vec v = {0};
-  //if GF(8192) is 2^m and m==13 or if GF(4096) and m==12 if GF(16384) is testing
-  //int m = E;
-  // m=12 as a for GF(4096)=2^12 defined @ gloal.h or here,for example m=4 and GF(16)
+  // if GF(8192) is 2^m and m==13 or if GF(4096) and m==12 if GF(16384) is testing
+  // int m = E;
+  //  m=12 as a for GF(4096)=2^12 defined @ gloal.h or here,for example m=4 and GF(16)
 
   v.x[1] = 1;
   s = v2o(v);
-  //for (i = 0; i < K / 2; i++)
+  // for (i = 0; i < K / 2; i++)
   r = s;
   n = deg(o2v(f));
 
@@ -902,7 +902,7 @@ int ben_or(OP f)
 
   i = 0;
 
-  //r(x)^{q^i} square pow mod
+  // r(x)^{q^i} square pow mod
   for (i = 0; i < K / 2; i++)
   {
     // irreducible over GH(8192) 2^13
@@ -912,7 +912,7 @@ int ben_or(OP f)
 
     if (odeg(u) > 0)
     {
-      //flg[i]= -1;
+      // flg[i]= -1;
       return -1;
     }
   }
@@ -951,7 +951,7 @@ void get_irrpoly(void)
 
 aa:
 
-  //printf("\n");
+  // printf("\n");
 
   //既約性判定のためのBen-Orアルゴリズム。拡大体にも対応している。デフォルトでGF(8192)
   l = -1;
@@ -966,7 +966,7 @@ aa:
     {
       printf("too many tryal\n");
       goto aa;
-      //exit(1);
+      // exit(1);
     }
     printf("ben=%d\n", ii);
     ii++;
@@ -980,7 +980,7 @@ aa:
     if (ta[i] == 0)
     {
       printf("trace 0 @ %d\n", i);
-      //fail = 1;
+      // fail = 1;
       exit(1);
     }
   }
@@ -999,7 +999,7 @@ aa:
   goto aa;
 }
 
-//sagemath仕様の既多項式をファイルに書き出す（マルチプロセス）
+// sagemath仕様の既多項式をファイルに書き出す（マルチプロセス）
 int irr_poly_to_file()
 {
   OP w, x, y, z;
@@ -1009,13 +1009,13 @@ int irr_poly_to_file()
 
   for (i = 0; i < 3 && (pid[i] = fork()) > 0; i++)
     printf("%d\n", pid[i]);
-  //exit(1);
+  // exit(1);
   f1 = fopen("dat.sage", "w");
   f2 = fopen("dat0.sage", "w");
   f3 = fopen("dat1.sage", "w");
   f4 = fopen("dat2.sage", "w");
-  //f5=fopen("dat3.sage","w");
-  //this is child process
+  // f5=fopen("dat3.sage","w");
+  // this is child process
   fprintf(f1, "B=GF(2^%d,'a')\n", E);
   fprintf(f1, "F.<X>=B[]\n");
   fprintf(f2, "B=GF(2^%d,'a')\n", E);
@@ -1056,7 +1056,7 @@ int irr_poly_to_file()
           wait(&pid[2]);
           exit(1);
         }
-        //goto aa;
+        // goto aa;
       }
     }
     else if (pid[1] > 0)
@@ -1076,9 +1076,9 @@ int irr_poly_to_file()
         {
           fclose(f2);
           _exit(0);
-          //wait(&pid[1]);
+          // wait(&pid[1]);
         }
-        //goto aa;
+        // goto aa;
       }
     }
     //}//this is mother process
@@ -1086,7 +1086,7 @@ int irr_poly_to_file()
     else if (pid[0] > 0)
     {
 
-      //if(pid[1] == 0){
+      // if(pid[1] == 0){
       a = ben_or(y);
       if (a == 0 && k3 < DAT)
       {
@@ -1100,14 +1100,14 @@ int irr_poly_to_file()
         {
           fclose(f3);
           _exit(0);
-          //wait(&pid[0]);
+          // wait(&pid[0]);
         }
-        //goto aa;
+        // goto aa;
       }
     }
     else if (pid[0] == 0)
     {
-      //this is mother process
+      // this is mother process
 
       c = ben_or(z);
       if (c == 0 && k4 < DAT)
@@ -1122,7 +1122,7 @@ int irr_poly_to_file()
           fclose(f4);
           _exit(0);
         }
-        //goto aa;
+        // goto aa;
       }
     }
   }
@@ -1133,15 +1133,16 @@ int irr_poly_to_file()
 //言わずもがな
 int main(void)
 {
-  unsigned short f[K + 1] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0}; //big indian
+  unsigned short f[K + 1] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0}; // big indian
   OP g;
   int i;
 
-  //test , usage and example
+  // test , usage and example
   for (i = 0; i < N; i++)
   {
-    f[K] = i;
-    g = setpol(f, K + 1);
+    // f[K] = i;
+    g = mkpol();
+    // g = setpol(f, K + 1);
     if (ben_or(g) == 0)
     {
       printpol(o2v(g));
@@ -1153,9 +1154,9 @@ int main(void)
     }
   }
 
-  //multi_process();
-  //irr_poly_to_file();
-  //get_irrpoly();
+  // multi_process();
+  // irr_poly_to_file();
+  // get_irrpoly();
 
   return 0;
 }
