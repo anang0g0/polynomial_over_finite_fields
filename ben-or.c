@@ -728,7 +728,7 @@ ginit(unsigned short *g)
   // printf("in ginit\n");
 
   g[K] = 1;          // xor128();
-  g[0] = rand() % 2; // or N
+  g[0] = rand() % N; // or N
   k = rand() % (K - 1);
   if (k > 0)
   {
@@ -738,7 +738,7 @@ ginit(unsigned short *g)
       j = rand() % (K);
       if (j < K && j > 0 && g[j] == 0)
       {
-        g[j] = rand() % 2; // or N;
+        g[j] = rand() % N; // or N;
         count++;
       }
     }
@@ -1136,11 +1136,13 @@ int main(void)
   OP g;
   int i;
 
+srand(clock());
   // test , usage and example
   for (i = 0; i < N; i++)
   {
     memset(&g, 0, sizeof(g));
     g = mkpol();
+    printpol(o2v(g));
     // f[K] = i;
     // g = setpol(f, K + 1);
     if (ben_or(g) == 0)
