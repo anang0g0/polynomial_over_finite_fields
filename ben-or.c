@@ -442,6 +442,25 @@ void printpol(vec a)
   return;
 }
 
+
+
+int oequ(OP f, OP g)
+{
+  vec v, x;
+  int i;
+
+  v = o2v(f);
+  x = o2v(g);
+  for (i = 0; i < DEG; i++)
+  {
+    if (v.x[i] != x.x[i])
+      return -1;
+  }
+
+  return 0;
+}
+
+
 //多項式の商を取る
 OP odiv(OP f, OP g)
 {
@@ -483,7 +502,7 @@ OP odiv(OP f, OP g)
   }
 
   i = 0;
-  while (LT(f).n > 0 && LT(g).n > 0)
+  while (1)
   {
     c = LTdiv(f, b);
     // assert(c.n < DEG);
@@ -493,13 +512,14 @@ OP odiv(OP f, OP g)
     h = oterml(g, c);
 
     f = oadd(f, h);
-    if (odeg((f)) == 0 || odeg((g)) == 0)
+    if (oequ(f,g) == 0)
     {
-      // printf ("blake2\n");
-      break;
+      printf ("blake2\n");
+      c.a=1;
+      //break;
     }
 
-    if (c.n == 0)
+    if (c.a == 0)
       break;
   }
 
@@ -529,6 +549,7 @@ OP opow(OP f, int n)
   return g;
 }
 
+
 //多項式の剰余を取る
 OP omod(OP f, OP g)
 {
@@ -543,7 +564,7 @@ OP omod(OP f, OP g)
 
   b = LT(g);
 
-  while (LT(f).n > 0 && LT(g).n > 0)
+  while (1)
   {
 
     c = LTdiv(f, b);
@@ -554,7 +575,7 @@ OP omod(OP f, OP g)
       break;
     }
 
-    if (c.n == 0 || b.n == 0)
+    if (c.n == 0)
       break;
   }
 
@@ -1142,9 +1163,9 @@ srand(clock());
   {
     memset(&g, 0, sizeof(g));
     g = mkpol();
-    printpol(o2v(g));
+    //printpol(o2v(g));
     // f[K] = i;
-    // g = setpol(f, K + 1);
+    //g = setpol(f, K + 1);
     if (ben_or(g) == 0)
     {
       printpol(o2v(g));
