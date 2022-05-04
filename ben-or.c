@@ -16,7 +16,7 @@
 #include <stdlib.h>
 //#include <assert.h>
 #include <execinfo.h>
-#include <omp.h>
+//#include <omp.h>
 #include <unistd.h>
 #include <sys/wait.h>
 #include <unistd.h>
@@ -606,8 +606,22 @@ OP opwm(OP f, OP mod, int n)
   return tbl[n];
 }
 
+OP opowmod(OP f, OP mod, int n) {
+    vec v={0};
+    OP ret;
+
+     v.x[0]= 1;
+    ret=v2o(v);
+    while (n > 0) {
+        if (n & 1) ret = omod(omul(ret , f),mod) ;  // n の最下位bitが 1 ならば x^(2^i) をかける
+        f = omod(omul(f , f),mod);
+        n >>= 1;  // n を1bit 左にずらす
+    }
+    return ret;
+}
+
 //多項式のべき乗余
-OP opowmod(OP f, OP mod, int n)
+OP opowmod1(OP f, OP mod, int n)
 {
   int i;
   OP t[K / 2] = {0};
@@ -1162,10 +1176,10 @@ srand(clock());
   for (i = 0; i < N; i++)
   {
     memset(&g, 0, sizeof(g));
-    g = mkpol();
+    //g = mkpol();
     //printpol(o2v(g));
-    // f[K] = i;
-    //g = setpol(f, K + 1);
+    f[K] = i;
+    g = setpol(f, K + 1);
     if (ben_or(g) == 0)
     {
       printpol(o2v(g));
