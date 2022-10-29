@@ -14,20 +14,20 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <stdlib.h>
-//#include <assert.h>
+// #include <assert.h>
 #include <execinfo.h>
-//#include <omp.h>
+// #include <omp.h>
 #include <unistd.h>
 #include <sys/wait.h>
 #include <unistd.h>
 #include <sys/types.h>
 
-//#include "8192.h"
-//#include "4096.h"
+// #include "8192.h"
+// #include "4096.h"
 #include "global.h"
 #include "struct.h"
-//#include "debug.c"
-//#include "chash.c"
+// #include "debug.c"
+// #include "chash.c"
 
 #include <pthread.h>
 
@@ -55,7 +55,7 @@ static const unsigned short fg[N] = {0, 1, 2, 26, 3, 51, 27, 199, 4, 224, 52, 23
 
 static unsigned short c[E * K + 1] = {0};
 
-//有限体の元の逆数
+// 有限体の元の逆数
 unsigned short
 oinv(unsigned short a)
 {
@@ -73,6 +73,28 @@ oinv(unsigned short a)
   printf("no return \n");
 
   exit(1);
+}
+
+unsigned short pinv(unsigned short a, unsigned short n)
+{
+  unsigned short d, x, s, t, q, r;
+
+  d = n;
+  x = 0;
+  s = 1;
+  while (a != 0)
+  {
+    q = d / a;
+    r = d % a;
+    d = a;
+    a = r;
+    t = x - q * s;
+    x = s;
+    s = t;
+  }
+  //  gcd = d  # $\gcd(a, n)$
+
+  return ((x + n) % (n / d));
 }
 
 // aに何をかけたらbになるか
@@ -104,13 +126,13 @@ vec o2v(OP f)
   return a;
 }
 
-//ベクトル型からOP型への変換
+// ベクトル型からOP型への変換
 OP v2o(vec a)
 {
   int i, j = 0;
   OP f = {0};
 
-  //#pragma omp parallel for
+  // #pragma omp parallel for
   for (i = 0; i < DEG; i++)
   {
     if (a.x[i] > 0)
@@ -123,7 +145,7 @@ OP v2o(vec a)
   return f;
 }
 
-//停止コマンド
+// 停止コマンド
 void wait2(void)
 {
   printf(" (enter number and hit return) "); // 何か表示させたほうが良いだろう
@@ -137,7 +159,7 @@ OP conv(OP f)
   return v2o(o2v(f));
 }
 
-//項の数
+// 項の数
 int terms(OP f)
 {
   int i, count = 0;
@@ -151,12 +173,12 @@ int terms(OP f)
   return count;
 }
 
-//多項式の次数(default)
+// 多項式の次数(default)
 int deg(vec a)
 {
   int i, n = 0, flg = 0;
 
-  //#pragma omp parallel for
+  // #pragma omp parallel for
   for (i = 0; i < DEG; i++)
   {
     if (a.x[i] > 0)
@@ -171,7 +193,7 @@ int deg(vec a)
   return n;
 }
 
-//多項式の次数(degのOP型)
+// 多項式の次数(degのOP型)
 int odeg(OP f)
 {
   int i, j = 0;
@@ -185,7 +207,7 @@ int odeg(OP f)
   return j;
 }
 
-//多項式を表示する（OP型）
+// 多項式を表示する（OP型）
 void oprintpol(OP f)
 {
   int i, n;
@@ -246,7 +268,7 @@ bool op_verify(const OP f)
 }
 
 // 20200816:正規化したいところだがうまく行かない
-//多項式の足し算
+// 多項式の足し算
 OP oadd(OP f, OP g)
 {
   // f = conv(f);
@@ -270,8 +292,100 @@ OP oadd(OP f, OP g)
   ////assert(op_verify(h));
   return h;
 }
+// 多項式の足し算
+OP osub(OP f, OP g, unsigned short p)
+{
+  // f = conv(f);
+  // g = conv(g);
+  // assert(op_verify(f));
+  // assert(op_verify(g));
 
-//リーディングタームを抽出(OP型）
+  vec a = {0}, b = {0}, c = {0};
+  int i;
+  OP h = {0};
+
+  //p = 7;
+  a = o2v(f);
+  b = o2v(g);
+  printpol(a);
+  printf("\n");
+  printpol(b);
+  printf("\n");
+  // exit(1);
+
+  for (i = 0; i < deg(o2v(g)) + 1; i++)
+  {
+    if (a.x[i] >= p || b.x[i] >= p)
+    {
+      a.x[i] = a.x[i] % p;
+      b.x[i] = b.x[i] % p;
+    }
+    if (a.x[i] >= b.x[i])
+    {
+      c.x[i] = (a.x[i] - (short)b.x[i] % p) % 7;
+    }
+    else
+    {
+      c.x[i] = p + (a.x[i] - b.x[i]);
+    }
+    printf("%d %d %d\n", a.x[i], b.x[i], ((short)c.x[i]) % p);
+  }
+  printf("\n");
+  // exit(1);
+  h = v2o(c);
+  h = conv(h);
+  // assert(op_verify(h));
+  return h;
+}
+
+
+// 多項式の足し算
+vec vsub(vec f, vec g, unsigned short p)
+{
+  // f = conv(f);
+  // g = conv(g);
+  // assert(op_verify(f));
+  // assert(op_verify(g));
+
+  vec a = {0}, b = {0}, c = {0};
+  int i;
+  OP h = {0};
+
+  //p = 7;
+  printpol(f);
+  printf("\n");
+  printpol(g);
+  printf("\n");
+  // exit(1);
+
+  for (i = 0; i < deg(g) + 1; i++)
+  {
+    /*
+    if (f.x[i] >= p || g.x[i] >= p)
+    {
+      f.x[i] = f.x[i] % p;
+      b.x[i] = g.x[i] % p;
+    }
+    */
+    if (f.x[i] >= g.x[i])
+    {
+      c.x[i] = (f.x[i] - (short)g.x[i] % p) % p;
+    }
+    else
+    {
+      c.x[i] = p + (f.x[i] - g.x[i]);
+    }
+    printf("%d %d %d\n", f.x[i], g.x[i], ((short)c.x[i]) % p);
+  }
+  printf("\n");
+  // exit(1);
+  h = v2o(c);
+  h = conv(h);
+  // assert(op_verify(h));
+  return c;
+}
+
+// リーディングタームを抽出(OP型）
 oterm oLT(OP f)
 {
   int i, k, j;
@@ -304,7 +418,7 @@ oterm oLT(OP f)
   return s;
 }
 
-//多項式を項ずつ掛ける
+// 多項式を項ずつ掛ける
 OP oterml(OP f, oterm t)
 {
   f = conv(f);
@@ -326,35 +440,7 @@ OP oterml(OP f, oterm t)
   return h;
 }
 
-//多項式の掛け算
-OP omul(OP f, OP g)
-{
-  f = conv(f);
-  g = conv(g);
-  // assert(op_verify(f));
-  // assert(op_verify(g));
-  int i, k, l;
-  oterm t = {0};
-  OP h = {0}, e = {0};
-
-  k = odeg(f);
-  l = odeg(g);
-  if (l > k)
-  {
-    k = l;
-  }
-
-  for (i = 0; i < k + 1; i++)
-  {
-    t = g.t[i];
-    e = oterml(f, t);
-    h = oadd(h, e);
-  }
-  // assert(op_verify(h));
-  return h;
-}
-
-//リーディグタームを抽出(default)
+// リーディグタームを抽出(default)
 oterm LT(OP f)
 {
   int i;
@@ -374,7 +460,74 @@ oterm LT(OP f)
   return t;
 }
 
-//多項式を単行式で割る
+vec vmul(vec a, vec b, unsigned short p)
+{
+  int i, j, k, l;
+  vec c = {0};
+
+  k = deg(a);
+  l = deg(b);
+  if ((k == 0 && a.x[0]==0) || (l == 0 && b.x[0]==0))
+    return c;
+
+  printpol(a);
+  printf(" =a\n");
+  printpol(b);
+  printf(" =b\n");
+  // exit(1);
+
+//  if (k >= 0 && l >= 0)
+  {
+    for (i = 0; i < k + 1; i++)
+    {
+      for (j = 0; j < l + 1; j++)
+        //if (a.x[i] > 0 && b.x[i] > 0)
+        {
+          c.x[i + j] += (a.x[i] * b.x[j]) % p;
+          //
+        }
+    }
+  }
+  for(i=0;i<l+k+1;i++)
+  c.x[i] = c.x[i] % p;
+
+  return c;
+}
+
+// 多項式の掛け算
+OP omul(OP f, OP g)
+{
+  f = conv(f);
+  g = conv(g);
+  // assert(op_verify(f));
+  // assert(op_verify(g));
+  int i, k, l;
+  oterm t = {0};
+  OP h = {0}, e = {0};
+
+  if (LT(g).a == 1 && LT(g).n == 0)
+    return f;
+  if (LT(f).a == 1 && LT(f).n == 0)
+    return g;
+
+  k = odeg(f);
+  l = odeg(g);
+  if (l > k)
+  {
+    k = l;
+  }
+
+  for (i = 0; i < k + 1; i++)
+  {
+    t = g.t[i];
+    e = oterml(f, t);
+    h = oadd(h, e);
+  }
+  // assert(op_verify(h));
+  return h;
+}
+
+// 多項式を単行式で割る
 oterm LTdiv(OP f, oterm t)
 {
   oterm tt = {0}, s = {
@@ -406,7 +559,7 @@ oterm LTdiv(OP f, oterm t)
   return s;
 }
 
-//モニック多項式にする
+// モニック多項式にする
 OP coeff(OP f, unsigned short d)
 {
   int i, k;
@@ -419,7 +572,7 @@ OP coeff(OP f, unsigned short d)
   return f;
 }
 
-//多項式を表示する(default)
+// 多項式を表示する(default)
 void printpol(vec a)
 {
   int i, n;
@@ -442,8 +595,6 @@ void printpol(vec a)
   return;
 }
 
-
-
 int oequ(OP f, OP g)
 {
   vec v, x;
@@ -460,8 +611,7 @@ int oequ(OP f, OP g)
   return 0;
 }
 
-
-//多項式の商を取る
+// 多項式の商を取る
 OP odiv(OP f, OP g)
 {
 
@@ -512,11 +662,11 @@ OP odiv(OP f, OP g)
     h = oterml(g, c);
 
     f = oadd(f, h);
-    if (oequ(f,g) == 0)
+    if (oequ(f, g) == 0)
     {
-      printf ("blake2\n");
-      c.a=1;
-      //break;
+      printf("blake2\n");
+      c.a = 1;
+      // break;
     }
 
     if (c.a == 0)
@@ -535,7 +685,7 @@ OP odiv(OP f, OP g)
   return ret;
 }
 
-//多項式のべき乗
+// 多項式のべき乗
 OP opow(OP f, int n)
 {
   int i;
@@ -549,8 +699,7 @@ OP opow(OP f, int n)
   return g;
 }
 
-
-//多項式の剰余を取る
+// 多項式の剰余を取る
 OP omod(OP f, OP g)
 {
   OP h = {0};
@@ -598,6 +747,242 @@ void table(OP x, OP mod)
   // exit(1);
 }
 
+// invert of polynomial
+OP inv(OP a, OP n)
+{
+  OP d = {0}, x = {0}, s = {0}, q = {0}, r = {0}, t = {0}, u = {0}, v = {0}, w = {0}, tt = {0}, gcd = {0}, tmp = {0};
+  oterm b = {0};
+  vec vv = {0}, xx = {
+                    0};
+
+  if (odeg((a)) > odeg((n)))
+  {
+    tmp = a;
+    a = n;
+    n = tmp;
+    printf("baka_i\n");
+    // exit (1);
+  }
+  if (LT(a).a == 0)
+  {
+    printf(" a ga 0\n");
+    exit(1);
+  }
+
+  tt = n;
+
+  d = n;
+  x.t[0].a = 0;
+  x.t[0].n = 0;
+  s.t[0].a = 1;
+  s.t[0].n = 0;
+  while (odeg((a)) > 0)
+  {
+    if (odeg((a)) > 0)
+      r = omod(d, a);
+    if (LT(a).a == 0)
+      break;
+    if (LT(a).a > 0)
+      q = odiv(d, a);
+
+    d = a;
+    a = r;
+    t = oadd(x, omul(q, s));
+    ////printpol (o2v (a));
+    // printf ("\nin roop a==================%d\n", odeg ((a)));
+    // printf ("\n");
+
+    x = s;
+    s = t;
+  }
+  // exit(1);
+  //  if(LT(a).a>0){
+  d = a;
+  a = r;
+  ////printpol (o2v (a));
+  // printf ("\nin roop a|==================%d\n", odeg ((a)));
+  // printf ("\n");
+
+  x = s;
+  s = t;
+
+  ////printpol (o2v (d));
+  // printf ("\nout1================\n");
+  gcd = d; // $\gcd(a, n)$
+  printpol(o2v(gcd));
+  printf(" =========gcd\n");
+  // exit(1);
+  // printf ("\n");
+  ////printpol (o2v (n));
+  // printf ("\n");
+  // printf ("out2===============\n");
+
+  printf("before odiv\n");
+  // w=tt;
+
+  b = LT(w);
+  ////printpol (o2v (w));
+  // printf ("\nw=======%d %d\n", b.a, b.n);
+  // w=tt;
+  v = oadd(x, n);
+  ////printpol (o2v (v));
+  // printf ("\n");
+  /*
+   if (LT (v).a == 0)
+   {
+   printf ("v=============0\n");
+   }
+   printf ("d==============\n");
+ */
+  //  } //end of a>0
+  w = tt;
+  ////printpol (o2v (v));
+  // printf ("\n");
+  // printf ("ss==============\n");
+  //        exit(1);
+  //  if(odeg((w))>0)
+  if (LT(v).n > 0 && LT(w).n > 0)
+  {
+    u = omod(v, w);
+  }
+  else
+  {
+    // printpol (o2v (v));
+    printf(" v===========\n");
+    // printpol (o2v (x));
+    printf(" x==0?\n");
+    // printpol (o2v (n));
+    printf(" n==0?\n");
+
+    exit(1);
+  }
+  // caution !!
+  if (LT(u).a > 0 && LT(d).a > 0)
+  {
+    u = odiv(u, d);
+  }
+
+  if (LT(u).a == 0 || LT(d).a == 0)
+  {
+    printf("inv div u or d==0\n");
+    // exit(1);
+  }
+  // u=coeff(u,d.t[0].a);
+  ////printpol (o2v (u));
+  // printf ("\nu==================\n");
+  if (LT(u).a == 0)
+  {
+    printf("no return at u==0\n");
+    exit(1);
+  }
+
+  return u;
+}
+
+OP omod2(OP f, OP g, OP s)
+{
+
+  f = oadd(f, omul(g, s));
+
+  return f;
+}
+
+OP odiv2(OP f, OP g, OP h)
+{
+  OP s, t;
+
+  s = inv(g, h);
+  t = omod(omul(s, f), h);
+
+  return t;
+}
+
+OP mmul(OP mm, unsigned short p)
+{
+  vec c = {0};
+  int i, k;
+
+  c = o2v(mm);
+  k = deg(c);
+  for (i = 0; i < k + 1; i++)
+    c.x[i] = c.x[i] % p;
+  mm = v2o(c);
+
+  return mm;
+}
+
+OP inv2(OP g, unsigned short p)
+{
+  vec v = {0}, s = {0}, u = {0};
+  v.x[0] = 1;
+  s.x[0] = 2;
+  int l = deg(o2v(g));
+  u.x[1] = 1;
+  OP t[256] = {0}, r = v2o(s), q = v2o(u);
+  t[0] = v2o(v);
+  int i, count = 1;
+  
+  vec x = {0}, y = {0}, z = {0};
+  x.x[1] = 5;
+  x.x[0] = 1;
+  
+  y.x[2] = 3;
+  y.x[1] = 2;
+  y.x[0] = 1;
+  z.x[2] = 4;
+  z.x[1] = 3;
+  z.x[0] = 1;
+
+  OP rr = {0};
+
+  printpol(o2v(r));
+  printf(" mul\n");
+/*
+  rr = omul(r, v2o(x));
+  rr = mmul(rr, 7);
+  printpol(o2v(rr));
+  printf(" pre\n");
+  printpol(y);
+  printf(" =y\n");
+  printpol(z);
+  printf(" =z\n");
+  r = v2o(vmul(y, z, 7));
+  printpol(o2v(r));
+  printf(" kiso\n");
+  r=omod(r,omul(q,q));
+  printpol(o2v(r));
+  printf(" kis0\n");
+  rr=osub(rr,r,7);
+  printpol(o2v(rr));
+  printf(" kis@\n");
+
+  exit(1);
+*/
+
+  x=o2v(t[count-1]);
+  y=o2v(r);
+  z=o2v(g);
+  while (count < 3)
+  {
+  x=vmul(x,vsub(y,vmul(z,x,7),7),7);
+
+    //t[count] = omod(osub(omul(r,t[count-1]), omul(g, omul(t[count-1],t[count-1])), 7), q);
+
+    q = omul(q, q);
+    rr=v2o(x);
+    rr=omod(rr,q);
+    x=o2v(rr);
+  printpol(x);
+  printf(" ==t\n");
+
+    printpol(o2v(q));
+    printf(" ==q,%d\n",count);
+    count++;
+  }
+
+  return rr;
+}
+
 OP opwm(OP f, OP mod, int n)
 {
 
@@ -606,28 +991,32 @@ OP opwm(OP f, OP mod, int n)
   return tbl[n];
 }
 
-OP opowmod(OP f, OP mod, int n) {
-    vec v={0};
-    OP ret;
+OP opowmod(OP f, OP mod, int n)
+{
+  vec v = {0};
+  OP ret, s, t;
 
-     v.x[0]= 1;
-    ret=v2o(v);
-    while (n > 0) {
-        if (n & 1) ret = omod(omul(ret , f),mod) ;  // n の最下位bitが 1 ならば x^(2^i) をかける
-        f = omod(omul(f , f),mod);
-        n >>= 1;  // n を1bit 左にずらす
-    }
-    return ret;
+  v.x[0] = 1;
+  ret = v2o(v);
+  while (n > 0)
+  {
+    // s=inv()
+    if (n & 1)
+      ret = omod(omul(ret, f), mod); // n の最下位bitが 1 ならば x^(2^i) をかける
+    f = omod(omul(f, f), mod);
+    n >>= 1; // n を1bit 左にずらす
+  }
+  return ret;
 }
 
-//多項式のべき乗余
+// 多項式のべき乗余
 OP opowmod1(OP f, OP mod, int n)
 {
   int i;
   OP t[K / 2] = {0};
   t[0] = f;
 
-  //繰り返し２乗法
+  // 繰り返し２乗法
   for (i = 1; i < n + 1; i++)
     t[0] = omod(omul(t[0], t[0]), mod);
 
@@ -656,7 +1045,27 @@ v2a(oterm a)
   exit(1);
 }
 
-void printsage(vec a, FILE *fp)
+void printsage(vec a)
+{
+  int i, j, k;
+  oterm b;
+
+  printf("poly=");
+  for (i = 0; i < DEG; i++)
+  {
+    if (a.x[i] > 0)
+    {
+      b.a = a.x[i];
+      b.n = i;
+      j = v2a(b);
+      // printf("%d,==ba\n",b.a);
+      // printf ("X**%d+", i); //for GF2
+      printf("B('a^%d')*X**%d+", j, i); // for GF(2^m)
+    }
+  }
+}
+
+void fprintsage(vec a, FILE *fp)
 {
   int i, j;
   oterm b;
@@ -718,7 +1127,7 @@ OP gcd(OP xx, OP yy)
   //  return yy;
 }
 
-//０多項式かどうかのチェック
+// ０多項式かどうかのチェック
 unsigned char
 chk(OP f)
 {
@@ -753,7 +1162,7 @@ OP init_pol(OP f)
   return f;
 }
 
-//ランダム多項式の生成
+// ランダム多項式の生成
 static void
 ginit(unsigned short *g)
 {
@@ -785,7 +1194,7 @@ ginit(unsigned short *g)
   memcpy(g, gg, sizeof(K + 1));
 }
 
-//整数からベクトル型への変換
+// 整数からベクトル型への変換
 vec i2v(unsigned short n)
 {
   vec v = {0};
@@ -800,7 +1209,7 @@ vec i2v(unsigned short n)
   return v;
 }
 
-//ベクトル型から整数への変換
+// ベクトル型から整数への変換
 unsigned short
 v2i(vec v)
 {
@@ -815,7 +1224,7 @@ v2i(vec v)
   return d;
 }
 
-//配列からベクトル表現の多項式へ変換する
+// 配列からベクトル表現の多項式へ変換する
 vec Setvec(int n)
 {
   int i;
@@ -829,7 +1238,7 @@ vec Setvec(int n)
   return v;
 }
 
-//整数のべき乗
+// 整数のべき乗
 unsigned int
 ipow(unsigned int q, unsigned int u)
 {
@@ -845,7 +1254,7 @@ ipow(unsigned int q, unsigned int u)
 
 OP ww[T] = {0};
 
-//配列の値を係数として多項式に設定する
+// 配列の値を係数として多項式に設定する
 OP setpol(unsigned short f[], int n)
 {
   OP g;
@@ -891,7 +1300,7 @@ OP mkpol()
         k++;
     }
 
-    //偶数項だけにならないようにする
+    // 偶数項だけにならないようにする
     if ((k > 0 && flg == 0) || (k > 1 && flg == 1))
     // if(k>0)
     {
@@ -909,6 +1318,24 @@ OP mkpol()
   // exit(1);
 
   return w;
+}
+
+OP rev(OP a)
+{
+  vec vx = o2v(a), tmp = {0};
+  int k = deg(o2v(a)), i;
+  OP t = {0};
+
+  printf("k=%d\n", k);
+  // exit(1);
+  for (i = 0; i < k + 1; i++)
+    tmp.x[k - i] = vx.x[i];
+  t = v2o(tmp);
+  printpol(tmp);
+  printf("\n");
+  // exit(1);
+
+  return t;
 }
 
 // GF(2^m) then set m in this function.
@@ -955,7 +1382,7 @@ int ben_or(OP f)
   return 0;
 }
 
-//多項式の代入値
+// 多項式の代入値
 unsigned short
 trace(OP f, unsigned short x)
 {
@@ -988,7 +1415,7 @@ aa:
 
   // printf("\n");
 
-  //既約性判定のためのBen-Orアルゴリズム。拡大体にも対応している。デフォルトでGF(8192)
+  // 既約性判定のためのBen-Orアルゴリズム。拡大体にも対応している。デフォルトでGF(8192)
   l = -1;
   ii = 0;
 
@@ -1008,7 +1435,7 @@ aa:
     //
   }
 
-  //多項式の値が0でないことを確認
+  // 多項式の値が0でないことを確認
   for (i = 0; i < N; i++)
   {
     ta[i] = trace(w, i);
@@ -1022,7 +1449,7 @@ aa:
 
   printpol(o2v(w));
   printf(" =irreducible\n");
-  printsage(o2v(w), fp);
+  fprintsage(o2v(w), fp);
   fprintf(fp, " print(poly.is_irreducible());\n");
   j++;
 
@@ -1078,7 +1505,7 @@ int irr_poly_to_file()
       l = ben_or(w);
       if (l == 0 && k1 < DAT)
       {
-        printsage(o2v(w), f1);
+        fprintsage(o2v(w), f1);
         fprintf(f1, " print(poly.is_irreducible());\n");
         l = -1;
         k1++;
@@ -1101,7 +1528,7 @@ int irr_poly_to_file()
       b = ben_or(x);
       if (b == 0 && k2 < DAT)
       {
-        printsage(o2v(x), f2);
+        fprintsage(o2v(x), f2);
         fprintf(f2, " print(poly.is_irreducible());\n");
         b = -1;
         k2++;
@@ -1125,7 +1552,7 @@ int irr_poly_to_file()
       a = ben_or(y);
       if (a == 0 && k3 < DAT)
       {
-        printsage(o2v(y), f3);
+        fprintsage(o2v(y), f3);
         fprintf(f3, " print(poly.is_irreducible());\n");
         a = -1;
         k3++;
@@ -1147,7 +1574,7 @@ int irr_poly_to_file()
       c = ben_or(z);
       if (c == 0 && k4 < DAT)
       {
-        printsage(o2v(z), f4);
+        fprintsage(o2v(z), f4);
         fprintf(f4, " print(poly.is_irreducible());\n");
         c = -1;
         k4++;
@@ -1168,22 +1595,38 @@ int irr_poly_to_file()
 int main(void)
 {
   unsigned short f[K + 1] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0}; // big indian
-  OP g;
+  unsigned short a[6] = {5, 4, 3, 2, 1, 0};
+  unsigned short b[3] = {1, 2, 3};
+  OP g, t, h;
+  unsigned short p = 7;
   int i;
 
-srand(clock());
+  srand(clock());
   // test , usage and example
   for (i = 0; i < N; i++)
   {
     memset(&g, 0, sizeof(g));
-    //g = mkpol();
-    //printpol(o2v(g));
+    // g = mkpol();
+    // printpol(o2v(g));
     f[K] = i;
-    g = setpol(f, K + 1);
+    g = setpol(a, 6); // setpol(f, K + 1);
+    h = setpol(b, 3);
+    printpol(o2v(h));
+    printf(" before\n");
+    g = rev(h);
+    printpol(o2v(g));
+    printf(" after\n");
+    g = inv2(g, p);
+    printpol(o2v((g)));
+    printf(" inv2\n");
+    exit(1);
     if (ben_or(g) == 0)
     {
       printpol(o2v(g));
       printf(" is irreducible\n");
+      t = rev(g);
+      printpol(o2v(t));
+      printf("==rev\n");
     }
     else
     {
