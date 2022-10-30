@@ -1231,6 +1231,40 @@ void fprintsage(vec a, FILE *fp)
 }
 
 // gcd
+vec vgcd(vec xx, vec yy)
+{
+  vec tt = {0}, tmp, h = {0};
+
+  h.x[0] = 1;
+  //h.x[0] = 0;
+  if (deg((xx)) < deg((yy)))
+  {
+    tmp = xx;
+    xx = yy;
+    yy = tmp;
+  }
+  tt = vmod(xx, yy);
+  while (deg(tt) > 0)
+  {
+    xx = yy;
+    yy = tt;
+    if (deg(yy) > 0)
+      tt = vmod(xx, yy);
+    if (vLT(tt).a == 0)
+      return yy;
+  }
+  if (vLT(tt).a == 0)
+  {
+    return yy;
+  }
+  else
+  {
+    return h;
+  }
+  //  return yy;
+}
+
+// gcd
 OP gcd(OP xx, OP yy)
 {
   OP tt = {0}, tmp, h = {0};
@@ -1510,7 +1544,7 @@ int ben_or(OP f)
     //printf(" test\n");
     //exit(1);
     u = vadd(r, s);
-    u = o2v(gcd(v2o(ff), v2o(u)));
+    u = (vgcd(ff, (u)));
 
     if (deg(u) > 0)
     {
