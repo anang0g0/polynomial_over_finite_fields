@@ -1544,7 +1544,7 @@ int ben_or(OP f)
     //printf(" test\n");
     //exit(1);
     u = vadd(r, s);
-    u = (vgcd(ff, (u)));
+    u = (vgcd((ff), (u)));
 
     if (deg(u) > 0)
     {
