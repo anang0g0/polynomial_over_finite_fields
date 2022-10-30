@@ -269,6 +269,20 @@ bool op_verify(const OP f)
   return true;
 }
 
+vec vadd(vec a,vec b){
+int i,j,k=deg(a),l=deg(b);
+
+if(l<k)
+  l=k;
+  
+
+for(i=0;i<l+1;i++)
+a.x[i]^=b.x[i];
+
+return a;
+}
+
+
 // 20200816:正規化したいところだがうまく行かない
 // 多項式の足し算
 OP oadd(OP f, OP g)
@@ -375,6 +389,29 @@ oterm oLT(OP f)
 }
 
 // 多項式を項ずつ掛ける
+vec vterml(vec f, oterm t)
+{
+  //f = conv(f);
+  ////assert(op_verify(f));
+  int i;
+  vec h = {0};
+
+  // f=conv(f);
+  // k = deg (o2v(f));
+
+  for (i = 0; i < DEG; i++)
+  {
+    //h.t[i].n = f.t[i].n + t.n;
+    if(f.x[i]>0)
+    h.x[i+t.n] = gf[mlt(fg[f.x[i]], fg[t.a])];
+  }
+
+  //h = conv(h);
+  // assert(op_verify(h));
+  return h;
+}
+
+// 多項式を項ずつ掛ける
 OP oterml(OP f, oterm t)
 {
   //f = conv(f);
@@ -394,6 +431,26 @@ OP oterml(OP f, oterm t)
   //h = conv(h);
   // assert(op_verify(h));
   return h;
+}
+
+// リーディグタームを抽出(default)
+oterm vLT(vec f)
+{
+  int i;
+  oterm t = {0};
+
+  // k = deg (o2v (f));
+  for (i = 0; i < DEG; i++)
+  {
+    // printf("a=%d %d\n",f.t[i].a,f.t[i].n);
+    if (f.x[i] > 0)
+    {
+      t.n = i;
+      t.a = f.x[i];
+    }
+  }
+
+  return t;
 }
 
 // リーディグタームを抽出(default)
@@ -450,6 +507,26 @@ vec vmul(vec a, vec b, unsigned short p)
   return c;
 }
 
+vec vmul_2(vec a, vec b)
+{
+  int i, j, k, l;
+  vec c = {0};
+
+  k = deg(a);
+  l = deg(b);
+
+  for (i = 0; i < k+1; i++)
+  {
+    for (j = 0; j < l+1; j++)
+      //if (a.x[i] > 0)
+      {
+        c.x[i + j] ^= gf[mlt(fg[a.x[i]], fg[b.x[j]])];
+      }
+  }
+
+  return c;
+}
+
 // 多項式の掛け算
 OP omul(OP f, OP g)
 {
@@ -481,6 +558,38 @@ OP omul(OP f, OP g)
   }
   // assert(op_verify(h));
   return h;
+}
+
+// 多項式を単行式で割る
+oterm vLTdiv(vec f, oterm t)
+{
+  oterm tt = {0}, s = {
+                      0};
+
+  tt = vLT(f);
+  if (tt.n < t.n)
+  {
+    s.n = 0;
+    s.a = 0;
+  }
+  else if (tt.n == t.n)
+  {
+    s.n = 0;
+    s.a = equ(t.a, tt.a);
+  }
+  else if (tt.n > t.n)
+  {
+    s.n = tt.n - t.n;
+    s.a = equ(t.a, tt.a);
+    // printf("%u\n",s.a);
+  }
+  else if (t.n == 0 && t.a > 0)
+  {
+    s.a = gf[mlt(fg[tt.a], oinv(t.a))];
+    s.n = tt.n;
+  }
+
+  return s;
 }
 
 // 多項式を単行式で割る
@@ -653,6 +762,38 @@ OP opow(OP f, int n)
     g = omul(g, f);
 
   return g;
+}
+
+// 多項式の剰余を取る
+vec vmod(vec f, vec g)
+{
+  vec h = {0};
+  oterm b = {0}, c = {0};
+
+  if (vLT(f).n < vLT(g).n)
+  {
+    //    exit(1);
+    return f;
+  }
+
+  b = vLT(g);
+
+  while (1)
+  {
+
+    c = vLTdiv(f, b);
+    h = vterml(g, c);
+    f = vadd(f, h);
+    if (deg((f)) == 0 || deg((g)) == 0)
+    {
+      break;
+    }
+
+    if (c.n == 0)
+      break;
+  }
+
+  return f;
 }
 
 // 多項式の剰余を取る
@@ -961,6 +1102,28 @@ OP opwm(OP f, OP mod, int n)
   return tbl[n];
 }
 
+vec vpowmod(vec f, vec mod, int n)
+{
+  vec v = {0};
+  vec ret={0}, s={0}, t={0};
+
+  v.x[0] = 1;
+  ret = v;
+  while (n > 0)
+  {
+    // s=inv()
+    if (n & 1)
+      ret = vmod((vmul_2(ret, f)), mod); // n の最下位bitが 1 ならば x^(2^i) をかける
+    f = vmod((vmul_2(f, f)), mod);
+    n >>= 1; // n を1bit 左にずらす
+  }
+  //printpol((ret));
+  //printf(" it be\n");
+  //exit(1);
+
+  return ret;
+}
+
 OP opowmod(OP f, OP mod, int n)
 {
   vec v = {0};
@@ -972,8 +1135,8 @@ OP opowmod(OP f, OP mod, int n)
   {
     // s=inv()
     if (n & 1)
-      ret = omod(omul(ret, f), mod); // n の最下位bitが 1 ならば x^(2^i) をかける
-    f = omod(omul(f, f), mod);
+      ret = omod((omul(ret, f)), mod); // n の最下位bitが 1 ならば x^(2^i) をかける
+    f = omod((omul(f, f)), mod);
     n >>= 1; // n を1bit 左にずらす
   }
   //printpol(o2v(ret));
@@ -1316,25 +1479,25 @@ OP rev(OP a)
 int ben_or(OP f)
 {
   int i, n; //, pid;
-  OP s = {0}, u = {0}, r = {0};
-  vec v = {0};
+  vec s = {0}, u = {0}, r = {0};
+  vec v = {0}, ff=o2v(f);
   // if GF(8192) is 2^m and m==13 or if GF(4096) and m==12 if GF(16384) is testing
   // int m = E;
   //  m=12 as a for GF(4096)=2^12 defined @ gloal.h or here,for example m=4 and GF(16)
 
   v.x[1] = 1;
-  s = v2o(v);
+  s = (v);
   // for (i = 0; i < K / 2; i++)
   r = s;
-  n = deg(o2v(f));
+  n = deg((ff));
 
-  if (LT(f).n == 0 && LT(f).a == 1)
+  if (vLT(ff).n == 0 && vLT(ff).a == 1)
   {
     printf("f==0\n");
     exit(1);
   }
   if (n == 0)
-    return -1;
+    return 0;
 
   i = 0;
 
@@ -1342,14 +1505,14 @@ int ben_or(OP f)
   for (i = 0; i < K / 2; i++)
   {
     // irreducible over GH(8192) 2^13
-    r = opowmod(r, f, E);
-    //printpol(o2v(r));
+    r = (vpowmod((r), (ff), E));
+    //printpol(r);
     //printf(" test\n");
     //exit(1);
-    u = oadd(r, s);
-    u = gcd(f, u);
+    u = vadd(r, s);
+    u = o2v(gcd(v2o(ff), v2o(u)));
 
-    if (odeg(u) > 0)
+    if (deg(u) > 0)
     {
       // flg[i]= -1;
       return -1;
@@ -1667,8 +1830,14 @@ int main(void)
   int i=0;
   unsigned short a[6] = {5, 4, 3, 2, 1, 0};
   unsigned short b[3] = {1, 2, 3};
+  vec v={0};
+
+  *v.x=*a;
   g=setpol(a,6);
   h=setpol(b,3);
+  if(LT(g).a!=vLT(v).a)
+  printf("baka\n");
+  //exit(1);
 
   while(i<1){
     h=rev(h);
@@ -1678,9 +1847,13 @@ int main(void)
     printsage(o2v(g));
     printf(" inv(h)\n");
     //exit(1);
-    w=omul(g,h);
+    w=omod(g,h);
     printsage(o2v(w));
     printf(" omod\n");
+    v=vmod(o2v(g),o2v(h));
+    printsage((v));
+    printf(" vmod\n");
+    //exit(1);
     //printpol(o2v(queer(g,h,1)));
     //printf(" omod-pueer\n");
     i++;
