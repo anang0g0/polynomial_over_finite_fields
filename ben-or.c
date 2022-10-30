@@ -55,6 +55,12 @@ static const unsigned short fg[N] = {0, 1, 2, 26, 3, 51, 27, 199, 4, 224, 52, 23
 
 static unsigned short c[E * K + 1] = {0};
 
+
+OP inv3(OP x);
+OP pueer(OP x,OP y,int o);
+OP queer(OP x,OP y,int o);
+void printpol(vec a);
+
 // 有限体の元の逆数
 unsigned short
 oinv(unsigned short a)
@@ -62,13 +68,9 @@ oinv(unsigned short a)
   int i;
 
   if (a == 0)
-    return -1;
+    return 0;
 
-  for (i = 0; i < N; i++)
-  {
-    if (gf[mlt(fg[a], i)] == 1)
-      return (unsigned short)i;
-  }
+return N-fg[a]+1;
 
   printf("no return \n");
 
@@ -212,7 +214,7 @@ void oprintpol(OP f)
 {
   int i, n;
 
-  f = conv(f);
+  //f = conv(f);
   n = odeg(f);
   printf("n=%d\n", n);
   // printf("terms=%d\n", terms(f));
@@ -292,54 +294,8 @@ OP oadd(OP f, OP g)
   ////assert(op_verify(h));
   return h;
 }
-// 多項式の足し算
-OP osub(OP f, OP g, unsigned short p)
-{
-  // f = conv(f);
-  // g = conv(g);
-  // assert(op_verify(f));
-  // assert(op_verify(g));
 
-  vec a = {0}, b = {0}, c = {0};
-  int i;
-  OP h = {0};
-
-  //p = 7;
-  a = o2v(f);
-  b = o2v(g);
-  printpol(a);
-  printf("\n");
-  printpol(b);
-  printf("\n");
-  // exit(1);
-
-  for (i = 0; i < deg(o2v(g)) + 1; i++)
-  {
-    if (a.x[i] >= p || b.x[i] >= p)
-    {
-      a.x[i] = a.x[i] % p;
-      b.x[i] = b.x[i] % p;
-    }
-    if (a.x[i] >= b.x[i])
-    {
-      c.x[i] = (a.x[i] - (short)b.x[i] % p) % 7;
-    }
-    else
-    {
-      c.x[i] = p + (a.x[i] - b.x[i]);
-    }
-    printf("%d %d %d\n", a.x[i], b.x[i], ((short)c.x[i]) % p);
-  }
-  printf("\n");
-  // exit(1);
-  h = v2o(c);
-  h = conv(h);
-  // assert(op_verify(h));
-  return h;
-}
-
-
-// 多項式の足し算
+// 多項式の引き算
 vec vsub(vec f, vec g, unsigned short p)
 {
   // f = conv(f);
@@ -380,7 +336,7 @@ vec vsub(vec f, vec g, unsigned short p)
   printf("\n");
   // exit(1);
   h = v2o(c);
-  h = conv(h);
+  //h = conv(h);
   // assert(op_verify(h));
   return c;
 }
@@ -421,7 +377,7 @@ oterm oLT(OP f)
 // 多項式を項ずつ掛ける
 OP oterml(OP f, oterm t)
 {
-  f = conv(f);
+  //f = conv(f);
   ////assert(op_verify(f));
   int i;
   OP h = {0};
@@ -435,7 +391,7 @@ OP oterml(OP f, oterm t)
     h.t[i].a = gf[mlt(fg[f.t[i].a], fg[t.a])];
   }
 
-  h = conv(h);
+  //h = conv(h);
   // assert(op_verify(h));
   return h;
 }
@@ -497,8 +453,8 @@ vec vmul(vec a, vec b, unsigned short p)
 // 多項式の掛け算
 OP omul(OP f, OP g)
 {
-  f = conv(f);
-  g = conv(g);
+  //f = conv(f);
+  //g = conv(g);
   // assert(op_verify(f));
   // assert(op_verify(g));
   int i, k, l;
@@ -564,7 +520,7 @@ OP coeff(OP f, unsigned short d)
 {
   int i, k;
 
-  f = conv(f);
+  //f = conv(f);
   k = odeg((f)) + 1;
   for (i = 0; i < k; i++)
     f.t[i].a = gf[mlt(fg[f.t[i].a], oinv(d))];
@@ -615,8 +571,8 @@ int oequ(OP f, OP g)
 OP odiv(OP f, OP g)
 {
 
-  f = conv(f);
-  g = conv(g);
+  //f = conv(f);
+  //g = conv(g);
   // assert(op_verify(f));
   // assert(op_verify(g));
   int i;
@@ -911,7 +867,20 @@ OP mmul(OP mm, unsigned short p)
   return mm;
 }
 
-OP inv2(OP g, unsigned short p)
+OP deli(OP a,OP b){
+vec v=o2v(a), x=o2v(b),z={0};
+int i=0;
+OP t;
+
+for(i=0;i<deg(x);i++)
+  x.x[i]=v.x[i];
+
+t=v2o(x);
+
+return t;
+}
+
+OP inv2(OP g,unsigned p)
 {
   vec v = {0}, s = {0}, u = {0};
   v.x[0] = 1;
@@ -923,53 +892,54 @@ OP inv2(OP g, unsigned short p)
   int i, count = 1;
   
   vec x = {0}, y = {0}, z = {0};
-  x.x[1] = 5;
-  x.x[0] = 1;
-  
-  y.x[2] = 3;
-  y.x[1] = 2;
-  y.x[0] = 1;
-  z.x[2] = 4;
-  z.x[1] = 3;
-  z.x[0] = 1;
-
   OP rr = {0};
-
-  printpol(o2v(r));
-  printf(" mul\n");
-/*
-  rr = omul(r, v2o(x));
-  rr = mmul(rr, 7);
-  printpol(o2v(rr));
-  printf(" pre\n");
-  printpol(y);
-  printf(" =y\n");
-  printpol(z);
-  printf(" =z\n");
-  r = v2o(vmul(y, z, 7));
-  printpol(o2v(r));
-  printf(" kiso\n");
-  r=omod(r,omul(q,q));
-  printpol(o2v(r));
-  printf(" kis0\n");
-  rr=osub(rr,r,7);
-  printpol(o2v(rr));
-  printf(" kis@\n");
-
-  exit(1);
-*/
 
   x=o2v(t[count-1]);
   y=o2v(r);
   z=o2v(g);
-  while (count < 3)
+  while (count < deg(o2v(g))+1)
   {
-  x=vmul(x,vsub(y,vmul(z,x,7),7),7);
-
-    //t[count] = omod(osub(omul(r,t[count-1]), omul(g, omul(t[count-1],t[count-1])), 7), q);
+  x=vmul(x,vsub(y,vmul(z,x,p),p),p);
 
     q = omul(q, q);
     rr=v2o(x);
+    rr=deli(rr,q);
+    x=o2v(rr);
+  printpol(x);
+  printf(" ==t\n");
+
+    printpol(o2v(q));
+    printf(" ==q,%d\n",count);
+    count++;
+  }
+
+  return rr;
+}
+
+
+OP inv3(OP g)
+{
+  vec v = {0}, s = {0}, u = {0};
+  v.x[0] = 1;
+  s.x[0] = 2;
+  int l = deg(o2v(g));
+  u.x[1] = 1;
+  OP t[256] = {0}, r = v2o(s), q = v2o(u);
+  t[0] = v2o(v);
+  int i, count = 1;
+  
+  vec x = {0}, y = {0}, z = {0};
+  OP rr = {0};
+
+  x=o2v(t[count-1]);
+  y=o2v(r);
+  z=o2v(g);
+  while (count < deg(o2v(g)))
+  {
+  t[count]=omul(t[count-1],oadd(r,omul(g,t[count-1])));
+
+    q = omul(q, q);
+    rr=t[count];
     rr=omod(rr,q);
     x=o2v(rr);
   printpol(x);
@@ -1006,6 +976,10 @@ OP opowmod(OP f, OP mod, int n)
     f = omod(omul(f, f), mod);
     n >>= 1; // n を1bit 左にずらす
   }
+  //printpol(o2v(ret));
+  //printf(" it be\n");
+  //exit(1);
+
   return ret;
 }
 
@@ -1258,11 +1232,11 @@ OP ww[T] = {0};
 OP setpol(unsigned short f[], int n)
 {
   OP g;
-  vec a;
+  vec a={0};
+  int i;
 
-  memset(c, 0, sizeof(c));
-  memcpy(c, f, 2 * n);
-  a = Setvec(n);
+for(i=0;i<n;i++)
+  a.x[n-1-i]=f[i];
 
   g = v2o(a);
 
@@ -1369,6 +1343,9 @@ int ben_or(OP f)
   {
     // irreducible over GH(8192) 2^13
     r = opowmod(r, f, E);
+    //printpol(o2v(r));
+    //printf(" test\n");
+    //exit(1);
     u = oadd(r, s);
     u = gcd(f, u);
 
@@ -1592,41 +1569,143 @@ int irr_poly_to_file()
   return 0;
 }
 
+OP queer(OP g,OP h,int o){
+  OP t, w;
+  unsigned short p = 7;
+  int i;
+  vec vx={0},vy={0},vz={0};
+
+  vz.x[4]=1;
+  OP q=v2o(vz);
+ 
+    printpol(o2v(g));
+    printf("bbb\n");
+    w=rev(g);
+    printpol(o2v(w));
+    printf("aaa\n");
+    //exit(1);
+    printpol(o2v(h));
+    printf(" before\n");
+    t = rev(h);
+    //g=t;
+    printpol(o2v(t));
+    printf(" after\n");
+    t = inv2(t,7);
+    printpol(o2v((t)));
+    printf(" inv22\n");
+    vx=vmul(o2v(t),o2v(g),7);
+    printpol(vx);
+    printf(" ==x\n");
+    vy=vmul(o2v(w),o2v(t),7);
+    q=omod(v2o(vy),q);
+    q=rev(q);
+    printpol(o2v(q));
+    printf(" ==quo\n");
+    if(o==0)
+    return q;
+
+    w=v2o(vsub(o2v(g),vmul(o2v(h),o2v(q),7),7));
+    printpol(o2v(w));
+    printf(" ==rem\n");
+    if(o==1)
+    return w;
+    //exit(1);
+
+}
+
+
+OP pueer(OP g,OP h,int o){
+  OP t, w,t2;
+  unsigned short p = 7;
+  int i;
+  vec vx={0},vy={0},vz={0};
+
+  vz.x[1]=1;
+  OP q=v2o(vz);
+ 
+    //printpol(o2v(g));
+    //printf("bbb\n");
+    w=rev(g);
+    //printpol(o2v(w));
+    //printf("aaa\n");
+    //exit(1);
+    //printpol(o2v(h));
+    //printf(" before\n");
+    t = rev(h);
+    //g=t;
+    //printpol(o2v(t));
+    //printf(" after\n");
+    t2 = inv3(t);
+    printpol(o2v((t2)));
+    printf(" inv3\n");
+    printpol(o2v(omul(t,t2)));
+    printf(" nani\n");
+    //exit(1);
+    vx=o2v(omul(t2,g));
+    //printpol(vx);
+    //printf(" ==x\n");
+    vy=o2v(omul(w,t2));
+    q=omod(v2o(vy),q);
+    q=rev(q);
+    //printpol(o2v(q));
+    //printf(" ==quo\n");
+    if(o==0)
+    return q;
+    w=(oadd(g,omul(h,q)));
+    //printpol(o2v(w));
+    //printf(" ==rem\n");
+    if(o==1)
+    return w;
+    //exit(1);
+
+}
+
 int main(void)
 {
   unsigned short f[K + 1] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0}; // big indian
+  OP g, t, h,w;
+  int i=0;
   unsigned short a[6] = {5, 4, 3, 2, 1, 0};
   unsigned short b[3] = {1, 2, 3};
-  OP g, t, h;
-  unsigned short p = 7;
-  int i;
+  g=setpol(a,6);
+  h=setpol(b,3);
 
+  while(i<1){
+    h=rev(h);
+    printsage(o2v(h));
+    printf(" h-rev\n");
+    g=inv3(h);
+    printsage(o2v(g));
+    printf(" inv(h)\n");
+    //exit(1);
+    w=omul(g,h);
+    printsage(o2v(w));
+    printf(" omod\n");
+    //printpol(o2v(queer(g,h,1)));
+    //printf(" omod-pueer\n");
+    i++;
+  }
+  //exit(1);
+  
   srand(clock());
   // test , usage and example
-  for (i = 0; i < N; i++)
+  for (i = 1; i < 100; i++)
   {
     memset(&g, 0, sizeof(g));
-    // g = mkpol();
-    // printpol(o2v(g));
     f[K] = i;
-    g = setpol(a, 6); // setpol(f, K + 1);
-    h = setpol(b, 3);
-    printpol(o2v(h));
-    printf(" before\n");
-    g = rev(h);
-    printpol(o2v(g));
-    printf(" after\n");
-    g = inv2(g, p);
-    printpol(o2v((g)));
-    printf(" inv2\n");
-    exit(1);
+    g=setpol(f,K+1);
+    //h=pueer(g,h,1);
+    //printpol(o2v(h));
+    //printf(" t2\n");
+    //exit(1);
+
     if (ben_or(g) == 0)
     {
       printpol(o2v(g));
       printf(" is irreducible\n");
-      t = rev(g);
-      printpol(o2v(t));
-      printf("==rev\n");
+      //t = rev(g);
+      //printpol(o2v(t));
+      //printf("==rev\n");
     }
     else
     {
