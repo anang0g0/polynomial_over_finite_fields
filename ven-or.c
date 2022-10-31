@@ -62,14 +62,10 @@ oinv(unsigned short a)
   int i;
 
   if (a == 0)
-    return -1;
+    return 0;
 
-  for (i = 0; i < N; i++)
-  {
-    if (gf[mlt(fg[a], i)] == 1)
-      return (unsigned short)i;
-  }
-
+  return N-fg[a]+1;
+  
   printf("no return \n");
 
   exit(1);
