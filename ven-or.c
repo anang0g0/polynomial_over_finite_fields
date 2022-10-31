@@ -76,12 +76,8 @@ equ(unsigned short a, unsigned short b)
 {
   int i;
 
-  for (i = 0; i < N; i++)
-  {
-    if (gf[mlt(fg[a], fg[i])] == b)
-      break;
-  }
-  return i;
+  return gf[mlt(oinv(a),fg[b])];
+
 }
 
 //OP型からベクトル型への変換
