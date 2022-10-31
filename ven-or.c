@@ -250,7 +250,7 @@ if(l<k)
 //omp_set_num_threads(8);
 //#pragma omp parallel
 {
-  //#pragma omp for //schedule(static)
+  //#pragma omp for schedule(static)
   for(i=0;i<l+1;i++)
     a.x[i]=a.x[i]^b.x[i];
 }
