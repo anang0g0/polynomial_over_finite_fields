@@ -241,18 +241,11 @@ bool op_verify(const OP f)
 }
 
 vec vadd(vec a,vec b){
-int i,k=deg(a),l=deg(b);
+int i;
 
-if(l<k)
-  l=k;
-
-//omp_set_num_threads(8);
-//#pragma omp parallel
-{
-  //#pragma omp for schedule(static)
-  for(i=0;i<l+1;i++)
-    a.x[i]=a.x[i]^b.x[i];
-}
+//#pragma omp parallel for schedule(static)
+  for(i=0;i<DEG/4;i++)
+    a.y[i]^=b.y[i];
 
 return a;
 }

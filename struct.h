@@ -14,9 +14,10 @@ typedef struct
   oterm t[DEG]; //単項式の配列として多項式を表現する
 } OP;
 
-typedef struct 
+typedef union 
 {
   unsigned short x[DEG]; //配列の添字を次数に、配列の値を係数に持つ多項式の表現
+  unsigned long long int y[DEG/4];
 } vec;
 
 typedef struct {
