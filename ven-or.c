@@ -1357,7 +1357,7 @@ int main(void)
 {
   unsigned short f[K + 1] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0}; //big indian
   OP g;
-  int i;
+  int i,count=0;
 
   //test , usage and example
   for (i = 0; i < N; i++)
@@ -1369,6 +1369,8 @@ int main(void)
     {
       printsage(o2v(g));
       printf(" is irreducible %d\n",i);
+      count++;
+      if(count==10)
       exit(1);
     }
     else
