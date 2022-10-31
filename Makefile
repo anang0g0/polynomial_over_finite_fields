@@ -5,7 +5,7 @@ clang:
 		clang  -O3 ven-or.c debug.c chash.c 
 
 fast:
-		gcc -O3 ven-or.c debug.c chash.c 
+		gcc -O3 -fopenmp ven-or.c debug.c chash.c 
 
 slow:
 		gcc -O3 o-hikaku.c debug.c chash.c 
