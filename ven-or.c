@@ -1356,8 +1356,30 @@ int irr_poly_to_file()
 int main(void)
 {
   unsigned short f[K + 1] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0}; //big indian
-  OP g;
+  OP g,w;
   int i,count=0;
+
+    int l = -1;
+    int ii = 0;
+    // irreducible goppa code (既役多項式が必要なら、ここのコメントを外すこと。)
+    
+    while (l == -1)
+    {
+        w = mkpol();
+        l = ben_or(w);
+        printf("irr=%d\n", l);
+        if(l==0)
+        printsage(o2v(w));
+        
+        if (ii > 300)
+        {
+            printf("too many error\n");
+            exit(1);
+        }
+        ii++;
+        //
+    }
+  exit(1);
 
   //test , usage and example
   for (i = 0; i < N; i++)
