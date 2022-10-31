@@ -16,7 +16,7 @@
 #include <stdlib.h>
 //#include <assert.h>
 #include <execinfo.h>
-#include <omp.h>
+//#include <omp.h>
 #include <unistd.h>
 #include <sys/wait.h>
 #include <unistd.h>
@@ -30,7 +30,6 @@
 //#include "chash.c"
 
 #include <pthread.h>
-#include <omp.h>
 #include <err.h>
 #include <errno.h>
 
