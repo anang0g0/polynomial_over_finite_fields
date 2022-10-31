@@ -30,7 +30,7 @@
 //#include "chash.c"
 
 #include <pthread.h>
-
+#include <omp.h>
 #include <err.h>
 #include <errno.h>
 
@@ -242,14 +242,18 @@ bool op_verify(const OP f)
 }
 
 vec vadd(vec a,vec b){
-int i,j,k=deg(a),l=deg(b);
+int i,k=deg(a),l=deg(b);
 
 if(l<k)
   l=k;
-  
 
-for(i=0;i<l+1;i++)
-a.x[i]^=b.x[i];
+//omp_set_num_threads(8);
+//#pragma omp parallel
+{
+  //#pragma omp for //schedule(static)
+  for(i=0;i<l+1;i++)
+    a.x[i]=a.x[i]^b.x[i];
+}
 
 return a;
 }
