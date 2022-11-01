@@ -510,7 +510,7 @@ vec vinv(vec a){
   }
   a=vmul_2(v,a);
   printpol(a);
-  printf(" Uh!\n");
+  printf(" ==1?\n");
   //a=deli(a,x);
   //printpol(a);
   //printf(" Ah!\n");
@@ -571,6 +571,22 @@ oterm LTdiv(OP f, oterm t)
 
   return s;
 }
+
+vec vcoef(vec v){
+  unsigned short n,k=deg(v);
+  int i;
+
+if(v.x[0]==0)
+return v;
+
+if(v.x[0]>0)
+n=oinv(v.x[0]);
+for(i=0;i<k+1;i++)
+v.x[i]=gf[mlt(n,fg[v.x[i]])];
+
+return v;
+}
+
 
 //モニック多項式にする
 OP coeff(OP f, unsigned short d)
@@ -1392,20 +1408,30 @@ int irr_poly_to_file()
 int main(void)
 {
   //unsigned short f[K + 1] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0}; //big indian
-    unsigned short f[2 + 1] = {1, 2, 1}; //big indian
+    unsigned short f[2 + 1] = {1, 2, 3}; //big indian
   OP g,w;
   int i,count=0;
-  vec e[10]={0},v={0};
+  vec e[10]={0},v={0},x={0};
     int l = -1;
     int ii = 0;
     // irreducible goppa code (既役多項式が必要なら、ここのコメントを外すこと。)
     
     g=setpol(f,2+1);
+    printpol(o2v(g));
+    printf(" =g1\n");
     v=o2v(g);
+    v=vcoef(v);
+    printpol(v);
+    printf(" =g2\n");
+    ii=gf[mlt(fg[3],fg[8182])];
+    printf("ans=%d\n",ii);
+    //exit(1);
+
+    //v=o2v(g);
       printpol(v);
       printf(" origin\n");
-      v=vinv(v);
-      printpol((v));
+      x=vinv(v);
+      printpol((x));
       printf(" =inv[origin]\n");
     exit(1);
 
