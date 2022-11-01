@@ -483,6 +483,41 @@ vec vmod(vec f, vec g)
   return f;
 }
 
+vec deli(vec a,vec b){
+int i=0;
+OP t;
+vec v={0};
+
+for(i=0;i<deg(b);i++)
+  v.x[i]=a.x[i];
+
+return v;
+}
+
+vec vinv(vec a){
+  vec v={0},x={0};
+  int i;
+
+  x.x[2]=1;
+  v.x[0]=1;
+  for(i=0;i<deg(a);i++){
+  v=vmul_2(vmul_2(v,v),a);
+  if(i>0)
+  x=vmul_2(x,x);
+  v=deli(v,x);
+  printpol(v);
+  printf("\n");
+  }
+  a=vmul_2(v,a);
+  printpol(a);
+  printf(" Uh!\n");
+  //a=deli(a,x);
+  //printpol(a);
+  //printf(" Ah!\n");
+//exit(1);
+
+  return v;
+}
 
 
 //リーディグタームを抽出(default)
@@ -1127,6 +1162,7 @@ int ben_or(OP f)
   //r(x)^{q^i} square pow mod
   for (i = 0; i < K / 2; i++)
   {
+    printf(":i=%d",i);
     // irreducible over GH(8192) 2^13
     r = (vpp(r, ff, E));
     u = vadd(r, (s));
@@ -1355,14 +1391,24 @@ int irr_poly_to_file()
 //言わずもがな
 int main(void)
 {
-  unsigned short f[K + 1] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0}; //big indian
+  //unsigned short f[K + 1] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0}; //big indian
+    unsigned short f[2 + 1] = {1, 2, 1}; //big indian
   OP g,w;
   int i,count=0;
-
+  vec e[10]={0},v={0};
     int l = -1;
     int ii = 0;
     // irreducible goppa code (既役多項式が必要なら、ここのコメントを外すこと。)
     
+    g=setpol(f,2+1);
+    v=o2v(g);
+      printpol(v);
+      printf(" origin\n");
+      v=vinv(v);
+      printpol((v));
+      printf(" =inv[origin]\n");
+    exit(1);
+
     while (l == -1)
     {
         w = mkpol();
