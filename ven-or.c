@@ -457,7 +457,7 @@ vec vmod(vec f, vec g)
   vec h = {0};
   oterm b = {0}, c = {0};
 
-printf("bl=%d k=%d\n",deg(f),deg(g));
+//printf("bl=%d k=%d\n",deg(f),deg(g));
   if (vLT(f).n < vLT(g).n)
   {
     //    exit(1);
@@ -888,7 +888,7 @@ cnty++;
   
   //exit(1);
 
-  //for (i = 1; i <n +1; i++)
+    /*
     s = vmod_2(vmul_2(s, s), mod);
     if(fequ(t,s)==1){
     printpol(t);
@@ -902,7 +902,7 @@ cnty++;
   printf(" ===t\n");
   printpol(s);
   printf(" ===s\n");
-
+  */
   }
   /*
   printpol(s);
@@ -1336,8 +1336,8 @@ void get_irrpoly(void)
 
   j = 0;
   fp = fopen("dat.sage", "w");
-
-aa:
+  srand(clock());
+  aa:
 
   //printf("\n");
 
@@ -1575,15 +1575,17 @@ int main(void)
       printf(" ==ans\n");
       //    printf("ans=%d\n",ii);
     //exit(1);
-
+    srand(clock());
     while (l == -1)
     {
         w = mkpol();
         l = ben_or(w);
         printf("irr=%d\n", l);
-        if(l==0)
+        if(l==0){
         printsage(o2v(w));
-        
+        printf("\n");
+        exit(1);
+        }
         if (ii > 300)
         {
             printf("too many error\n");

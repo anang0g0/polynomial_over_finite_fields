@@ -1896,7 +1896,8 @@ int main(void)
   {
     memset(&g, 0, sizeof(g));
     f[K] = i;
-    g=setpol(f,K+1);
+    //g=setpol(f,K+1);
+    g=mkpol();
     //h=pueer(g,h,1);
     //printpol(o2v(h));
     //printf(" t2\n");
