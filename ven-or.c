@@ -457,6 +457,7 @@ vec vmod(vec f, vec g)
   vec h = {0};
   oterm b = {0}, c = {0};
 
+printf("bl=%d k=%d\n",deg(f),deg(g));
   if (vLT(f).n < vLT(g).n)
   {
     //    exit(1);
@@ -465,6 +466,8 @@ vec vmod(vec f, vec g)
 
   b = vLT(g);
 
+//printpol(f);
+//printf(" ==f\n");
   while (1)
   {
 
@@ -534,12 +537,12 @@ vec vinv(vec a){
 
   x.x[2]=1;
   v.x[0]=1;
-  for(i=0;i<deg(a);i++){
+  for(i=0;i<8;i++){
   v=vmul_2(vmul_2(v,v),a);
   if(i>0)
   x=vmul_2(x,x);
   v=deli(v,x);
-  //printpol(v);
+  //printpol(x);
   //printf(" ==ininv\n");
   }
   //a=deli(vmul_2(v,a),x);
@@ -555,26 +558,47 @@ vec vinv(vec a){
 }
 
 vec vmod_2(vec v,vec x){
-  vec a={0},b={0},c={0},d={0};
+  vec a={0},b={0},c={0},d={0},e={0};
   int k=deg(x),i,l=deg(v);
 
-
-d.x[0]=1; //oinv(x.x[0]);
+printf("al=%d k=%d\n",deg(v),deg(x));
+if(vLT(v).n<vLT(x).n)
+return v;
+if(vLT(v).n==vLT(x).n){
+v=vadd(v,x);
+return v;
+}
+d.x[0]=1; //oinv(v.x[0]);
 //if(k%2==0)
 //c.x[2]=1;
 //if(k%2==1)
 c.x[1]=1;
-for(i=0;i<l-k+1;i++)
+for(i=0;i<(l-k+1);i++)
 d=vmul_2(c,d);
 printpol(d);
-printf(" %d==nazo\n",l-k+1);
+printf(" ==dd\n");
+//printf(" =d;  l=%d, k=%d %d==nazo\n",l,k,l-k+1);
 //exit(1);
 a=rev(v);
-b=rev(x);
+e=rev(x);
 
-b=vinv(b);
+b=vinv(e);
+e=deli(vmul_2(b,e),d);
+if(vLT(e).a!=1){
+  printpol(e);
+  printf(" fail!\n");
+  exit(1);
+}
+
+//printpol(b);
+//printf(" ==b^-1\n");
+
 a=deli(vmul_2(a,b),d);
 a=rev(a);
+//printpol(a);
+//printf(" ==q\n");
+//exit(1);
+
 v=vadd(v,vmul_2(a,x));
 
 return v;
@@ -834,16 +858,60 @@ vec vpowmod(vec f, vec mod, int n)
   return ret;
 }
 
+int fequ(vec a,vec b){
+  int k=deg(a),l=deg(b),i;
+  if(k!=l)
+  return 1;
+  for(i=0;i<k;i++)
+  if(a.x[i]!=b.x[i])
+  return 1;
+
+  return 0;
+}
+
+int cnty=0;
 vec vpp(vec f,vec mod,int n){
   int i;
-  vec t = {0};
+  vec t = {0},s={0};
   t = f;
+  s=f;
+
+cnty++;
+//printpol(f);
+//printf(" ==f\n");
+//printpol(mod);
+//printf(" ==mod\n");
 
   //繰り返し２乗法
-  for (i = 1; i < n +1; i++)
+  for (i = 1; i < n +1; i++){
     t = vmod(vmul_2(t, t), mod);
-  //printpol(t);
-  //printf(" ==t\n");
+  
+  //exit(1);
+
+  //for (i = 1; i <n +1; i++)
+    s = vmod_2(vmul_2(s, s), mod);
+    if(fequ(t,s)==1){
+    printpol(t);
+    printf(" =t\n");
+    printpol(s);
+    printf(" =s\n");
+    printf("なぜなのーっ！？\n");
+    exit(1);
+    }
+  printpol(t);
+  printf(" ===t\n");
+  printpol(s);
+  printf(" ===s\n");
+
+  }
+  /*
+  printpol(s);
+  printf(" ==s\n");
+  if(fequ(t,s)==1){
+    printf("cnt=%d\n",cnty);
+    exit(1);
+  }
+*/
   return t;
 }
 
