@@ -483,6 +483,40 @@ vec vmod(vec f, vec g)
   return f;
 }
 
+
+vec vcoef(vec v){
+  unsigned short n,k=deg(v);
+  int i;
+
+//if(v.x[0]==0)
+//return v;
+
+if(v.x[0]>0)
+n=oinv(v.x[0]);
+for(i=0;i<k;i++)
+v.x[i]=gf[mlt(n,fg[v.x[i]])];
+
+return v;
+}
+
+
+vec rev(vec a)
+{
+  vec vx = (a), tmp = {0};
+  int k = deg((a)), i;
+  OP t = {0};
+
+  //printf("k=%d\n", k);
+  // exit(1);
+  for (i = 0; i < k + 1; i++)
+    tmp.x[k - i] = a.x[i];
+  //printpol(tmp);
+  //printf("\n");
+  // exit(1);
+
+  return tmp;
+}
+
 vec deli(vec a,vec b){
 int i=0;
 OP t;
@@ -505,12 +539,13 @@ vec vinv(vec a){
   if(i>0)
   x=vmul_2(x,x);
   v=deli(v,x);
-  printpol(v);
-  printf("\n");
+  //printpol(v);
+  //printf(" ==ininv\n");
   }
-  a=vmul_2(v,a);
-  printpol(a);
-  printf(" ==1?\n");
+  //a=deli(vmul_2(v,a),x);
+  //printpol(a);
+  //printf(" ==1?\n");
+  //exit(1);
   //a=deli(a,x);
   //printpol(a);
   //printf(" Ah!\n");
@@ -519,6 +554,31 @@ vec vinv(vec a){
   return v;
 }
 
+vec vmod_2(vec v,vec x){
+  vec a={0},b={0},c={0},d={0};
+  int k=deg(x),i,l=deg(v);
+
+
+d.x[0]=1; //oinv(x.x[0]);
+//if(k%2==0)
+//c.x[2]=1;
+//if(k%2==1)
+c.x[1]=1;
+for(i=0;i<l-k+1;i++)
+d=vmul_2(c,d);
+printpol(d);
+printf(" %d==nazo\n",l-k+1);
+//exit(1);
+a=rev(v);
+b=rev(x);
+
+b=vinv(b);
+a=deli(vmul_2(a,b),d);
+a=rev(a);
+v=vadd(v,vmul_2(a,x));
+
+return v;
+}
 
 //リーディグタームを抽出(default)
 oterm LT(OP f)
@@ -570,21 +630,6 @@ oterm LTdiv(OP f, oterm t)
   }
 
   return s;
-}
-
-vec vcoef(vec v){
-  unsigned short n,k=deg(v);
-  int i;
-
-if(v.x[0]==0)
-return v;
-
-if(v.x[0]>0)
-n=oinv(v.x[0]);
-for(i=0;i<k+1;i++)
-v.x[i]=gf[mlt(n,fg[v.x[i]])];
-
-return v;
 }
 
 
@@ -795,9 +840,10 @@ vec vpp(vec f,vec mod,int n){
   t = f;
 
   //繰り返し２乗法
-  for (i = 1; i < n + 1; i++)
+  for (i = 1; i < n +1; i++)
     t = vmod(vmul_2(t, t), mod);
-
+  //printpol(t);
+  //printf(" ==t\n");
   return t;
 }
 
@@ -1408,7 +1454,8 @@ int irr_poly_to_file()
 int main(void)
 {
   //unsigned short f[K + 1] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0}; //big indian
-    unsigned short f[2 + 1] = {1, 2, 3}; //big indian
+    unsigned short f[5] = {11,2,123, 115, 1113}; //big indian
+    unsigned short h[9] = {133,1, 1, 15,12,13,14,15,1211};
   OP g,w;
   int i,count=0;
   vec e[10]={0},v={0},x={0};
@@ -1416,24 +1463,50 @@ int main(void)
     int ii = 0;
     // irreducible goppa code (既役多項式が必要なら、ここのコメントを外すこと。)
     
-    g=setpol(f,2+1);
+    g=setpol(f,sizeof(f)/2);
+    g=coeff(g,LT(g).a);
+    v=o2v(g);
     printpol(o2v(g));
     printf(" =g1\n");
+    w=setpol(h,sizeof(h)/2);
+    printpol(o2v(w));
+    printf(" =w\n");
+    x=o2v(w);
+    
+    while(ii<1){
+    printpol(vmod(x,v));
+    printf(" ==vmod\n");
+    ii++;
+    }
+    //exit(1);
+    
+   ii=0;
+   while(ii<1){
+    printpol(vmod_2(x,v));
+    printf(" ==vmod2\n");
+    ii++;
+   }
+    //exit(1);
+    
     v=o2v(g);
     v=vcoef(v);
     printpol(v);
     printf(" =g2\n");
-    ii=gf[mlt(fg[3],fg[8182])];
-    printf("ans=%d\n",ii);
-    //exit(1);
+    //ii=gf[mlt(fg[3],fg[8182])];
 
+    //exit(1);
+    vec dd={0};
     //v=o2v(g);
       printpol(v);
+      dd.x[deg(v)*deg(v)]=1;
       printf(" origin\n");
       x=vinv(v);
       printpol((x));
       printf(" =inv[origin]\n");
-    exit(1);
+      printpol(deli(vmul_2(x,v),dd));
+      printf(" ==ans\n");
+      //    printf("ans=%d\n",ii);
+    //exit(1);
 
     while (l == -1)
     {
