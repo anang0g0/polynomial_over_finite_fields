@@ -784,7 +784,7 @@ printf(" ==vv\n");
 //printpol(deli(vmul_2(a,x),ee));
 //printf(" ==r\n");
 //exit(1);
-v=deli((vadd(v,deli(vmul_2(a,x),d))),d);
+v=deli((vadd(v,vmul_2(c,deli(vmul_2(a,x),ee)))),ee);
 printpol(v);
 printf(" victory\n");
 //exit(1);
@@ -922,14 +922,15 @@ vec c1={0},c2={0};
     t = vmod(vmul_2(t, t), mod);
   
   //exit(1);
-
+  //  vec wc={0};
+  // s = sand(vmul_2(s, s), mod);
     s = vmod_2(vmul_2(s, s), mod);
 
     if(fequ(t,s)==1){
       t=vmod(vmul_2(c2,c2),mod);
     printpol(t);
     printf(" =t\n");
-    s=vmod_2(vmul_2(c2,c2),mod);
+    s=sand(vmul_2(c2,c2),mod);
     //s=coeff(s);
     printpol(s);
     printf(" =s\n");
@@ -937,13 +938,13 @@ vec c1={0},c2={0};
     printf(" =t\n");
     printf("何故なんだ馬鹿野郎！ %d\n",i);
     
-    s.x[0]=65535;
+    //s.x[0]=65535;
     //return s;
     //printpol(c1);
     //printf(" ==c1\n");
     printpol(c2);
-    printf(" ==c2\n");
-    printf("{");
+    printf(" ==ss\n");
+    printf("ss={");
     for(int j=0;j<deg(c2)+1;j++)
     printf("%d,",c2.x[j]);
     printf("};\n");
@@ -953,7 +954,9 @@ vec c1={0},c2={0};
     printf("};\n");
     
     exit(1);
+    
     }
+  
 
   printpol(t);
   printf(" ===t\n");
@@ -1353,8 +1356,8 @@ int ben_or(OP f)
     printf(":i=%d",i);
     // irreducible over GH(8192) 2^13
     r = (vpp(r, ff, E));
-    if(r.x[0]==65535)
-    return -1;
+    //if(r.x[0]==65535)
+    //return -1;
     u = vadd(r, (s));
     u = vgcd(ff, u);
 
@@ -1597,7 +1600,7 @@ int main(void)
    printpol(ww);
    printf(" ==right?\n");
    x=vmod(vmul_2(ww,ww),xx);
-   v=vmod_2(vmul_2(ww,ww),xx);
+   v=sand(vmul_2(ww,ww),xx);
    printpol(x);
    printf(" ==vmod\n");
    printpol(v);
