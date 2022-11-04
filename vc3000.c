@@ -647,7 +647,7 @@ vec vinv(vec a){
   a=vcoef(a);
   
   
-  for(i=0;i<2;i++){
+  for(i=0;i<3;i++){
   v=vmul_2(vmul_2(v,v),a);
   if(i>0)
   x=vmul_2(x,x);
