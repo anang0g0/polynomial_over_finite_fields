@@ -917,20 +917,25 @@ vec c1={0},c2={0};
 
   //繰り返し２乗法
   for (i = 1; i < n +1; i++){
-    if(i==9){
+    if(i==1)
+    {
     c1=t;
     c2=s;
     }
     t = vmod(vmul_2(t, t), mod);
   
-  /*
+  
   //exit(1);
   //  vec wc={0};
    //s = sand(vmul_2(s, s), mod);
   s = vmod_2(vmul_2(s, s), mod);
+    printpol(s);
+    printf(" @@sss\n");
+    printpol(t);
+    printf(" @@ttt\n");
 
-    if(fequ(t,s)==1){
-    t=vmod(vmul_2(c1,c1),mod);
+    if(fequ(t,s)==1 && vLT(s).n >0 && vLT(t).n > 0){
+    t=vmod(vmul_2(c2,c2),mod);
     //printpol(t);
     //printf(" =t\n");
     s=vmod_2(vmul_2(c2,c2),mod);
@@ -969,7 +974,7 @@ vec c1={0},c2={0};
   s=deli(s,mod);
   printpol(s);
   printf(" ===s\n");
-*/
+
 
   }
   /*

@@ -1228,7 +1228,7 @@ OP mkpol()
     memset(w.t, 0, sizeof(w));
     ginit(g);
     ii++;
-    if (ii > K / 2)
+    if (ii > 100)
     {
       printf("erro=%d\n", ii);
       exit(1);
