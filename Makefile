@@ -10,6 +10,9 @@ fast:
 slow:
 		gcc -O3 -Ofast -ftree-vectorize -msse4.2 -mtune=znver2 -march=znver2 o-hikaku.c debug.c chash.c 
 
+dev:
+		gcc -O3 -Ofast -ftree-vectorize -msse4.2 -mtune=znver2 -march=znver2 pen-or.c debug.c chash.c 
+
 clean:
 	rm -f a.out
 
