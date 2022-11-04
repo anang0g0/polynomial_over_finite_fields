@@ -558,37 +558,6 @@ vec kof(vec a,vec b){
 }
 
 
-vec vinv(vec a){
-  vec v={0},x={0};
-  int i;
-
-  x.x[2]=1;
-  v.x[0]=1;
-  if(a.x[0]>1)
-  a=coeff(a);
-  
-  
-  for(i=0;i<9;i++){
-  v=vmul_2(vmul_2(v,v),a);
-  if(i>0)
-  x=vmul_2(x,x);
-  v=deli(v,x);
-  //printpol(x);
-  //printf(" ==ininv\n");
-  }
-  //a=deli(vmul_2(v,a),x);
-  //printpol(a);
-  //printf(" ==1?\n");
-  //exit(1);
-  //a=deli(a,x);
-  //printpol(a);
-  //printf(" Ah!\n");
-//exit(1);
-
-  return v;
-}
-
-
 
 //リーディグタームを抽出(default)
 oterm LT(OP f)
@@ -668,10 +637,51 @@ void printpol(vec a)
 }
 
 
+vec vinv(vec a){
+  vec v={0},x={0};
+  int i;
+
+  x.x[2]=1;
+  v.x[0]=1;
+  if(a.x[0]>1)
+  a=vcoef(a);
+  
+  
+  for(i=0;i<2;i++){
+  v=vmul_2(vmul_2(v,v),a);
+  if(i>0)
+  x=vmul_2(x,x);
+  v=deli(v,x);
+  //printpol(x);
+  //printf(" ==ininv\n");
+  }
+  a=deli(vmul_2(v,a),x);
+  printpol(a);
+  printf(" ==1?\n");
+  //exit(1);
+  //a=deli(a,x);
+  //printpol(a);
+  //printf(" Ah!\n");
+//exit(1);
+
+  return v;
+}
+
+
+
+int chkinv(vec b,vec e,vec d){
+e=deli(vmul_2(b,e),d);
+if(vLT(e).a!=1){
+  printpol(e);
+  printf(" fail!\n");
+  exit(1);
+}
+return 0;
+}
 
 
 vec vmod_2(vec v,vec x){
-  vec a={0},b={0},c={0},d={0},e={0};
+  vec a={0},b={0},c={0},d={0},e={0},ee={0},f=v,g=x;
   int k=deg(x),i,l=deg(v);
 
 printf("al=%d k=%d\n",deg(v),deg(x));
@@ -692,27 +702,55 @@ printpol(d);
 printf(" ==dd\n");
 //printf(" =d;  l=%d, k=%d %d==nazo\n",l,k,l-k+1);
 //exit(1);
+printpol(v);
+printf(" ==f\n");
+printpol(x);
+printf(" ==g\n");
+
 a=rev(v);
 e=rev(x);
+printpol(a);
+printf(" ==f^-1\n");
+printpol(e);
+printf(" ==x^-1\n");
 
 b=vinv(e);
-e=deli(vmul_2(b,e),d);
-if(vLT(e).a!=1){
-  printpol(e);
-  printf(" fail!\n");
-  exit(1);
-}
+printpol(vmul_2(e,b));
+printf(" ==right?\n");
+   
+if(chkinv(e,b,d)!=0)
+exit(1);
+ee.x[K]=1;
 
-//printpol(b);
-//printf(" ==b^-1\n");
+printpol(b);
+printf(" ==b^-1\n");
+printpol(a);
+printf(" ==q^-1\n");
 
 a=deli(vmul_2(a,b),d);
 a=rev(a);
-//printpol(a);
-//printf(" ==q\n");
+printpol(a);
+printf(" ==q\n");
 //exit(1);
+printpol(vmul_2(a,x));
+printf(" ==vmul2\n");
+printpol(v);
+printf(" ==v\n");
+b=vadd(v,vmul_2(a,x));
+printpol(b);
+printf(" ==f'\n");
+printpol(f);
+printf(" ==f\n");
+printpol(vmul_2(a,x));
+printf(" ==r\n");
 
-v=vadd(v,vmul_2(a,x));
+
+if(fequ(f,vadd(b,vmul_2(a,x)))==1){
+  printf("baka\n");
+  exit(1);
+}
+//exit(1);
+//v=vcoef(v);
 
 return v;
 }
@@ -764,7 +802,7 @@ if(vLT(e).a!=1 || deg(e)>0){
 
 vec ee={0},gg={0};
 gg.x[1]=1;
-ee.x[256]=1;
+ee.x[K]=1;
 printpol(deli(b,ee));
 printf(" ==b^-1\n");
 //exit(1);
@@ -913,7 +951,7 @@ vec vpp(vec f,vec mod,int n){
 //printpol(mod);
 //printf(" ==mod\n");
 
-vec c1={0},c2={0};
+vec c1={0},c2={0},ee={0};
 
   //繰り返し２乗法
   for (i = 1; i < n +1; i++){
@@ -922,13 +960,14 @@ vec c1={0},c2={0};
     c1=t;
     c2=s;
     }
-    t = vmod(vmul_2(t, t), mod);
+
   
-  
+ee.x[4]=1;  
+  t = vmod(vmul_2(t, t), mod);
   //exit(1);
   //  vec wc={0};
    //s = sand(vmul_2(s, s), mod);
-  s = vmod_2(vmul_2(s, s), mod);
+  s = sand(vmul_2(s, s), mod);
     printpol(s);
     printf(" @@sss\n");
     printpol(t);
@@ -938,7 +977,7 @@ vec c1={0},c2={0};
     t=vmod(vmul_2(c2,c2),mod);
     //printpol(t);
     //printf(" =t\n");
-    s=vmod_2(vmul_2(c2,c2),mod);
+    s=vcoef(deli(vmod_2(vmul_2(c2,c2),mod),ee));
     //s=coeff(s);
     printpol(s);
     printf(" =s\n");
@@ -1599,20 +1638,43 @@ int main(void)
   //unsigned short f[K + 1] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0}; //big indian
     unsigned short f[5] = {11,2,13, 15, 3}; //big indian
     unsigned short h[9] = {13,1, 1, 15,12,13,14,15,2};
-    //vec ww={1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3817,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,217,0,0,0,0,0,0,0,6873,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5646,0,0,0,0,0,0,0,0,2436,0,0,0,0,0,0,0,0,0,0,0,0,0,0,6389,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3345,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7529,0,0,0,7840,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2471};
-    //vec xx={1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3817,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,217,0,0,0,0,0,0,0,6873,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5646,0,0,0,0,0,0,0,0,2436,0,0,0,0,0,0,0,0,0,0,0,0,0,0,6389,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3345,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7529,0,0,0,7840,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2471,0,0,0,0,0,0,0,0,0,0,1,};
+    vec ww={1,15,3,15};
+    vec xx={1,15,3,15,1};
     OP g,w;
     int i,count=0;
-    vec e[10]={0},v={0},x={0},z={0};
+    vec e[10]={0},v={0},x={0},z={0},ee={0},y={0},tt={0};
     int l = -1;
     int ii = 0;
     // irreducible goppa code (既役多項式が必要なら、ここのコメントを外すこと。)
 
-/*
+   ee.x[K]=1;
    printpol(ww);
+   printf(" ==right_g?\n");
+   printpol(xx);
+   printf(" ==right_f?\n");
+   ww=coeff(ww);
+   printpol(ww);
+   printf(" ==mono_g?\n");
+   x=rev(ww);
+   printpol(x);
+   printf(" ==rev_g?\n");
+   z=vinv(x);
+   printpol(z);
+   printf(" ==inv_g?\n");
+   y=vmul_2(x,z);
+   printpol(y);
+   printf(" ==g^{-1}*g?\n");
+   tt=rev(xx);
+   printpol(tt);
+   printf(" ==rev_f?\n");
+   v=vmul_2(tt,z);
+   printpol(v);
    printf(" ==right?\n");
+   
+  // exit(1);
+
    x=vmod(vmul_2(ww,ww),xx);
-   v=sand(vmul_2(ww,ww),xx);
+   v=vmod_2(vmul_2(ww,ww),xx);
    printpol(x);
    printf(" ==vmod\n");
    printpol(v);
@@ -1620,17 +1682,17 @@ int main(void)
    printpol(vmul_2(ww,ww));
    printf(" ==double\n");
    //exit(1);
-*/
+
     g=setpol(f,sizeof(f)/2);
     z=o2v(g);
-    v=coeff(z);
+    //v=coeff(z);
     //v=o2v(g);
     printpol(o2v(g));
     printf(" =g1\n");
     w=setpol(h,sizeof(h)/2);
     printpol(o2v(w));
     printf(" =w\n");
-    x=o2v(w);
+    //x=o2v(w);
     
     while(ii<1){
     printpol(vmod(x,v));
@@ -1667,23 +1729,24 @@ int main(void)
       //    printf("ans=%d\n",ii);
     //exit(1);
 */
-    while (l == -1)
+    while (1)//(l == -1)
     {
         w = mkpol();
         l = ben_or(w);
         printf("irr=%d\n", l);
         if(l==0){
         printsage(o2v(w));
-        printf("\n");
+        printf(" ==irr\n");
         }
         if (ii > 300)
         {
             printf("too many error\n");
             exit(1);
         }
-        ii++;
+        //ii++;
         //
     }
+    printf("aa\n");
   exit(1);
 
   //test , usage and example
