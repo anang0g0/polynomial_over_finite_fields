@@ -647,7 +647,7 @@ vec vinv(vec a){
   a=vcoef(a);
   
   
-  for(i=0;i<3;i++){
+  for(i=0;i<2;i++){
   v=vmul_2(vmul_2(v,v),a);
   if(i>0)
   x=vmul_2(x,x);
@@ -955,7 +955,7 @@ vec c1={0},c2={0},ee={0};
 
   //繰り返し２乗法
   for (i = 1; i < n +1; i++){
-    if(i==1)
+    if(i==3)
     {
     c1=t;
     c2=s;
@@ -967,7 +967,7 @@ ee.x[4]=1;
   //exit(1);
   //  vec wc={0};
    //s = sand(vmul_2(s, s), mod);
-  s = sand(vmul_2(s, s), mod);
+  s = vmod_2(vmul_2(s, s), mod);
     printpol(s);
     printf(" @@sss\n");
     printpol(t);
@@ -977,7 +977,7 @@ ee.x[4]=1;
     t=vmod(vmul_2(c2,c2),mod);
     //printpol(t);
     //printf(" =t\n");
-    s=vcoef(deli(vmod_2(vmul_2(c2,c2),mod),ee));
+    s=vmod_2(vmul_2(c2,c2),mod);
     //s=coeff(s);
     printpol(s);
     printf(" =s\n");
@@ -1002,7 +1002,7 @@ ee.x[4]=1;
     //if(cnty==1)
     //s=sand(vmul_2(c2,c2),mod);
     
-    if(cnty==2)
+    if(cnty==3)
     exit(1);
     
     }
@@ -1714,7 +1714,7 @@ int main(void)
     printpol(v);
     printf(" =g2\n");
     //ii=gf[mlt(fg[3],fg[8182])];
-/*
+
     //exit(1);
     vec dd={0};
     //v=o2v(g);
@@ -1728,7 +1728,7 @@ int main(void)
       printf(" ==ans\n");
       //    printf("ans=%d\n",ii);
     //exit(1);
-*/
+
     while (1)//(l == -1)
     {
         w = mkpol();
