@@ -503,7 +503,7 @@ return v;
 }
 
 
-vec rev(vec a)
+vec rev(vec a,int n)
 {
   vec vx = (a), tmp = {0};
   int k = deg((a)), i;
@@ -512,7 +512,7 @@ vec rev(vec a)
   //printf("k=%d\n", k);
   // exit(1);
   for (i = 0; i < k + 1; i++)
-    tmp.x[k - i] = a.x[i];
+    tmp.x[n - i] = a.x[i];
   //printpol(tmp);
   //printf("\n");
   // exit(1);
@@ -707,8 +707,8 @@ printf(" ==f\n");
 printpol(x);
 printf(" ==g\n");
 
-a=rev(v);
-e=rev(x);
+a=rev(v,deg(v));
+e=rev(x,deg(x));
 printpol(a);
 printf(" ==f^-1\n");
 printpol(e);
@@ -717,7 +717,7 @@ printf(" ==x^-1\n");
 b=vinv(e);
 printpol(vmul_2(e,b));
 printf(" ==right?\n");
-   
+
 if(chkinv(e,b,d)!=0)
 exit(1);
 ee.x[K]=1;
@@ -728,7 +728,7 @@ printpol(a);
 printf(" ==q^-1\n");
 
 a=deli(vmul_2(a,b),d);
-a=rev(a);
+a=rev(a,deg(a));
 printpol(a);
 printf(" ==q\n");
 //exit(1);
@@ -786,8 +786,8 @@ printf(" ==dd\n");
 //exit(1);
 printpol(v);
 printf(" ==a\n");
-a=rev(v);
-e=rev(x);
+a=rev(v,deg(v));
+e=rev(x,deg(x));
 
 b=vinv(e);
 e=deli(vmul_2(b,e),d);
@@ -813,7 +813,7 @@ a=deli(vmul_2(a,b),d);
 printpol(a);
 printf(" ==test\n");
 //exit(1);
-a=rev(a);
+a=rev(a,deg(a));
 printpol(a);
 printf(" ==q\n");
 //exit(1);
@@ -977,7 +977,7 @@ ee.x[4]=1;
     t=vmod(vmul_2(c2,c2),mod);
     //printpol(t);
     //printf(" =t\n");
-    s=vmod_2(vmul_2(c2,c2),mod);
+    s=sand(vmul_2(c2,c2),mod);
     //s=coeff(s);
     printpol(s);
     printf(" =s\n");
@@ -1643,35 +1643,49 @@ int main(void)
     OP g,w;
     int i,count=0;
     vec e[10]={0},v={0},x={0},z={0},ee={0},y={0},tt={0};
-    int l = -1;
+    int l = -1,m,n;
     int ii = 0;
     // irreducible goppa code (既役多項式が必要なら、ここのコメントを外すこと。)
+    vec q={0},r={0};
 
-   ee.x[K]=1;
+
+   ee.x[4]=1;
    printpol(ww);
    printf(" ==right_g?\n");
    printpol(xx);
    printf(" ==right_f?\n");
-   ww=coeff(ww);
+   ww=vmul_2(ww,ww);
+   vec ff=ww;
+
+   ww=rev(ww,deg(ww));
+   m=deg(ww);
    printpol(ww);
-   printf(" ==mono_g?\n");
-   x=rev(ww);
+   printf(" ==w_g?\n");
+   xx=rev(xx,deg(xx));
+   n=deg(xx);
+   x=vinv(xx);
+   //x=rev(ww);
    printpol(x);
-   printf(" ==rev_g?\n");
-   z=vinv(x);
-   printpol(z);
-   printf(" ==inv_g?\n");
-   y=vmul_2(x,z);
-   printpol(y);
-   printf(" ==g^{-1}*g?\n");
-   tt=rev(xx);
-   printpol(tt);
+   printf(" ==inv(rev_f)?\n");
+   //exit(1);
+   r=vmul_2(x,ww);
+   //r=rev(xx);
+   printpol(r);
    printf(" ==rev_f?\n");
-   v=vmul_2(tt,z);
-   printpol(v);
-   printf(" ==right?\n");
-   
-  // exit(1);
+   //exit(1);
+
+   q=rev(deli(r,ee),m-n);
+   printpol(q);
+   printf(" ==inv_f?\n");
+   //exit(1);
+   //y=deli(vmul_2(q,xx),ee);
+   vec cc={0};
+   cc.x[4]=1;
+   y=deli(vadd(ff,vmul_2(xx,q)),ee);
+   printpol(y);
+   printf(" ==g^{-1}*f?\n");
+   exit(1);
+
 
    x=vmod(vmul_2(ww,ww),xx);
    v=vmod_2(vmul_2(ww,ww),xx);
