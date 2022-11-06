@@ -851,12 +851,23 @@ vec jorju(vec ww,vec xx){
   z=vmul_2(r,vv);
   printpol(z);
   printf(" =qb\n");
+  for(i=0;i<5;i++)
+  printf("%d,",z.x[i]);
+  printf("\n");
   printpol(ff);
+  printf(" =ff\n");
+  printpol(z);
   printf(" =f\n");
+  vec www={0};
+  for(i=0;i<5;i++)
+  www.x[i]=ff.x[i]^z.x[i];
+  printf("\n");
   tt=vadd(ff,r);
-  printpol(tt);
+  printpol(www);
   printf(" =0?\n");
   y=tt;
+printpol(y);
+printf(" ==eturn\n");
 
 return y;
 }
