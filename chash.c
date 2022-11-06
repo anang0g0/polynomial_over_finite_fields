@@ -26,23 +26,24 @@ unsigned long xor128(void)
   return (w = (w ^ (w >> 19)) ^ (t ^ (t >> 8)));
 }
 
+
 void seed(void)
 {
-  /*
-   * 変数宣言
-   */
+  
+  // * 変数宣言
+   
   char str[str_length + 1];
   time_t t;
   int i, j, k, rnd;
 
-  /*
-   * 乱数の初期化
-   */
+  
+  // * 乱数の初期化
+   
   srand(clock() + time(&t));
 
-  /*
-   * 乱数生成とパスワードの生成
-   */
+  
+  // * 乱数生成とパスワードの生成
+   
   for (i = 0; i < str_length; i++)
   {
     for (j = 0; j < 2; j++)
@@ -56,18 +57,19 @@ void seed(void)
     }
   }
 
-  /*
-   * NULL文字の挿入
-   */
+
+   // NULL文字の挿入
+   
   password[password_length] = '\0';
 
-  /*
-   * パスワードの出力
-   */
+  
+  // * パスワードの出力
+   
   //    printf("生成パスワード：%s",password);
 
   return;
 }
+
 
 int mlt(int x, int y)
 {
