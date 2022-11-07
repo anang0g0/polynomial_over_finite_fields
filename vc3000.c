@@ -820,8 +820,6 @@ vec jorju(vec ww,vec xx){
    printpol(xx);
    printf(" ==right_f?\n");
    vec ff=ww,gg=xx,rr={0},vv={0};
-   if(deg(ww)==deg(xx))
-    return vadd(ww,xx);
 
   //vv.x[0]=9;
    m=deg(ww);
@@ -1612,17 +1610,16 @@ printf(" ==0?\n");
 printpol(vmod(aa,bb));
 printf(" ==vm?\n");
 
-
 printpol(jorju(s2,t2));
 printf(" ==0?\n");
 printpol(vmod(s2,t2));
 printf(" ==vm?\n");
-exit(1);
+//exit(1);
 printpol(jorju(u1,v1));
 printf(" ==0?\n");
 printpol(vmod(u1,v1));
 printf(" ==vm?\n");
-exit(1);
+//exit(1);
 
    ee.x[K]=1;
 printpol(ww);
