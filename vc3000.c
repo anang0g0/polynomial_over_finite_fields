@@ -1135,21 +1135,6 @@ int irr_poly_to_file()
 //言わずもがな
 int main(void)
 {
-  //unsigned short f[K + 1] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0}; //big indian
-    unsigned short f[5] = {11,2,13, 15, 3}; //big indian
-    unsigned short h[9] = {13,1, 1, 15,12,13,14,15,2};
-    vec ww={1,8,0,8,1}; 
-    vec xx={7,15,6,14,0}; 
-    vec yy={1,6,0,6,1};
-    vec zz={7,6,6,7,0};
-    vec aa={1,6,0,6,0};
-    vec bb={1,6,0,6,1};
-    vec s2={1,6,0,6,1};
-    vec t2={0,7,0,6,7};
-    vec u1={1,6,0,6,1};
-    vec v1={0,1,0,0,0};
-    vec c1={1,6,0,6,0};
-    vec c2={1,6,0,6,1};
     vec g,w;
     int i,count=0;
     vec e[10]={0},v={0},x={0},z={0},ee={0},y={0},tt={0};
@@ -1158,56 +1143,11 @@ int main(void)
     // irreducible goppa code (既役多項式が必要なら、ここのコメントを外すこと。)
     vec q={0},r={0};
 
-ee.x[K]=1;
-printpol(jorju(ww,xx));
-printf(" ==@0?\n");
-printpol(vmod(ww,xx));
-printf(" ==@vm?\n\n");
-
-printpol(jorju(yy,zz));
-printf(" ==@0?\n");
-printpol(vmod(yy,zz));
-printf(" ==@vm?\n");
-
-printpol(jorju(aa,bb));
-printf(" ==@0?\n");
-printpol(vmod(aa,bb));
-printf(" ==@vm?\n");
-
-printpol(jorju(s2,t2));
-printf(" ==@0?\n");
-printpol(vmod(s2,t2));
-printf(" ==@vm?\n");
-//exit(1);
-printpol(jorju(u1,v1));
-printf(" ==@0?\n");
-printpol(vmod(u1,v1));
-printf(" ==@vm?\n");
-
-printpol(jorju(vmul_2(c1,c1),c2));
-printf(" ==@0a?\n");
-printpol(vmod(vmul_2(c1,c1),c2));
-printf(" ==@vma?\n");
-//exit(1);
-
-   ee.x[K]=1;
-printpol(ww);
-printf(" ==ww\n");
-ww=vmul_2(ww,ww);
-printpol(ww);
-printf(" ==ww2\n");
-//ww=rev(ww,deg(ww));
 
 //for(i=0;i<100000;i++)
 //vmod(ww,xx);
 //exit(1);
 
-printpol(x);
-printf(" ==rev1\n");
-x=vmod(ww,xx);
-printpol(x);
-printf(" ==rev2\n");
-//exit(1);
     while (1)//(l == -1)
     {
         w = mkpol();
