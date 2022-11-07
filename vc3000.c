@@ -659,11 +659,11 @@ vec vinv(vec a){
   x.x[2]=1;
   v.x[0]=1;
 printpol(a);
-printf(" ==a_before\n");
+printf(" ==in_vinv a_before\n");
   if(a.x[0]>1)
   a=vcoef(a);
   printpol(a);
-  printf(" ==coef1?\n");
+  printf(" ==in_vinv coef1?\n");
   i=1;
   while(i<K+1){
   v=vmul_2(vmul_2(v,v),a);
@@ -675,17 +675,6 @@ printf(" ==a_before\n");
   i*=2;
   }
 
-  //printpol(v);
-  //printf(" ==invv\n");
-
-  //a=deli(vmul_2(v,a),x);
-  //printpol(a);
-  //printf(" ==1a?\n");
-  //exit(1);
-
-  //printpol(a);
-  //printf(" Ah!\n");
-//exit(1);
 
   return v;
 }
@@ -817,21 +806,35 @@ vec jorju(vec ww,vec xx){
     // irreducible goppa code (既役多項式が必要なら、ここのコメントを外すこと。)
     vec q={0},r={0},c={0},dd={0};
 
-  c.x[0]=3;
-  dd.x[2]=1;
+  //c.x[0]=3;
+  //dd.x[2]=1;
+   ee.x[K]=1;
+  if(deg(ww)>K+1)
+  ww=deli(ww,ee);
+  if(deg(xx)>K+1)
+  xx=deli(xx,ee);
+  if(deg(ww)<deg(xx))
+  return ww;
    printpol(ww);
    printf(" ==right_g?\n");
    printpol(xx);
    printf(" ==right_f?\n");
    vec ff=ww,gg=xx,rr={0},vv={0};
+   if(deg(ww)==deg(xx))
+    return vadd(ww,xx);
 
-  vv.x[0]=9;
+  //vv.x[0]=9;
    m=deg(ww);
    n=deg(xx);
-   ee.x[K]=1;
+
    ww=rev(ww,deg(ww));
    xx=rev(xx,deg(xx));
    //printf("jon\n");
+   int o=0;
+   if(xx.x[0]>1){
+    o=oinv(xx.x[0]);
+    o=gf[o];
+   }
    x=vinv(xx);
   printpol(x);
   printf(" =inv(x)^-1\n");
@@ -839,35 +842,31 @@ vec jorju(vec ww,vec xx){
   printf(" =rev(ww)\n");
   v=deli(vmul_2(ww,x),ee);
   printpol(v);
-  printf(" =(x*ww)%x^4\n");
+  printf(" =(x*ww) mod x^K\n");
   q=rev(v,m-n);
-  dd=vmul_2(q,c);
+  //dd=vmul_2(q,c);
   //q=rev(q,m-n);
-  printpol(dd);
+  printpol(q);
   printf(" ==q?\n");
-  if(gg.x[0]>1)
-  gg=vcoef(gg);
+  //if(gg.x[0]>1)
+  //gg=vcoef(gg);
+  if(o>0){
+  z.x[0]=o;
+  r=vmul_2(vmul_2(gg,q),z);
+  }else{
   r=vmul_2(gg,q);
-  z=vmul_2(r,vv);
-  printpol(z);
+  }
+  //z=vmul_2(r,vv);
+  printpol(r);
   printf(" =qb\n");
-  for(i=0;i<5;i++)
-  printf("%d,",z.x[i]);
-  printf("\n");
   printpol(ff);
   printf(" =ff\n");
-  printpol(z);
-  printf(" =f\n");
   vec www={0};
-  for(i=0;i<5;i++)
-  www.x[i]=ff.x[i]^z.x[i];
-  printf("\n");
-  tt=vadd(ff,r);
+  www=vadd(ff,r);
   printpol(www);
-  printf(" =0?\n");
-  y=tt;
-printpol(y);
-printf(" ==eturn\n");
+  printf(" =rem?\n");
+  //return www;
+y=deli(www,ee);
 
 return y;
 }
@@ -890,30 +889,29 @@ vec c1={0},c2={0},ee={0};
 
   //繰り返し２乗法
   for (i = 1; i < n +1; i++){
-    if(i==2)
+    if(i==3)
     {
     c1=t;
     c2=s;
     }
 
   
-ee.x[K+1]=1;  
+ee.x[K]=1;  
   t = vmod(vmul_2(t, t), mod);
   //exit(1);
   //  vec wc={0};
    //s = sand(vmul_2(s, s), mod);
   s = jorju(vmul_2(s, s), mod);
-  //.  printpol(s);
-  //.  printf(" @@sss\n");
-  //.  printpol(t);
-  //.  printf(" @@ttt\n");
-
-  
+    printpol(s);
+    printf(" @@sss\n");
+    printpol(t);
+    printf(" @@ttt\n");
+    /*
     if(fequ(t,s)==1 && vLT(s).n >0 && vLT(t).n > 0){
-    t=vmod(vmul_2(c2,c2),mod);
+    //t=vmod(vmul_2(c2,c2),mod);
     //printpol(t);
     //printf(" =t\n");
-    s=jorju(vmul_2(c2,c2),mod);
+    //s=jorju(vmul_2(c2,c2),mod);
     //s=coeff(s);
     printpol(s);
     printf(" =s\n");
@@ -944,7 +942,7 @@ ee.x[K+1]=1;
     exit(1);
     
     }
-  
+  */
   }
 
   return s;
@@ -1039,7 +1037,8 @@ void fprintsage(vec a, FILE *fp)
 // gcd
 vec vgcd(vec xx, vec yy)
 {
-  vec tt = {0}, tmp, h = {0},ss={0};
+  vec tt = {0}, tmp, h = {0},ss={0},ee={0};
+  ee.x[K]=1;
 
   h.x[0] = 1;
   //h.x[0] = 0;
@@ -1050,7 +1049,7 @@ vec vgcd(vec xx, vec yy)
     yy = tmp;
   }
   tt = vmod(xx, yy);
-  ss=jorju(xx,yy);
+  ss=deli(jorju(xx,yy),ee);
   if(fequ(tt,ss)==1){
  printpol(xx);
  printf(" ==xx\n");
@@ -1579,8 +1578,16 @@ int main(void)
   //unsigned short f[K + 1] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0}; //big indian
     unsigned short f[5] = {11,2,13, 15, 3}; //big indian
     unsigned short h[9] = {13,1, 1, 15,12,13,14,15,2};
-    vec ww={1,6,0,6,1};
-    vec xx={7,6,6,7,0};
+    vec ww={1,8,0,8,1}; 
+    vec xx={7,15,6,14,0}; 
+    vec yy={1,6,0,6,1};
+    vec zz={7,6,6,7,0};
+    vec aa={1,6,0,6,0};
+    vec bb={1,6,0,6,1};
+    vec s2={1,6,0,6,1};
+    vec t2={0,7,0,6,7};
+    vec u1={1,6,0,6,1};
+    vec v1={0,1,0,0,0};
     OP g,w;
     int i,count=0;
     vec e[10]={0},v={0},x={0},z={0},ee={0},y={0},tt={0};
@@ -1589,10 +1596,33 @@ int main(void)
     // irreducible goppa code (既役多項式が必要なら、ここのコメントを外すこと。)
     vec q={0},r={0};
 
-
+ee.x[K]=1;
 printpol(jorju(ww,xx));
-printf(" ==0?");
-//exit(1);
+printf(" ==0?\n");
+printpol(vmod(ww,xx));
+printf(" ==vm?\n\n");
+
+printpol(jorju(yy,zz));
+printf(" ==0?\n");
+printpol(vmod(yy,zz));
+printf(" ==vm?\n");
+
+printpol(jorju(aa,bb));
+printf(" ==0?\n");
+printpol(vmod(aa,bb));
+printf(" ==vm?\n");
+
+
+printpol(jorju(s2,t2));
+printf(" ==0?\n");
+printpol(vmod(s2,t2));
+printf(" ==vm?\n");
+exit(1);
+printpol(jorju(u1,v1));
+printf(" ==0?\n");
+printpol(vmod(u1,v1));
+printf(" ==vm?\n");
+exit(1);
 
    ee.x[K]=1;
 printpol(ww);
