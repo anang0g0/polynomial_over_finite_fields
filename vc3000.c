@@ -205,12 +205,35 @@ oterm vLT(vec f)
   return t;
 }
 
+// 多項式を表示する(default)
+void printpol(vec a)
+{
+  int i, n;
+
+  n = deg(a);
+
+  for (i = n; i > -1; i--)
+  {
+    if (a.x[i] > 0)
+    {
+      printf("%u", a.x[i]);
+      // if (i > 0)
+      printf("x^%d", i);
+      // if (i > 0)
+      printf("+");
+    }
+  }
+  printf("\n");
+
+  return;
+}
+
 int mul = 0, mul2 = 0;
 vec vmul_2(vec a, vec b)
 {
   int i, j, k, l;
   vec c = {0};
-  if (deg(a) > 128 && deg(b) > 0)
+  if (deg(a) > 128 && deg(b) > 128)
     mul++;
   mul2++;
 
@@ -228,6 +251,51 @@ vec vmul_2(vec a, vec b)
 
   return c;
 }
+
+//カラツバ法：3/4だけ早くなるｗ
+vec karatuba(vec f,vec g){
+  int i;
+vec f1={0},f2={0},g1={0},g2={0},f3={0},g3={0},a={0},b={0},c={0},d={0},e;
+if(deg(f)==256 || deg(g)==256)
+exit(1);
+
+for(i=0;i<128;i++){
+  f1.x[i]=f.x[i];
+  g1.x[i]=g.x[i];
+}
+for(i=128;i<256;i++){
+  f2.x[i]=f.x[i];
+  g2.x[i]=g.x[i];
+}
+for(i=0;i<128;i++){
+  f3.x[i]=f.x[i]^f.x[i+128];
+  g3.x[i]=g.x[i]^g.x[i+128];
+}
+a=vmul_2(f1,g1);
+b=vmul_2(f2,g2);
+c=vadd(vadd(vmul_2(f3,g3),a),b);
+//printpol(a);
+//printf("\n");
+//exit(1);
+//for(i=0;i<256;i++){
+  int j=deg(f)+deg(g);
+
+for(i=0;i<256;i++){
+d.x[i]^=a.x[i];
+d.x[i+256]^=c.x[i];
+}
+for(i=j;i>256;i--)
+d.x[i]=b.x[i];
+e=vmul_2(f,g);
+//printpol(d);
+//printf("\n");
+//printpol(e);
+//printf("\n");
+//exit(1);
+
+return d;
+}
+
 
 // 多項式を単行式で割る
 oterm vLTdiv(vec f, oterm t)
@@ -331,28 +399,6 @@ vec rev(vec a, int n)
   return tmp;
 }
 
-// 多項式を表示する(default)
-void printpol(vec a)
-{
-  int i, n;
-
-  n = deg(a);
-
-  for (i = n; i > -1; i--)
-  {
-    if (a.x[i] > 0)
-    {
-      printf("%u", a.x[i]);
-      // if (i > 0)
-      printf("x^%d", i);
-      // if (i > 0)
-      printf("+");
-    }
-  }
-  printf("\n");
-
-  return;
-}
 
 vec deli(vec a, vec b)
 {
@@ -450,9 +496,14 @@ vec vpowmod(vec f, vec mod)
   while (n > 0)
   {
     // s=inv()
-    if (n & 1)
-      ret = vmod((vmul_2(ret, f)), mod); // n の最下位bitが 1 ならば x^(2^i) をかける
-    f = vmod((vmul_2(f, f)), mod);
+    if (n & 1){
+      ret = (vmul_2(ret, f)); // n の最下位bitが 1 ならば x^(2^i) をかける
+      if(deg(ret)>deg(mod))
+      ret=vmod(ret,mod);
+    }
+    f = (vmul_2(f, f));
+    if(deg(f)>deg(mod))
+      f=vmod(f,mod);
     n >>= 1; // n を1bit 左にずらす
   }
   //printpol((ret));
@@ -535,7 +586,11 @@ vec vpp(vec f, vec mod)
   // 繰り返し２乗法
   for (i = 1; i < E + 1; i++)
   {
-    s = vmod(vmul_2(s, s), mod);
+    if(deg(s)>128){
+      s = vmod(karatuba(s, s), mod);
+    }else{
+      s = vmod(vmul_2(s, s), mod);
+    }
   }
 
   return s;
@@ -855,7 +910,7 @@ int ben_or(vec f)
   {
     printf(":i=%d", i);
     // irreducible over GH(8192) 2^13
-    r = vpowmod(r, f);
+    r = vpp(r, f);
     // if(r.x[0]==65535)
     // return -1;
     u = vadd(r, (s));
@@ -1086,14 +1141,24 @@ int main(void)
 {
   vec g, w;
   int i, count = 0;
-  vec e[10] = {0}, v = {0}, x = {0}, z = {0}, ee = {0}, y = {0}, tt = {0}, ww, xx;
+  vec e[10] = {0}, v = {0}, x = {0}, z = {0}, ee = {0}, y = {0}, tt = {0}, ww, xx,f;
   int l = -1, m, n;
   int ii = 0;
   // irreducible goppa code (既役多項式が必要なら、ここのコメントを外すこと。)
   vec q = {0}, r = {0};
 
+srand(clock());
+/*
   ww = mkpol();
   xx = mkpol();
+  f=vmod(ww,xx);
+  g=jorju(ww,xx);
+  printpol(f);
+  printf("\n");
+  printpol(g);
+  printf("\n");
+  exit(1);
+*/
   srand(clock());
   // for(i=0;i<1000000;i++)
   // jorju(ww,xx);
