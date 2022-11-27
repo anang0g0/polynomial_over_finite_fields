@@ -1,9 +1,9 @@
-//date : 20210325（ver.1）
-//date      : 20160310,20191218,20191220,20191221,20191223,20191224,20191225,20191229,20191230
-//auther    : the queer who thinking about cryptographic future
-//code name : Ben_Or's irreducibly test for polynomial over GF(2^m)
-//code name : OVP - One Variable Polynomial library
-//status    : release (ver 1.2) 20211201
+// date : 20210325（ver.1）
+// date      : 20160310,20191218,20191220,20191221,20191223,20191224,20191225,20191229,20191230
+// auther    : the queer who thinking about cryptographic future
+// code name : Ben_Or's irreducibly test for polynomial over GF(2^m)
+// code name : OVP - One Variable Polynomial library
+// status    : release (ver 1.2) 20211201
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -14,20 +14,20 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <stdlib.h>
-//#include <assert.h>
+// #include <assert.h>
 #include <execinfo.h>
-//#include <omp.h>
+// #include <omp.h>
 #include <unistd.h>
 #include <sys/wait.h>
 #include <unistd.h>
 #include <sys/types.h>
 
-//#include "8192.h"
-//#include "4096.h"
+#include "8192.h"
+// #include "4096.h"
 #include "global.h"
 #include "struct.h"
-//#include "debug.c"
-//#include "chash.c"
+// #include "debug.c"
+// #include "chash.c"
 
 #include <pthread.h>
 #include <err.h>
@@ -40,21 +40,21 @@ extern void print_trace();
 #define DAT 5
 int num = 0;
 
-//nomal bases
-//unsigned short gf[M]={0,1,2,4,8,9,11,15,7,14,5,10,13,3,6,12};
-//unsigned short fg[M]={0,1,2,13,3,10,14,8,4,5,11,6,15,12,9,7};
+// nomal bases
+// unsigned short gf[M]={0,1,2,4,8,9,11,15,7,14,5,10,13,3,6,12};
+// unsigned short fg[M]={0,1,2,13,3,10,14,8,4,5,11,6,15,12,9,7};
 
-//sage比較用
-static const unsigned short gf[16]={0,1,2,4,8,3,6,12,11,5,10,7,14,15,13,9};
-static const unsigned short fg[16]={0,1,2,5,3,9,6,11,4,15,10,8,7,14,12,13};
+// sage比較用
+// static const unsigned short gf[16]={0,1,2,4,8,3,6,12,11,5,10,7,14,15,13,9};
+// static const unsigned short fg[16]={0,1,2,5,3,9,6,11,4,15,10,8,7,14,12,13};
 
-//GF(2^8)
-//static const unsigned short gf[N] = {0, 1, 2, 4, 8, 16, 32, 64, 128, 29, 58, 116, 232, 205, 135, 19, 38, 76, 152, 45, 90, 180, 117, 234, 201, 143, 3, 6, 12, 24, 48, 96, 192, 157, 39, 78, 156, 37, 74, 148, 53, 106, 212, 181, 119, 238, 193, 159, 35, 70, 140, 5, 10, 20, 40, 80, 160, 93, 186, 105, 210, 185, 111, 222, 161, 95, 190, 97, 194, 153, 47, 94, 188, 101, 202, 137, 15, 30, 60, 120, 240, 253, 231, 211, 187, 107, 214, 177, 127, 254, 225, 223, 163, 91, 182, 113, 226, 217, 175, 67, 134, 17, 34, 68, 136, 13, 26, 52, 104, 208, 189, 103, 206, 129, 31, 62, 124, 248, 237, 199, 147, 59, 118, 236, 197, 151, 51, 102, 204, 133, 23, 46, 92, 184, 109, 218, 169, 79, 158, 33, 66, 132, 21, 42, 84, 168, 77, 154, 41, 82, 164, 85, 170, 73, 146, 57, 114, 228, 213, 183, 115, 230, 209, 191, 99, 198, 145, 63, 126, 252, 229, 215, 179, 123, 246, 241, 255, 227, 219, 171, 75, 150, 49, 98, 196, 149, 55, 110, 220, 165, 87, 174, 65, 130, 25, 50, 100, 200, 141, 7, 14, 28, 56, 112, 224, 221, 167, 83, 166, 81, 162, 89, 178, 121, 242, 249, 239, 195, 155, 43, 86, 172, 69, 138, 9, 18, 36, 72, 144, 61, 122, 244, 245, 247, 243, 251, 235, 203, 139, 11, 22, 44, 88, 176, 125, 250, 233, 207, 131, 27, 54, 108, 216, 173, 71, 142};
-//static const unsigned short fg[N] = {0, 1, 2, 26, 3, 51, 27, 199, 4, 224, 52, 239, 28, 105, 200, 76, 5, 101, 225, 15, 53, 142, 240, 130, 29, 194, 106, 249, 201, 9, 77, 114, 6, 139, 102, 48, 226, 37, 16, 34, 54, 148, 143, 219, 241, 19, 131, 70, 30, 182, 195, 126, 107, 40, 250, 186, 202, 155, 10, 121, 78, 229, 115, 167, 7, 192, 140, 99, 103, 222, 49, 254, 227, 153, 38, 180, 17, 146, 35, 137, 55, 209, 149, 207, 144, 151, 220, 190, 242, 211, 20, 93, 132, 57, 71, 65, 31, 67, 183, 164, 196, 73, 127, 111, 108, 59, 41, 85, 251, 134, 187, 62, 203, 95, 156, 160, 11, 22, 122, 44, 79, 213, 230, 173, 116, 244, 168, 88, 8, 113, 193, 248, 141, 129, 100, 14, 104, 75, 223, 238, 50, 198, 255, 25, 228, 166, 154, 120, 39, 185, 181, 125, 18, 69, 147, 218, 36, 33, 138, 47, 56, 64, 210, 92, 150, 189, 208, 206, 145, 136, 152, 179, 221, 253, 191, 98, 243, 87, 212, 172, 21, 43, 94, 159, 133, 61, 58, 84, 72, 110, 66, 163, 32, 46, 68, 217, 184, 124, 165, 119, 197, 24, 74, 237, 128, 13, 112, 247, 109, 162, 60, 83, 42, 158, 86, 171, 252, 97, 135, 178, 188, 205, 63, 91, 204, 90, 96, 177, 157, 170, 161, 82, 12, 246, 23, 236, 123, 118, 45, 216, 80, 175, 214, 234, 231, 232, 174, 233, 117, 215, 245, 235, 169, 81, 89, 176};
+// GF(2^8)
+// static const unsigned short gf[N] = {0, 1, 2, 4, 8, 16, 32, 64, 128, 29, 58, 116, 232, 205, 135, 19, 38, 76, 152, 45, 90, 180, 117, 234, 201, 143, 3, 6, 12, 24, 48, 96, 192, 157, 39, 78, 156, 37, 74, 148, 53, 106, 212, 181, 119, 238, 193, 159, 35, 70, 140, 5, 10, 20, 40, 80, 160, 93, 186, 105, 210, 185, 111, 222, 161, 95, 190, 97, 194, 153, 47, 94, 188, 101, 202, 137, 15, 30, 60, 120, 240, 253, 231, 211, 187, 107, 214, 177, 127, 254, 225, 223, 163, 91, 182, 113, 226, 217, 175, 67, 134, 17, 34, 68, 136, 13, 26, 52, 104, 208, 189, 103, 206, 129, 31, 62, 124, 248, 237, 199, 147, 59, 118, 236, 197, 151, 51, 102, 204, 133, 23, 46, 92, 184, 109, 218, 169, 79, 158, 33, 66, 132, 21, 42, 84, 168, 77, 154, 41, 82, 164, 85, 170, 73, 146, 57, 114, 228, 213, 183, 115, 230, 209, 191, 99, 198, 145, 63, 126, 252, 229, 215, 179, 123, 246, 241, 255, 227, 219, 171, 75, 150, 49, 98, 196, 149, 55, 110, 220, 165, 87, 174, 65, 130, 25, 50, 100, 200, 141, 7, 14, 28, 56, 112, 224, 221, 167, 83, 166, 81, 162, 89, 178, 121, 242, 249, 239, 195, 155, 43, 86, 172, 69, 138, 9, 18, 36, 72, 144, 61, 122, 244, 245, 247, 243, 251, 235, 203, 139, 11, 22, 44, 88, 176, 125, 250, 233, 207, 131, 27, 54, 108, 216, 173, 71, 142};
+// static const unsigned short fg[N] = {0, 1, 2, 26, 3, 51, 27, 199, 4, 224, 52, 239, 28, 105, 200, 76, 5, 101, 225, 15, 53, 142, 240, 130, 29, 194, 106, 249, 201, 9, 77, 114, 6, 139, 102, 48, 226, 37, 16, 34, 54, 148, 143, 219, 241, 19, 131, 70, 30, 182, 195, 126, 107, 40, 250, 186, 202, 155, 10, 121, 78, 229, 115, 167, 7, 192, 140, 99, 103, 222, 49, 254, 227, 153, 38, 180, 17, 146, 35, 137, 55, 209, 149, 207, 144, 151, 220, 190, 242, 211, 20, 93, 132, 57, 71, 65, 31, 67, 183, 164, 196, 73, 127, 111, 108, 59, 41, 85, 251, 134, 187, 62, 203, 95, 156, 160, 11, 22, 122, 44, 79, 213, 230, 173, 116, 244, 168, 88, 8, 113, 193, 248, 141, 129, 100, 14, 104, 75, 223, 238, 50, 198, 255, 25, 228, 166, 154, 120, 39, 185, 181, 125, 18, 69, 147, 218, 36, 33, 138, 47, 56, 64, 210, 92, 150, 189, 208, 206, 145, 136, 152, 179, 221, 253, 191, 98, 243, 87, 212, 172, 21, 43, 94, 159, 133, 61, 58, 84, 72, 110, 66, 163, 32, 46, 68, 217, 184, 124, 165, 119, 197, 24, 74, 237, 128, 13, 112, 247, 109, 162, 60, 83, 42, 158, 86, 171, 252, 97, 135, 178, 188, 205, 63, 91, 204, 90, 96, 177, 157, 170, 161, 82, 12, 246, 23, 236, 123, 118, 45, 216, 80, 175, 214, 234, 231, 232, 174, 233, 117, 215, 245, 235, 169, 81, 89, 176};
 
 static unsigned short c[E * K + 1] = {0};
 
-//有限体の元の逆数
+// 有限体の元の逆数
 unsigned short
 oinv(unsigned short a)
 {
@@ -63,25 +63,23 @@ oinv(unsigned short a)
   if (a == 0)
     return 0;
 
-  return N-fg[a]+1;
-  
+  return N - fg[a] + 1;
+
   printf("no return \n");
 
   exit(1);
 }
 
-//aに何をかけたらbになるか
+// aに何をかけたらbになるか
 unsigned short
 equ(unsigned short a, unsigned short b)
 {
   int i;
 
-  return gf[mlt(oinv(a),fg[b])];
-
+  return gf[mlt(oinv(a), fg[b])];
 }
 
-
-//停止コマンド
+// 停止コマンド
 void wait2(void)
 {
   printf(" (enter number and hit return) "); // 何か表示させたほうが良いだろう
@@ -89,13 +87,12 @@ void wait2(void)
   getchar();
 }
 
-
-//多項式の次数(default)
+// 多項式の次数(default)
 int deg(vec a)
 {
   int i, n = 0, flg = 0;
 
-  //#pragma omp parallel for
+  // #pragma omp parallel for
   for (i = 0; i < DEG; i++)
   {
     if (a.x[i] > 0)
@@ -109,7 +106,6 @@ int deg(vec a)
 
   return n;
 }
-
 
 void op_print_raw(const OP f)
 {
@@ -153,25 +149,24 @@ bool op_verify(const OP f)
   return true;
 }
 
-vec vadd(vec a,vec b){
-int i;
-vec c={0};
+vec vadd(vec a, vec b)
+{
+  int i;
+  vec c = {0};
 
-//printf("deg=%d %d\n",deg(a),deg(b));
-//#pragma omp parallel for schedule(static)
-  for(i=0;i<DEG;i++)
-    c.x[i]=a.x[i]^b.x[i];
+  // printf("deg=%d %d\n",deg(a),deg(b));
+  // #pragma omp parallel for schedule(static)
+  for (i = 0; i < DEG; i++)
+    c.x[i] = a.x[i] ^ b.x[i];
 
-return c;
+  return c;
 }
-
-
 
 // 多項式を項ずつ掛ける
 vec vterml(vec f, oterm t)
 {
-  //f = conv(f);
-  //ssert(op_verify(f));
+  // f = conv(f);
+  // ssert(op_verify(f));
   int i;
   vec h = {0};
 
@@ -180,16 +175,15 @@ vec vterml(vec f, oterm t)
 
   for (i = 0; i < DEG; i++)
   {
-    //h.t[i].n = f.t[i].n + t.n;
-    if(f.x[i]>0)
-    h.x[i+t.n] = gf[mlt(fg[f.x[i]], fg[t.a])];
+    // h.t[i].n = f.t[i].n + t.n;
+    if (f.x[i] > 0)
+      h.x[i + t.n] = gf[mlt(fg[f.x[i]], fg[t.a])];
   }
 
-  //h = conv(h);
-  // assert(op_verify(h));
+  // h = conv(h);
+  //  assert(op_verify(h));
   return h;
 }
-
 
 // リーディグタームを抽出(default)
 oterm vLT(vec f)
@@ -211,21 +205,25 @@ oterm vLT(vec f)
   return t;
 }
 
+int mul = 0, mul2 = 0;
 vec vmul_2(vec a, vec b)
 {
   int i, j, k, l;
   vec c = {0};
+  if (deg(a) > 128 && deg(b) > 0)
+    mul++;
+  mul2++;
 
   k = deg(a);
   l = deg(b);
 
-  for (i = 0; i < k+1; i++)
+  for (i = 0; i < k + 1; i++)
   {
-    for (j = 0; j < l+1; j++)
-      //if (a.x[i] > 0)
-      {
-        c.x[i + j] ^= gf[mlt(fg[a.x[i]], fg[b.x[j]])];
-      }
+    for (j = 0; j < l + 1; j++)
+    // if (a.x[i] > 0)
+    {
+      c.x[i + j] ^= gf[mlt(fg[a.x[i]], fg[b.x[j]])];
+    }
   }
 
   return c;
@@ -263,13 +261,15 @@ oterm vLTdiv(vec f, oterm t)
   return s;
 }
 
+int vm = 0;
 // 多項式の剰余を取る
 vec vmod(vec f, vec g)
 {
   vec h = {0};
   oterm b = {0}, c = {0};
 
-//printf("vmod-bl=%d k=%d\n",deg(f),deg(g));
+  vm++;
+  // printf("vmod-bl=%d k=%d\n",deg(f),deg(g));
   if (vLT(f).n < vLT(g).n)
   {
     //    exit(1);
@@ -278,8 +278,8 @@ vec vmod(vec f, vec g)
 
   b = vLT(g);
 
-//printpol(f);
-//printf(" ==f\n");
+  // printpol(f);
+  // printf(" ==f\n");
   while (1)
   {
 
@@ -294,47 +294,44 @@ vec vmod(vec f, vec g)
     if (c.n == 0)
       break;
   }
-//printf("vmod-baka== %d %d\n",deg(f),deg(g));
+  // printf("vmod-baka== %d %d\n",deg(f),deg(g));
   return f;
 }
 
-
-vec vcoef(vec v){
-  unsigned short n,k=deg(v);
+vec vcoef(vec v)
+{
+  unsigned short n, k = deg(v);
   int i;
 
-//if(v.x[0]==0)
-//return v;
+  // if(v.x[0]==0)
+  // return v;
 
-if(v.x[0]>1)
-n=oinv(v.x[0]);
-for(i=0;i<k+1;i++)
-v.x[i]=gf[mlt(n,fg[v.x[i]])];
+  if (v.x[0] > 1)
+    n = oinv(v.x[0]);
+  for (i = 0; i < k + 1; i++)
+    v.x[i] = gf[mlt(n, fg[v.x[i]])];
 
-return v;
+  return v;
 }
 
-
-vec rev(vec a,int n)
+vec rev(vec a, int n)
 {
   vec vx = (a), tmp = {0};
   int k = deg((a)), i;
   OP t = {0};
 
-  //printf("k=%d\n", k);
-  // exit(1);
+  // printf("k=%d\n", k);
+  //  exit(1);
   for (i = 0; i < k + 1; i++)
     tmp.x[n - i] = a.x[i];
-  //printpol(tmp);
-  //printf("\n");
-  // exit(1);
+  // printpol(tmp);
+  // printf("\n");
+  //  exit(1);
 
   return tmp;
 }
 
-
-
-//多項式を表示する(default)
+// 多項式を表示する(default)
 void printpol(vec a)
 {
   int i, n;
@@ -346,49 +343,48 @@ void printpol(vec a)
     if (a.x[i] > 0)
     {
       printf("%u", a.x[i]);
-      //if (i > 0)
+      // if (i > 0)
       printf("x^%d", i);
-      //if (i > 0)
+      // if (i > 0)
       printf("+");
     }
   }
-    printf("\n");
+  printf("\n");
 
   return;
 }
 
+vec deli(vec a, vec b)
+{
+  int i = 0;
+  OP t;
+  vec v = {0};
 
-vec deli(vec a,vec b){
-int i=0;
-OP t;
-vec v={0};
+  // printpol(a);
+  // printf(" ==a\n");
+  // printpol(b);
+  /*
+  if(deg(b)>deg(a)){
+  printf(" ==b\n");
+  printf("deg(b)=%d %d\n",deg(b),deg(a));
+  return a;
+  //exit(1);
+  }
+  */
+  for (i = 0; i < deg(b); i++)
+    v.x[i] = a.x[i];
 
-//printpol(a);
-//printf(" ==a\n");
-//printpol(b);
-/*
-if(deg(b)>deg(a)){
-printf(" ==b\n");
-printf("deg(b)=%d %d\n",deg(b),deg(a));
-return a;
-//exit(1);
+  return v;
 }
-*/
-for(i=0;i<deg(b);i++)
-  v.x[i]=a.x[i];
 
-return v;
-}
-
-
-//モニック多項式にする
+// モニック多項式にする
 vec coeff(vec f)
 {
-  unsigned short d=vLT(f).a;
+  unsigned short d = vLT(f).a;
   int i, k;
 
   k = deg((f)) + 1;
-  
+
   for (i = 0; i < k; i++)
     f.x[i] = gf[mlt(fg[f.x[i]], oinv(d))];
 
@@ -396,66 +392,59 @@ vec coeff(vec f)
 }
 
 // fg=1
-vec kof(vec a,vec b){
-  unsigned short u=oinv(b.x[0]),k=deg(a);
+vec kof(vec a, vec b)
+{
+  unsigned short u = oinv(b.x[0]), k = deg(a);
   int i;
 
-  for(i=0;i<k+1;i++)
-  a.x[i]=gf[mlt(u,fg[a.x[i]])];
+  for (i = 0; i < k + 1; i++)
+    a.x[i] = gf[mlt(u, fg[a.x[i]])];
 
   return a;
 }
 
-
-
-
-vec vinv(vec a){
-  vec v={0},x={0};
+vec vinv(vec a)
+{
+  vec v = {0}, x = {0};
   int i;
 
-  x.x[2]=1;
-  v.x[0]=1;
-//printpol(a);
-//printf(" ==in_vinv a_before\n");
-  if(a.x[0]>1)
-  a=vcoef(a);
-//  printpol(a);
-//  printf(" ==in_vinv coef1?\n");
-  i=1;
-  while(i<K+1){
-  v=vmul_2(vmul_2(v,v),a);
-  if(i>2)
-  x=vmul_2(x,x);
-    v=deli(v,x);
-  //printpol(v);
-  //printf(" ==iv\n");
-  i*=2;
-  }
+  x.x[2] = 1;
+  v.x[0] = 1;
 
+  if (a.x[0] > 1)
+    a = vcoef(a);
+
+  i = 1;
+  while (i < K + 1)
+  {
+    v = vmul_2(vmul_2(v, v), a);
+    if (i > 2)
+      x = vmul_2(x, x);
+    v = deli(v, x);
+    i *= 2;
+  }
 
   return v;
 }
 
-
-
-int chkinv(vec b,vec e,vec d){
-e=deli(vmul_2(b,e),d);
-if(vLT(e).a!=1){
-  printpol(e);
-  printf(" fail-1!\n");
-  exit(1);
+int chkinv(vec b, vec e, vec d)
+{
+  e = deli(vmul_2(b, e), d);
+  if (vLT(e).a != 1)
+  {
+    printpol(e);
+    printf(" fail-1!\n");
+    exit(1);
+  }
+  return 0;
 }
-return 0;
-}
 
-
-
-
-vec vpowmod(vec f, vec mod, int n)
+vec vpowmod(vec f, vec mod)
 {
   vec v = {0};
-  vec ret={0}, s={0}, t={0};
+  vec ret = {0}, s = {0}, t = {0};
 
+  int n = N;
   v.x[0] = 1;
   ret = v;
   while (n > 0)
@@ -466,121 +455,87 @@ vec vpowmod(vec f, vec mod, int n)
     f = vmod((vmul_2(f, f)), mod);
     n >>= 1; // n を1bit 左にずらす
   }
-  printpol((ret));
-  printf(" it be\n");
-  exit(1);
+  //printpol((ret));
+  //printf(" it be\n");
+  //exit(1);
 
   return ret;
 }
 
-int fequ(vec a,vec b){
-  int k=deg(a),l=deg(b),i;
-  if(k!=l)
-  return 1;
-  for(i=0;i<k;i++)
-  if(a.x[i]!=b.x[i])
-  return 1;
+int fequ(vec a, vec b)
+{
+  int k = deg(a), l = deg(b), i;
+  if (k != l)
+    return 1;
+  for (i = 0; i < k; i++)
+    if (a.x[i] != b.x[i])
+      return 1;
 
   return 0;
 }
 
+vec jorju(vec ww, vec xx)
+{
+  // unsigned short f[K + 1] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0}; //big indian
+  OP g, w;
+  int i, count = 0;
+  vec e[10] = {0}, v = {0}, x = {0}, z = {0}, ee = {0}, y = {0}, tt = {0};
+  int l = -1, m, n;
+  int ii = 0;
+  // irreducible goppa code (既役多項式が必要なら、ここのコメントを外すこと。)
+  vec q = {0}, r = {0}, c = {0}, dd = {0};
 
+  if (deg(ww) < deg(xx))
+    return ww;
 
-vec jorju(vec ww,vec xx){
-    //unsigned short f[K + 1] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0}; //big indian
-    OP g,w;
-    int i,count=0;
-    vec e[10]={0},v={0},x={0},z={0},ee={0},y={0},tt={0};
-    int l = -1,m,n;
-    int ii = 0;
-    // irreducible goppa code (既役多項式が必要なら、ここのコメントを外すこと。)
-    vec q={0},r={0},c={0},dd={0};
+  vec ff = ww, gg = xx, rr = {0}, vv = {0};
 
-  if(deg(ww)<deg(xx))
-  return ww;
-//.   printpol(ww);
-//.   printf(" ==right_g?\n");
-//.   printpol(xx);
-//.   printf(" ==right_f?\n");
-   vec ff=ww,gg=xx,rr={0},vv={0};
+  // vv.x[0]=9;
+  m = deg(ww);
+  n = deg(xx);
 
-  //vv.x[0]=9;
-   m=deg(ww);
-   n=deg(xx);
+  ww = rev(ww, m);
+  xx = rev(xx, n);
 
-   ww=rev(ww,deg(ww));
-   xx=rev(xx,deg(xx));
-   //printf("jon\n");
-   int o=0;
-   if(xx.x[0]>1){
-    o=oinv(xx.x[0]);
-    o=gf[o];
-   }
-   x=vinv(xx);
-//.  printpol(x);
-//.  printf(" =inv(x)^-1\n");
-//.  printpol(ww);
-//.  printf(" =rev(ww)\n");
-  v=vmul_2(ww,x);
-//.  printpol(v);
-//.  printf(" =(x*ww) mod x^K\n");
-  q=rev(v,m-n);
-  //dd=vmul_2(q,c);
-  //q=rev(q,m-n);
-//.  printpol(q);
-//.  printf(" ==q?\n");
-  //if(gg.x[0]>1)
-  //gg=vcoef(gg);
-  if(o>0){
-  z.x[0]=o;
-  r=vmul_2(vmul_2(gg,q),z);
-  }else{
-  r=vmul_2(gg,q);
+  int o = 0;
+  if (xx.x[0] > 1)
+  {
+    o = oinv(xx.x[0]);
+    o = gf[o];
   }
-  //z=vmul_2(r,vv);
-//.  printpol(r);
-//.  printf(" =qb\n");
-//.  printpol(ff);
-//.  printf(" =ff\n");
-  vec www={0};
-  www=vadd(ff,r);
-//.  printpol(www);
-//.  printf(" =rem?\n");
-  //return www;
-y=www;
+  x = vinv(xx);
+  v = vmul_2(ww, x);
+//  v=rev(v,m-n);
+//  y=vadd(ww,vmul_2(v,xx));
+  
+  q = rev(v, m - n);
+  if (o > 0)
+  {
+    z.x[0] = o;
+    r = vmul_2(vmul_2(gg, q), z);
+  }
+  else
+  {
+    r = vmul_2(gg, q);
+  }
+  vec www = {0};
+  y = vadd(ff, r);
 
-return y;
+  return y;
 }
 
-
-int cnty=0;
-vec vpp(vec f,vec mod,int n){
+int cnty = 0;
+vec vpp(vec f, vec mod)
+{
   int i;
-  vec t = {0},s={0};
+  vec t = {0}, s = {0};
   t = f;
-  s=f;
+  s = f;
 
-
-//printpol(f);
-//printf(" ==f\n");
-//printpol(mod);
-//printf(" ==mod\n");
-
-vec c1={0},c2={0},ee={0};
-
-  //繰り返し２乗法
-  for (i = 1; i < n +1; i++){
-
-//.  printpol(vmul_2(t,t));
-//.  printf(" ==@t\n");
-//.  printpol(vmul_2(s,s));
-//.  printf(" ==@s\n");
-
-  //t = vmod(vmul_2(t, t), mod);
-  //exit(1);
-  //  vec wc={0};
-   //s = sand(vmul_2(s, s), mod);
-  s = vmod(vmul_2(s,s), mod);
+  // 繰り返し２乗法
+  for (i = 1; i < E + 1; i++)
+  {
+    s = vmod(vmul_2(s, s), mod);
   }
 
   return s;
@@ -594,12 +549,12 @@ v2a(oterm a)
   if (a.a == 0)
     return 0;
 
-  //printf("aa=%d\n",a.a);
+  // printf("aa=%d\n",a.a);
   for (j = 0; j < N; j++)
   {
     if (gf[j] == a.a && a.a > 0)
     {
-      //printf("j==%d\n",j);
+      // printf("j==%d\n",j);
       return j - 1;
     }
   }
@@ -607,7 +562,6 @@ v2a(oterm a)
   printf("baka-v2a\n");
   exit(1);
 }
-
 
 void printsage(vec a)
 {
@@ -657,23 +611,22 @@ void fprintsage(vec a, FILE *fp)
   }
 }
 
-
 // gcd
 vec vgcd(vec xx, vec yy)
 {
-  vec tt = {0}, tmp, h = {0},ss={0},ee={0};
-  ee.x[K]=1;
+  vec tt = {0}, tmp, h = {0}, ss = {0}, ee = {0};
+  ee.x[K] = 1;
 
   h.x[0] = 1;
-  //h.x[0] = 0;
+  // h.x[0] = 0;
   if (deg((xx)) < deg((yy)))
   {
     tmp = xx;
     xx = yy;
     yy = tmp;
   }
-  //tt = vmod(xx, yy);
-  tt=vmod(xx,yy);
+  // tt = vmod(xx, yy);
+  tt = vmod(xx, yy);
   while (deg(tt) > 0)
   {
     xx = yy;
@@ -694,16 +647,14 @@ vec vgcd(vec xx, vec yy)
   //  return yy;
 }
 
-
-
-//０多項式かどうかのチェック
+// ０多項式かどうかのチェック
 unsigned char
 chk(vec f)
 {
   int i, flg = 0;
   vec x = {0};
 
-  //x = o2v(f);
+  // x = o2v(f);
   for (i = 0; i < DEG; i++)
   {
     if (f.x[i] > 0)
@@ -731,27 +682,27 @@ OP init_pol(OP f)
   return f;
 }
 
-//ランダム多項式の生成
+// ランダム多項式の生成
 static void
 ginit(unsigned short *g)
 {
   int j, count = 0, k = 0;
   unsigned short gg[K + 1] = {0};
 
-  //printf("in ginit\n");
+  // printf("in ginit\n");
 
-  g[K] = 1;          //xor128();
-  g[0] = rand() % N; //or N
+  g[K] = 1;          // xor128();
+  g[0] = rand() % N; // or N
   k = rand() % (K - 1);
   if (k > 0)
   {
     while (count < k)
     {
-      //printf("in whule\n");
+      // printf("in whule\n");
       j = rand() % (K);
       if (j < K && j > 0 && g[j] == 0)
       {
-        g[j] = rand() % N; //or N;
+        g[j] = rand() % N; // or N;
         count++;
       }
     }
@@ -763,7 +714,7 @@ ginit(unsigned short *g)
   memcpy(g, gg, sizeof(K + 1));
 }
 
-//整数からベクトル型への変換
+// 整数からベクトル型への変換
 vec i2v(unsigned short n)
 {
   vec v = {0};
@@ -778,7 +729,7 @@ vec i2v(unsigned short n)
   return v;
 }
 
-//ベクトル型から整数への変換
+// ベクトル型から整数への変換
 unsigned short
 v2i(vec v)
 {
@@ -793,24 +744,22 @@ v2i(vec v)
   return d;
 }
 
-//配列からベクトル表現の多項式へ変換する
+// 配列からベクトル表現の多項式へ変換する
 vec Setvec(int n)
 {
   int i;
   vec v = {0};
 
-
   return v;
 }
 
-
 OP ww[T] = {0};
 
-//配列の値を係数として多項式に設定する
+// 配列の値を係数として多項式に設定する
 vec setpol(unsigned short f[], int n)
 {
   OP g;
-  vec a,v={0};
+  vec a, v = {0};
   int i;
 
   for (i = 0; i < n; i++)
@@ -818,7 +767,7 @@ vec setpol(unsigned short f[], int n)
     v.x[n - 1 - i] = f[i];
   }
 
-//  g = v2o(a);
+  //  g = v2o(a);
 
   return v;
 }
@@ -836,11 +785,11 @@ vec mkpol()
     flg = 0;
 
     memset(g, 0, sizeof(g));
-    //memset(ta, 0, sizeof(ta));
+    // memset(ta, 0, sizeof(ta));
     memset(w.x, 0, sizeof(w));
     ginit(g);
     ii++;
-    if (ii > 100 )//K / 2)
+    if (ii > 100) // K / 2)
     {
       printf("erro=%d\n", ii);
       exit(1);
@@ -854,40 +803,40 @@ vec mkpol()
         k++;
     }
 
-    //偶数項だけにならないようにする
+    // 偶数項だけにならないようにする
     if ((k > 0 && flg == 0) || (k > 1 && flg == 1))
-    //if(k>0)
+    // if(k>0)
     {
       w = setpol(g, K + 1);
       j = 1;
-      //if(isquad(w)==-1)
-      //exit(1);
+      // if(isquad(w)==-1)
+      // exit(1);
     }
     // exit(1);
 
   } while (j == 0);
 
-  //printpol(o2v(w));
-  //printf(" ==g\n");
-  //exit(1);
+  // printpol(o2v(w));
+  // printf(" ==g\n");
+  // exit(1);
 
   return w;
 }
 
-//GF(2^m) then set m in this function.
+// GF(2^m) then set m in this function.
 int ben_or(vec f)
 {
   int i, n; //, pid;
   OP uu;
   vec s = {0}, u = {0}, r = {0};
   vec v = {0}; //, ff=o2v(f);
-  //if GF(8192) is 2^m and m==13 or if GF(4096) and m==12 if GF(16384) is testing
-  //int m = E;
-  // m=12 as a for GF(4096)=2^12 defined @ gloal.h or here,for example m=4 and GF(16)
+  // if GF(8192) is 2^m and m==13 or if GF(4096) and m==12 if GF(16384) is testing
+  // int m = E;
+  //  m=12 as a for GF(4096)=2^12 defined @ gloal.h or here,for example m=4 and GF(16)
 
   v.x[1] = 1;
   s = (v);
-  //for (i = 0; i < K / 2; i++)
+  // for (i = 0; i < K / 2; i++)
   r = s;
   n = deg((f));
 
@@ -901,20 +850,20 @@ int ben_or(vec f)
 
   i = 0;
 
-  //r(x)^{q^i} square pow mod
+  // r(x)^{q^i} square pow mod
   for (i = 0; i < K / 2; i++)
   {
-    printf(":i=%d",i);
+    printf(":i=%d", i);
     // irreducible over GH(8192) 2^13
-    r = (vpp(r, f, E));
-    //if(r.x[0]==65535)
-    //return -1;
+    r = vpowmod(r, f);
+    // if(r.x[0]==65535)
+    // return -1;
     u = vadd(r, (s));
     u = vgcd(f, u);
 
-    if (deg(u) > 0 || vLT(u).a==0)
+    if (deg(u) > 0 || vLT(u).a == 0)
     {
-      //flg[i]= -1;
+      // flg[i]= -1;
       return -1;
     }
   }
@@ -922,7 +871,7 @@ int ben_or(vec f)
   return 0;
 }
 
-//多項式の代入値
+// 多項式の代入値
 unsigned short
 trace(vec f, unsigned short x)
 {
@@ -953,9 +902,9 @@ void get_irrpoly(void)
 
 aa:
 
-  //printf("\n");
+  // printf("\n");
 
-  //既約性判定のためのBen-Orアルゴリズム。拡大体にも対応している。デフォルトでGF(8192)
+  // 既約性判定のためのBen-Orアルゴリズム。拡大体にも対応している。デフォルトでGF(8192)
   l = -1;
   ii = 0;
 
@@ -968,21 +917,21 @@ aa:
     {
       printf("too many tryal\n");
       goto aa;
-      //exit(1);
+      // exit(1);
     }
     printf("ben=%d\n", ii);
     ii++;
     //
   }
 
-  //多項式の値が0でないことを確認
+  // 多項式の値が0でないことを確認
   for (i = 0; i < N; i++)
   {
     ta[i] = trace(w, i);
     if (ta[i] == 0)
     {
       printf("trace 0 @ %d\n", i);
-      //fail = 1;
+      // fail = 1;
       exit(1);
     }
   }
@@ -1001,7 +950,7 @@ aa:
   goto aa;
 }
 
-//sagemath仕様の既多項式をファイルに書き出す（マルチプロセス）
+// sagemath仕様の既多項式をファイルに書き出す（マルチプロセス）
 int irr_poly_to_file()
 {
   vec w, x, y, z;
@@ -1011,13 +960,13 @@ int irr_poly_to_file()
 
   for (i = 0; i < 3 && (pid[i] = fork()) > 0; i++)
     printf("%d\n", pid[i]);
-  //exit(1);
+  // exit(1);
   f1 = fopen("dat.sage", "w");
   f2 = fopen("dat0.sage", "w");
   f3 = fopen("dat1.sage", "w");
   f4 = fopen("dat2.sage", "w");
-  //f5=fopen("dat3.sage","w");
-  //this is child process
+  // f5=fopen("dat3.sage","w");
+  // this is child process
   fprintf(f1, "B=GF(2^%d,'a')\n", E);
   fprintf(f1, "F.<X>=B[]\n");
   fprintf(f2, "B=GF(2^%d,'a')\n", E);
@@ -1058,7 +1007,7 @@ int irr_poly_to_file()
           wait(&pid[2]);
           exit(1);
         }
-        //goto aa;
+        // goto aa;
       }
     }
     else if (pid[1] > 0)
@@ -1078,9 +1027,9 @@ int irr_poly_to_file()
         {
           fclose(f2);
           _exit(0);
-          //wait(&pid[1]);
+          // wait(&pid[1]);
         }
-        //goto aa;
+        // goto aa;
       }
     }
     //}//this is mother process
@@ -1088,7 +1037,7 @@ int irr_poly_to_file()
     else if (pid[0] > 0)
     {
 
-      //if(pid[1] == 0){
+      // if(pid[1] == 0){
       a = ben_or(y);
       if (a == 0 && k3 < DAT)
       {
@@ -1102,14 +1051,14 @@ int irr_poly_to_file()
         {
           fclose(f3);
           _exit(0);
-          //wait(&pid[0]);
+          // wait(&pid[0]);
         }
-        //goto aa;
+        // goto aa;
       }
     }
     else if (pid[0] == 0)
     {
-      //this is mother process
+      // this is mother process
 
       c = ben_or(z);
       if (c == 0 && k4 < DAT)
@@ -1124,7 +1073,7 @@ int irr_poly_to_file()
           fclose(f4);
           _exit(0);
         }
-        //goto aa;
+        // goto aa;
       }
     }
   }
@@ -1132,46 +1081,51 @@ int irr_poly_to_file()
   return 0;
 }
 
-//言わずもがな
+// 言わずもがな
 int main(void)
 {
-    vec g,w;
-    int i,count=0;
-    vec e[10]={0},v={0},x={0},z={0},ee={0},y={0},tt={0};
-    int l = -1,m,n;
-    int ii = 0;
-    // irreducible goppa code (既役多項式が必要なら、ここのコメントを外すこと。)
-    vec q={0},r={0};
+  vec g, w;
+  int i, count = 0;
+  vec e[10] = {0}, v = {0}, x = {0}, z = {0}, ee = {0}, y = {0}, tt = {0}, ww, xx;
+  int l = -1, m, n;
+  int ii = 0;
+  // irreducible goppa code (既役多項式が必要なら、ここのコメントを外すこと。)
+  vec q = {0}, r = {0};
 
+  ww = mkpol();
+  xx = mkpol();
+  srand(clock());
+  // for(i=0;i<1000000;i++)
+  // jorju(ww,xx);
+  // exit(1);
 
-//for(i=0;i<100000;i++)
-//vmod(ww,xx);
-//exit(1);
-
-    while (1)//(l == -1)
+  while (1) //(l == -1)
+  {
+    w = mkpol();
+    l = ben_or(w);
+    printf("irr=%d\n", l);
+    if (l == 0)
     {
-        w = mkpol();
-        l = ben_or(w);
-        printf("irr=%d\n", l);
-        if(l==0){
-        printsage(w);
-        printf(" ==irr\n");
-        ii++;
-        }
-        if (ii > 300)
-        {
-            printf("too many error\n");
-            exit(1);
-        }
-        //ii++;
-        //
+      printsage(w);
+      printf(" ==irr\n");
+      printf("total=%d %d vm=%d\n", mul, mul2, vm);
+      exit(1);
+      ii++;
     }
-    printf("aa\n");
-//  exit(1);
+    if (ii > 300)
+    {
+      printf("too many error\n");
+      exit(1);
+    }
+    // ii++;
+    //
+  }
+  printf("aa\n");
+  //  exit(1);
 
-  //multi_process();
-  //irr_poly_to_file();
-  //get_irrpoly();
+  // multi_process();
+  // irr_poly_to_file();
+  // get_irrpoly();
 
   return 0;
 }
