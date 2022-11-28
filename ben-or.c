@@ -101,7 +101,7 @@ unsigned short pinv(unsigned short a, unsigned short n)
 unsigned short
 equ(unsigned short a, unsigned short b)
 {
-  int i;
+  unsigned short i;
 
   for (i = 0; i < N; i++)
   {
