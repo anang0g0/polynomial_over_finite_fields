@@ -256,6 +256,101 @@ vec vmul_2(vec a, vec b)
 vec karatuba(vec f,vec g){
   int i;
 vec f1={0},f2={0},g1={0},g2={0},f3={0},g3={0},a={0},b={0},c={0},d={0},e;
+vec o1,o2,o3,o4,o5,o6,x4,y1,y2,y3,y4,y5,y6,y7={0},z1,z2,z3,z4,z5,z6,z7={0},w1,w2,w3,w4,w5,w6,w7,v1,v2,v3,v4,v5,v6,v7,x1,x2,x3,x5,x6,x7={0};
+if(deg(f)==256 || deg(g)==256)
+exit(1);
+
+int j=deg(f)+deg(g);
+
+for(i=0;i<128;i++){
+  f1.x[i]=f.x[i];
+  g1.x[i]=g.x[i];
+}
+for(i=128;i<256;i++){
+  f2.x[i-128]=f.x[i];
+  g2.x[i-128]=g.x[i];
+}
+for(i=0;i<128;i++){
+  f3.x[i]=f.x[i]^f.x[i+128];
+  g3.x[i]=g.x[i]^g.x[i+128];
+}
+
+for(i=0;i<64;i++){
+  x1.x[i]=f1.x[i];
+  x2.x[i]=f1.x[i+64];
+  x3.x[i]=f1.x[i]^f1.x[i+64];
+  y1.x[i]=f2.x[i];
+  y2.x[i]=f2.x[i+64];
+  y3.x[i]=f2.x[i]^f2.x[i+64];
+  v1.x[i]=f3.x[i];
+  v2.x[i]=f3.x[i+64];
+  v3.x[i]=f3.x[i]^f3.x[i+64];
+ 
+  z1.x[i]=g1.x[i];
+  z2.x[i]=g1.x[i+64];
+  z3.x[i]=g1.x[i]^g1.x[i+64];
+  w1.x[i]=g2.x[i];
+  w2.x[i]=g2.x[i+64];
+  w3.x[i]=g2.x[i]^g2.x[i+64];
+  o1.x[i]=g3.x[i];
+  o2.x[i]=g3.x[i+64];
+  o3.x[i]=g3.x[i]^g3.x[i+64];
+}
+x4=vmul_2(x1,z1);
+y4=vmul_2(x2,z2);
+z4=vadd(vadd(vmul_2(x3,z3),x4),y4);
+x5=vmul_2(y1,w1);
+y5=vmul_2(y2,w2);
+z5=vadd(vadd(vmul_2(y3,w3),x5),y5);
+x6=vmul_2(v1,o1);
+y6=vmul_2(v2,o2);
+z6=vadd(vadd(vmul_2(v3,o3),x6),y6);
+
+for(i=0;i<128;i++){
+x7.x[i]^=x4.x[i];
+x7.x[i+128]^=y4.x[i];
+x7.x[i+64]^=z4.x[i];
+y7.x[i]=x5.x[i];
+y7.x[i+128]^=y5.x[i];
+y7.x[i+64]^=z5.x[i];
+z7.x[i]^=x6.x[i];
+z7.x[i+128]^=y6.x[i];
+z7.x[i+64]^=z6.x[i];
+}
+for(i=0;i<256;i++){
+  a.x[i]=x7.x[i];
+  a.x[i+256]=y7.x[i];
+  //a.x[i+128]^=z7.x[i];
+}
+/*
+for(i=0;i<256;i++){
+a.x[i]^=x4.x[i];
+//a.x[i+256]^=z7.x[i];
+}
+for(i=0;i<j;i++)
+a.x[i+256]=y5.x[i];
+for(i=128;i<128+256;i++)
+a.x[i+128]^=z6.x[i];
+*/
+//printf("%d\n",j);
+/*
+c=vmul_2(f,g);
+
+printpol(a);
+printf("\n");
+printpol(c);
+printf("\n");
+//exit(1);
+
+for(i=0;i<j;i++){
+  if(a.x[i]!=c.x[i])
+  printf("i=%d %d %d\n",i,a.x[i],c.x[i]);
+}
+exit(1);
+*/
+
+
+/*
 if(deg(f)==256 || deg(g)==256)
 exit(1);
 
@@ -278,15 +373,16 @@ c=vadd(vadd(vmul_2(f3,g3),a),b);
 //printf("\n");
 //exit(1);
 //for(i=0;i<256;i++){
-  int j=deg(f)+deg(g);
+//  int j=deg(f)+deg(g);
 
+d=vadd(d,a);
+//d.x[i]^=a.x[i];
 for(i=0;i<256;i++){
-d.x[i]^=a.x[i];
 d.x[i+256]^=c.x[i];
 }
 for(i=j;i>256;i--)
 d.x[i]=b.x[i];
-e=vmul_2(f,g);
+//e=vmul_2(f,g);
 //printpol(d);
 //printf("\n");
 //printpol(e);
@@ -294,6 +390,9 @@ e=vmul_2(f,g);
 //exit(1);
 
 return d;
+*/
+
+return a;
 }
 
 
@@ -586,11 +685,12 @@ vec vpp(vec f, vec mod)
   // 繰り返し２乗法
   for (i = 1; i < E + 1; i++)
   {
-    if(deg(s)>128){
-      s = vmod(karatuba(s, s), mod);
-    }else{
+      if(deg(s)==256){
+        cnty++;
       s = vmod(vmul_2(s, s), mod);
-    }
+     }else{
+     s = vmod(vmul_2(s, s), mod);
+     }
   }
 
   return s;
@@ -1146,24 +1246,24 @@ int main(void)
   int ii = 0;
   // irreducible goppa code (既役多項式が必要なら、ここのコメントを外すこと。)
   vec q = {0}, r = {0};
-
-srand(clock());
+unsigned short ff[256]={0};
 /*
-  ww = mkpol();
-  xx = mkpol();
-  f=vmod(ww,xx);
-  g=jorju(ww,xx);
-  printpol(f);
-  printf("\n");
-  printpol(g);
-  printf("\n");
-  exit(1);
-*/
-  srand(clock());
-  // for(i=0;i<1000000;i++)
-  // jorju(ww,xx);
-  // exit(1);
+for(i=0;i<240;i++)
+ff[i]=rand()%N;
+f=(setpol(ff,240));
+//srand(clock());
+//for(i=0;i<10000;i++){
+//r=karatuba(f,f);
+//q=vmul_2(f,f);
+//}
+//exit(1);
 
+printpol(q);
+printf("\n\n");
+printpol(r);
+printf("\naaa\n");
+exit(1);
+*/
   while (1) //(l == -1)
   {
     w = mkpol();
@@ -1173,7 +1273,7 @@ srand(clock());
     {
       printsage(w);
       printf(" ==irr\n");
-      printf("total=%d %d vm=%d\n", mul, mul2, vm);
+      printf("total=%d %d vm=%d kara=%d\n", mul, mul2, vm,cnty);
       exit(1);
       ii++;
     }
