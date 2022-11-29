@@ -902,12 +902,12 @@ vec tas(tri n,int D){
   int i;
   vec e={0};
 
-  for(i=0;i<D*2;i++){
+  for(i=0;i<D;i++){
   e.x[i]^=n.a.x[i];
-  e.x[i+D*2]^=n.b.x[i];
-  e.x[i+D]^=n.c.x[i];
+  e.x[i+D]^=n.b.x[i];
+  e.x[i+D/2]^=n.c.x[i];
   }
-//printpol(n.c);
+//printpol(e);
 //printf("==eeeee\n");
 //exit(1);
 
@@ -925,28 +925,28 @@ vec kara(vec a,vec b){
   int i;
 
   z=wake(a,128);
-/*
+
   za=wake(z.a,64);
   zb=wake(z.b,64);
   zc=wake(z.c,64);
-*/
+
   w=wake(b,128);
-  /*
+  
   aa1=wake(w.a,64);
   aa2=wake(w.b,64);
   aa3=wake(w.c,64);
-*/
-  //x1=kake(aa1,za);
-  //x2=kake(aa2,zb);
-  //x3=kake(aa3,zc);
+
+  x1=kake(aa1,za);
+  x2=kake(aa2,zb);
+  x3=kake(aa3,zc);
   //printpol(x1.a);
   //printf(" ===x1.a\n");
   //exit(1);
-  /*
-  c.a=tas(x1,64);
-  c.b=tas(x2,64);
-  c.c=tas(x3,64);
-  */
+  
+  c.a=tas(x1,128);
+  c.b=tas(x2,128);
+  //c.c=tas(x3,128);
+  
   //printpol(c.c);
   //printf(" ===ca\n");
   //exit(1);
@@ -962,7 +962,7 @@ d.x[i+128]^=c.c.x[i];
   //exit(1);
 */
   c=kake(z,w);
-  d=tas(c,128);
+  d=tas(c,256);
  
   /*
   a1=wake(za.a,32);
@@ -1685,12 +1685,12 @@ unsigned short ff[256]={1,1,1,1};
 unsigned short gg[256]={0,0,1,1};
 
 
-for(i=0;i<240;i++)
+for(i=0;i<256;i++)
 ff[i]=rand()%N;
-f=(setpol(ff,240));
-for(i=0;i<100;i++)
+f=(setpol(ff,256));
+for(i=0;i<256;i++)
 gg[i]=rand()%N;
-g=(setpol(gg,100));
+g=(setpol(gg,256));
 
 
 //srand(clock());
@@ -1703,7 +1703,7 @@ vmul_2(f,f);
 }
 exit(1);
 */
-/*
+
 q=kara(f,g);
 r=vmul_2(f,g);
 printpol(q);
@@ -1714,7 +1714,7 @@ for(i=0;i<deg(r);i++)
 if(q.x[i]!=r.x[i])
 printf("i=%d, %d %d\n",i,q.x[i],r.x[i]);
 exit(1);
-*/
+
 
   while (1) //(l == -1)
   {
