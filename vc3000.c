@@ -925,13 +925,13 @@ vec kara(vec a,vec b){
   int i;
 
   z=wake(a,128);
-
+/*
   za=wake(z.a,64);
   zb=wake(z.b,64);
   zc=wake(z.c,64);
-
+*/
   w=wake(b,128);
-  
+  /*
   aa1=wake(w.a,64);
   aa2=wake(w.b,64);
   aa3=wake(w.c,64);
@@ -942,9 +942,9 @@ vec kara(vec a,vec b){
   //printpol(x1.a);
   //printf(" ===x1.a\n");
   //exit(1);
-  
-  c.a=tas(x1,128);
-  c.b=tas(x2,128);
+  */
+  //c.a=tas(x1,128);
+  //c.b=tas(x2,128);
   //c.c=tas(x3,128);
   
   //printpol(c.c);
@@ -1696,14 +1696,15 @@ g=(setpol(gg,256));
 //srand(clock());
 /*
 for(i=0;i<100000;i++){
-vmul_2(f,f);
+//vmul_2(f,f);
 //karatuba(f,f);
 //karatubaka(f,f);
-//kara(f,f);
+kara(f,f);
 }
 exit(1);
 */
-
+/*
+//q=karatuba(f,f);
 q=kara(f,g);
 r=vmul_2(f,g);
 printpol(q);
@@ -1714,7 +1715,7 @@ for(i=0;i<deg(r);i++)
 if(q.x[i]!=r.x[i])
 printf("i=%d, %d %d\n",i,q.x[i],r.x[i]);
 exit(1);
-
+*/
 
   while (1) //(l == -1)
   {
