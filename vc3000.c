@@ -920,18 +920,18 @@ vec kara(vec a,vec b){
   tri za1,za2,za3,zb1,zb2,zb3,zc1,zc2,zc3;
   tri aa1,aa2,aa3,bb1,bb2,bb3,cc1,cc2,cc3;
   tri x1,x2,x3,v1,v2,v3,w1,w2,w3,s1,s2,s3;
-  
+  tri x4,x5,x6;
   vec d;
   int i;
 
   z=wake(a,128);
-/*
+
   za=wake(z.a,64);
   zb=wake(z.b,64);
   zc=wake(z.c,64);
-*/
+
   w=wake(b,128);
-  /*
+  
   aa1=wake(w.a,64);
   aa2=wake(w.b,64);
   aa3=wake(w.c,64);
@@ -939,13 +939,14 @@ vec kara(vec a,vec b){
   x1=kake(aa1,za);
   x2=kake(aa2,zb);
   x3=kake(aa3,zc);
+  
   //printpol(x1.a);
   //printf(" ===x1.a\n");
   //exit(1);
-  */
-  //c.a=tas(x1,128);
-  //c.b=tas(x2,128);
-  //c.c=tas(x3,128);
+  
+  c.a=tas(x1,128);
+  c.b=tas(x2,128);
+  c.c=vadd(vadd(tas(x3,128),c.a),c.b);
   
   //printpol(c.c);
   //printf(" ===ca\n");
@@ -961,7 +962,7 @@ d.x[i+128]^=c.c.x[i];
   printf("====ddddd\n");
   //exit(1);
 */
-  c=kake(z,w);
+  //c=kake(z,w);
   d=tas(c,256);
  
   /*
@@ -1694,15 +1695,15 @@ g=(setpol(gg,256));
 
 
 //srand(clock());
-/*
+
 for(i=0;i<100000;i++){
 //vmul_2(f,f);
-//karatuba(f,f);
+karatuba(f,f);
 //karatubaka(f,f);
-kara(f,f);
+//kara(f,f);
 }
 exit(1);
-*/
+
 /*
 //q=karatuba(f,f);
 q=kara(f,g);
