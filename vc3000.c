@@ -377,177 +377,6 @@ return a;
 }
 
 
-//カラツバ法：3/4だけ早くなるｗ
-vec karatubaka2(vec f,vec g){
-  int i,k;
-vec f1={0},f2={0},g1={0},g2={0},f3={0},g3={0},a={0},b={0},c={0},d={0},e;
-vec o1={0},o2={0},o3={0},o4={0},o5={0},o6={0},y1={0},y2={0},y3={0},y4,y5,y6,y7={0},z1={0},z2={0},z3={0},z4,z5,z6,z7={0},w1={0},w2={0},w3={0},w4,w5,w6,w7,v1={0},v2={0},v3={0},v4,v5,v6,v7,x1={0},x2={0},x3={0},x5,x6,x7={0};
-if(deg(f)>255 || deg(g)>255){
-printf("too big %d %d",deg(f),deg(g));
-exit(1);
-}
-
-int j=deg(f)+deg(g);
-
-
-for(i=0;i<128;i++){
-  f1.x[i]=f.x[i];
-  g1.x[i]=g.x[i];
-}
-for(i=128;i<256;i++){
-  f2.x[i-128]=f.x[i];
-  g2.x[i-128]=g.x[i];
-}
-for(i=0;i<128;i++){
-  f3.x[i]=f.x[i]^f.x[i+128];
-  g3.x[i]=g.x[i]^g.x[i+128];
-}
-vec xx[9],yy[9],vv[9],zz[9],ww[9],oo[9],pp[9],qq[9],rr[9],ss[9],xa[9],xb[9],xc[9],ya[9],yb[9],yc[9],za[9],zb[9],zc[9];
-
-for(i=0;i<64;i++){
-  x1.x[i]=f1.x[i];
-  x2.x[i]=f1.x[i+64];
-  x3.x[i]=f1.x[i]^f1.x[i+64];
-  y1.x[i]=f2.x[i];
-  y2.x[i]=f2.x[i+64];
-  y3.x[i]=f2.x[i]^f2.x[i+64];
-  v1.x[i]=f3.x[i];
-  v2.x[i]=f3.x[i+64];
-  v3.x[i]=f3.x[i]^f3.x[i+64];
- 
-  z1.x[i]=g1.x[i];
-  z2.x[i]=g1.x[i+64];
-  z3.x[i]=g1.x[i]^g1.x[i+64];
-  w1.x[i]=g2.x[i];
-  w2.x[i]=g2.x[i+64];
-  w3.x[i]=g2.x[i]^g2.x[i+64];
-  o1.x[i]=g3.x[i];
-  o2.x[i]=g3.x[i+64];
-  o3.x[i]=g3.x[i]^g3.x[i+64];
-}
-
-for(k=0;k<2;k++){
-for(i=0;i<32;i++){
-xx[k].x[i]=x1.x[i+32*k];
-xx[2].x[i]=x1.x[i]^x1.x[i+32];
-yy[k].x[i]=x2.x[i+32*k];
-yy[2].x[i]=x2.x[i]^x2.x[i+32];
-vv[k].x[i]=x3.x[i+32*k];
-vv[2].x[i]=x3.x[i]^x3.x[i+32];
-zz[k].x[i]=y1.x[i+32*k];
-zz[2].x[i]=y1.x[i]^y1.x[32+i];
-ww[k].x[i]=y2.x[i+32*k];
-ww[2].x[i]=y2.x[i]^y2.x[32+i];
-oo[k].x[i]=y3.x[i+32*k];
-oo[2].x[i]=y3.x[i]^y3.x[32+i];
-pp[k].x[i]=v1.x[i+32*k];
-pp[2].x[i]=v1.x[i]^v1.x[32+i];
-qq[k].x[i]=v2.x[i+32*k];
-qq[2].x[i]=v2.x[i]^v2.x[32+i];
-rr[k].x[i]=v3.x[i+32*k];
-rr[2].x[i]=v3.x[i]^v3.x[32+i];
-
-xa[k].x[i]=z1.x[i+32*k];
-xa[2].x[i]=z1.x[i]^z1.x[i+32];
-xb[k].x[i]=z2.x[i+32*k];
-xb[2].x[i]=z2.x[i]^z2.x[i+32];
-xc[k].x[i]=z3.x[i+32*k];
-xc[2].x[i]=z3.x[i]^z3.x[i+32];
-ya[k].x[i]=w1.x[i+32*k];
-ya[2].x[i]=w1.x[i]^w1.x[i+32];
-yb[k].x[i]=w2.x[i+32*k];
-yb[2].x[i]=w2.x[i]^w2.x[i+32];
-yc[k].x[i]=w3.x[i+32*k];
-yc[2].x[i]=w3.x[i]^w3.x[i+32];
-za[k].x[i]=o1.x[i+32*k];
-za[2].x[i]=o1.x[i]^o1.x[i+32];
-zb[k].x[i]=o2.x[i+32*k];
-zb[2].x[i]=o2.x[i]^o2.x[i+32];
-zc[k].x[i]=o3.x[i+32*k];
-zc[2].x[i]=o3.x[i]^o3.x[i+32];
-}
-}
-
-vec aa[3],bb[3],cc[3],dd[3],ee[3],ff[3],gg[3],hh[3],nn[3],mm[3];
-for(k=0;k<2;k++){
-aa[k]=vmul_2(xx[k],xa[k]);
-bb[k]=vmul_2(yy[k],xb[k]);
-cc[k]=vmul_2(vv[k],xc[k]);
-dd[k]=vmul_2(zz[k],ya[k]);
-ee[k]=vmul_2(ww[k],yb[k]);
-ff[k]=vmul_2(oo[k],yc[k]);
-gg[k]=vmul_2(pp[k],za[k]);
-hh[k]=vmul_2(qq[k],zb[k]);
-nn[k]=vmul_2(rr[k],zc[k]);
-}
-aa[2]=vadd(vadd(vmul_2(xx[2],xa[2]),aa[0]),aa[1]);
-bb[2]=vadd(vadd(vmul_2(yy[2],xb[2]),bb[0]),bb[1]);
-cc[2]=vadd(vadd(vmul_2(vv[2],xc[2]),cc[0]),cc[1]);
-dd[2]=vadd(vadd(vmul_2(zz[2],ya[2]),dd[0]),dd[1]);
-ee[2]=vadd(vadd(vmul_2(ww[2],yb[2]),ee[0]),ee[1]);
-ff[2]=vadd(vadd(vmul_2(oo[2],yc[2]),ff[0]),ff[1]);
-gg[2]=vadd(vadd(vmul_2(pp[2],za[2]),gg[0]),gg[1]);
-hh[2]=vadd(vadd(vmul_2(qq[2],zb[2]),hh[0]),hh[1]);
-nn[2]=vadd(vadd(vmul_2(rr[2],zc[2]),nn[0]),nn[1]);
-
-//exit(1);
-for(i=0;i<64;i++){
-x7.x[i]=aa[0].x[i];
-x7.x[i+64]=aa[1].x[i];
-x7.x[i+32]^=aa[2].x[i];
-y7.x[i]=bb[0].x[i];
-y7.x[i+64]=bb[1].x[i];
-y7.x[i+32]^=bb[2].x[i];
-z7.x[i]=cc[0].x[i];
-z7.x[i+64]=cc[1].x[i];
-z7.x[i+32]^=cc[2].x[i];
-
-o1.x[i]=dd[0].x[i];
-o1.x[i+64]=dd[1].x[i];
-o1.x[i+32]^=dd[2].x[i];
-o2.x[i]=ee[0].x[i];
-o2.x[i+64]=ee[1].x[i];
-o2.x[i+32]^=ee[2].x[i];
-o3.x[i]=ff[0].x[i];
-o3.x[i+64]=ff[1].x[i];
-o3.x[i+32]^=ff[2].x[i];
-
-o4.x[i]=gg[0].x[i];
-o4.x[i+64]=gg[1].x[i];
-o4.x[i+32]^=gg[2].x[i];
-o5.x[i]=hh[0].x[i];
-o5.x[i+64]=hh[1].x[i];
-o5.x[i+32]^=hh[2].x[i];
-o6.x[i]=nn[0].x[i];
-o6.x[i+64]=nn[1].x[i];
-o6.x[i+32]^=nn[2].x[i];
-
-}
-vec oe[3]={0},ooo={0};
-for(i=0;i<128;i++){
-oe[0].x[i]=x7.x[i];
-oe[0].x[i+128]=y7.x[i];
-oe[0].x[i+64]^=z7.x[i];
-
-oe[1].x[i]=o1.x[i];
-oe[1].x[i+128]=o2.x[i];
-oe[1].x[i+64]^=o3.x[i];
-
-oe[2].x[i]=o4.x[i];
-oe[2].x[i+128]=o5.x[i];
-oe[2].x[i+64]^=o6.x[i];
-}
-for(i=0;i<256;i++){
-  ooo.x[i]=oe[0].x[i];
-  ooo.x[i+256]=oe[1].x[i];
-  ooo.x[i+128]^=oe[2].x[i];
-
-}
-
-return ooo;
-}
-
-
 
 //カラツバ法：3/4だけ早くなるｗ
 vec karatubaka(vec f,vec g){
@@ -725,6 +554,9 @@ for(i=0;i<256;i++){
 
 return ooo;
 }
+
+
+
 
 
 // 多項式を単行式で割る
@@ -936,7 +768,7 @@ vec kara(vec a,vec b){
   aa1=wake(w.a,64);
   aa2=wake(w.b,64);
   aa3=wake(w.c,64);
-/*
+
   x1=kake(aa1,za);
   x2=kake(aa2,zb);
   x3=kake(aa3,zc);
@@ -944,11 +776,11 @@ vec kara(vec a,vec b){
   c.a=tas(x1,128);
   c.b=tas(x2,128);
   c.c=vadd(vadd(tas(x3,128),c.a),c.b);
-*/  
-  c=kake(z,w);
+
+  //c=kake(z,w);
   d=tas(c,256);
  
-  /*
+/*
   a1=wake(za.a,32);
   a2=wake(za.b,32);
   a3=wake(za.c,32);
@@ -997,7 +829,7 @@ vec kara(vec a,vec b){
   p1.c=vadd(vadd(tas(o3,128),p1.a),p1.b);
   
   d=tas(p1,256);
-  */
+  */  
   /*
   cf=vmul_2(a,b);
   for(i=0;i<512;i++){
@@ -1685,28 +1517,28 @@ g=(setpol(gg,256));
 
 
 //srand(clock());
-/*
+
 for(i=0;i<100000;i++){
-//vmul_2(f,f);
+//vmul_2(f,g);
 karatuba(f,g);
 //karatubaka(f,f);
 //kara(f,g);
 }
 exit(1);
-*/
-/*
-q=karatuba(f,g);
-//q=kara(f,g);
+
+
+//q=karatuba(f,g);
+q=kara(f,g);
 r=vmul_2(f,g);
 printpol(q);
-printf("\n\n");
+printf("===q\n\n");
 printpol(r);
 printf("\naaa\n");
 for(i=0;i<deg(r);i++)
 if(q.x[i]!=r.x[i])
 printf("i=%d, %d %d\n",i,q.x[i],r.x[i]);
 exit(1);
-*/
+
 
   while (1) //(l == -1)
   {
