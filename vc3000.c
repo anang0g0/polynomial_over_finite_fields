@@ -54,6 +54,141 @@ int num = 0;
 
 static unsigned short c[E * K + 1] = {0};
 
+unsigned short oinv(unsigned short a);
+
+
+/* input: in0, in1 in GF((2^m)^t)*/
+/* output: out = in0*in1 */
+void GF_mul(unsigned short *out, unsigned short *in0, unsigned short *in1)
+{
+	int i, j;
+
+	unsigned short prod[ 128*2-1 ];
+
+	for (i = 0; i < 128*2-1; i++)
+		prod[i] = 0;
+
+	for (i = 0; i < 128; i++){
+		for (j = 0; j < 128; j++)
+			prod[i+j] ^= gf[mlt(fg[in0[i]], fg[in1[j]])];
+  }
+	//
+
+	for (i = (128-1)*2; i >= 128; i--)
+	{
+		prod[i - 128 + 7] ^= prod[i];
+		prod[i - 128 + 2] ^= prod[i];
+		prod[i - 128 + 1] ^= prod[i];
+		prod[i - 128 + 0] ^= prod[i];
+	}
+
+	for (i = 0; i < 128; i++)
+		out[i] = prod[i];
+}
+
+
+//#define NN 16
+vec renritu(MTX a)
+{
+  unsigned short p, d;
+  int i, j, k;
+  vec v={0};
+ 
+  for (i = 0; i < 128; i++) {
+    p = a.x[i][i];
+ 
+    for (j = 0; j < (128 + 1); j++) {
+      a.x[i][j] = gf[mlt(fg[a.x[i][j]],oinv(p))];
+    }
+ 
+    for (j = 0; j < 128; j++) {
+      if (i != j) {
+        d = a.x[j][i];
+ 
+        for (k = i; k < (128 + 1); k++) {
+          a.x[j][k] = a.x[j][k] ^ gf[mlt(fg[d] , fg[a.x[i][k]])];
+        }
+      }
+    }
+  }
+ for(i=0;i<128;i++){
+  if(a.x[i][i]!=1)
+  //exit(1);
+  for(j=0;j<128+1;j++)
+  printf("%d,",a.x[i][j]);
+  printf("\n");
+ }
+ printf("\n");
+
+  for (i = 0; i < 128; i++) {
+    v.x[i]=a.x[i][128];
+     //v.x[128]=1;
+    printf(" x%d = %d\n", i , v.x[i]);
+  }
+ 
+  return v;
+}
+
+
+/* input: f, element in GF((2^m)^t) */
+/* output: out, minimal polynomial of f */
+/* return: 0 for success and -1 for failure */
+int mykey(unsigned short *out, vec x){
+  	unsigned short mat[ 128+1 ][ 128 ]={0};
+  MTX a={0};
+int i,j,k;
+
+	// fill matrix
+
+	mat[0][0] = 1;
+
+	for (i = 1; i < 128; i++)
+		mat[0][i] = 0;
+
+	for (i = 0; i < 128; i++)
+		mat[1][i] = x.x[i];
+
+	for (j = 2; j <= 128; j++){
+    //for(i=0;i<128;i++)
+    //mat[j][i]=gf[mlt(fg[mat[j-1][i]],fg[x.x[i]])];
+    GF_mul(mat[j], mat[j-1], x.x);
+   
+   //for(i=0;i<K;i++)
+   //printf("%d,",mat[j][i]);
+   //printf("\n");
+   
+  }
+  //exit(1);
+		//
+  for(i=0;i<128;i++){
+    for(j=0;j<128+1;j++){
+        a.x[i][j]=mat[j][i];
+        printf("%d,",mat[j][i]);
+    }
+    printf("\n");
+  }
+  printf("\n");
+  //exit(1);
+
+
+vec v={0};
+v=renritu(a);
+//printsage(x);
+//printf("\n");
+//for(i=0;i<T;i++)
+//v.x[T-i-1]=x.x[i];
+//printsage(v);
+//printf("\n");
+
+for(i=0;i<128;i++){
+out[i]=v.x[i];
+printf("%d,",out[i]);
+}
+printf("\n");
+//exit(1);
+
+}
+
 // 有限体の元の逆数
 unsigned short
 oinv(unsigned short a)
@@ -1507,17 +1642,27 @@ int main(void)
 unsigned short ff[256]={1,1,1,1};
 unsigned short gg[256]={0,0,1,1};
 
+vec pp={0};
 
+//srand(clock());
 for(i=0;i<256;i++)
 ff[i]=rand()%N;
 f=(setpol(ff,256));
 for(i=0;i<256;i++)
 gg[i]=rand()%N;
 g=(setpol(gg,256));
+for(i=0;i<128;i++)
+pp.x[i]=rand()%N;
 
 
-//srand(clock());
 
+mykey(tt.x,pp);
+tt.x[128]=1;
+ben_or(tt);
+printsage(tt);
+printf("\n");
+//exit(1);
+/*
 for(i=0;i<100000;i++){
 //vmul_2(f,g);
 karatuba(f,g);
@@ -1525,8 +1670,8 @@ karatuba(f,g);
 //kara(f,g);
 }
 exit(1);
-
-
+*/
+/*
 //q=karatuba(f,g);
 q=kara(f,g);
 r=vmul_2(f,g);
@@ -1538,7 +1683,7 @@ for(i=0;i<deg(r);i++)
 if(q.x[i]!=r.x[i])
 printf("i=%d, %d %d\n",i,q.x[i],r.x[i]);
 exit(1);
-
+*/
 
   while (1) //(l == -1)
   {
