@@ -1692,11 +1692,6 @@ x.x[K]=1;
 v.x[K]=1;
 printsage(v);
 printf("\n");
-unsigned short o=0;
-for(i=0;i<K;i++)
-o^=gf[mlt(fg[pp.x[i]],fg[x.x[i]])];
-printf("total=%d\n",o);
-exit(1);
 
 
 /*
@@ -1734,12 +1729,12 @@ exit(1);
 
   while (1) //(l == -1)
   {
-    w = mkpol();
-    l = ben_or(w);
+    //w = mkpol();
+    l = ben_or(v);
     printf("irr=%d\n", l);
     if (l == 0)
     {
-      printsage(w);
+      printsage(v);
       printf(" ==irr\n");
       exit(1);
       ii++;
