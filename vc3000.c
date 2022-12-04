@@ -63,26 +63,26 @@ void GF_mul(unsigned short *out, unsigned short *in0, unsigned short *in1)
 {
 	int i, j;
 
-	unsigned short prod[ 128*2-1 ];
+	unsigned short prod[ K*2-1 ]={0};
 
-	for (i = 0; i < 128*2-1; i++)
+	for (i = 0; i < K*2-1; i++)
 		prod[i] = 0;
 
-	for (i = 0; i < 128; i++){
-		for (j = 0; j < 128; j++)
+	for (i = 0; i < K; i++){
+		for (j = 0; j < K; j++)
 			prod[i+j] ^= gf[mlt(fg[in0[i]], fg[in1[j]])];
   }
 	//
 
-	for (i = (128-1)*2; i >= 128; i--)
+	for (i = (K-1)*2; i >= K; i--)
 	{
-		prod[i - 128 + 7] ^= prod[i];
-		prod[i - 128 + 2] ^= prod[i];
-		prod[i - 128 + 1] ^= prod[i];
-		prod[i - 128 + 0] ^= prod[i];
+    prod[i - K + 241] ^= prod[i];
+    prod[i - K + 178] ^= prod[i];
+		prod[i - K + 121] ^= prod[i];
+    prod[i - K + 0] ^= prod[i];
 	}
 
-	for (i = 0; i < 128; i++)
+	for (i = 0; i < K; i++)
 		out[i] = prod[i];
 }
 
@@ -94,34 +94,34 @@ vec renritu(MTX a)
   int i, j, k;
   vec v={0};
  
-  for (i = 0; i < 128; i++) {
+  for (i = 0; i < K; i++) {
     p = a.x[i][i];
  
-    for (j = 0; j < (128 + 1); j++) {
+    for (j = 0; j < (K + 1); j++) {
       a.x[i][j] = gf[mlt(fg[a.x[i][j]],oinv(p))];
     }
  
-    for (j = 0; j < 128; j++) {
+    for (j = 0; j < K; j++) {
       if (i != j) {
         d = a.x[j][i];
  
-        for (k = i; k < (128 + 1); k++) {
+        for (k = i; k < (K + 1); k++) {
           a.x[j][k] = a.x[j][k] ^ gf[mlt(fg[d] , fg[a.x[i][k]])];
         }
       }
     }
   }
- for(i=0;i<128;i++){
+ for(i=0;i<K;i++){
   if(a.x[i][i]!=1)
   //exit(1);
-  for(j=0;j<128+1;j++)
+  for(j=0;j<K+1;j++)
   printf("%d,",a.x[i][j]);
   printf("\n");
  }
  printf("\n");
 
-  for (i = 0; i < 128; i++) {
-    v.x[i]=a.x[i][128];
+  for (i = 0; i < K; i++) {
+    v.x[i]=a.x[i][K];
      //v.x[128]=1;
     printf(" x%d = %d\n", i , v.x[i]);
   }
@@ -134,7 +134,7 @@ vec renritu(MTX a)
 /* output: out, minimal polynomial of f */
 /* return: 0 for success and -1 for failure */
 int mykey(unsigned short *out, vec x){
-  	unsigned short mat[ 128+1 ][ 128 ]={0};
+  	unsigned short mat[ K+1 ][ K ]={0};
   MTX a={0};
 int i,j,k;
 
@@ -142,13 +142,13 @@ int i,j,k;
 
 	mat[0][0] = 1;
 
-	for (i = 1; i < 128; i++)
+	for (i = 1; i < K; i++)
 		mat[0][i] = 0;
 
-	for (i = 0; i < 128; i++)
+	for (i = 0; i < K; i++)
 		mat[1][i] = x.x[i];
 
-	for (j = 2; j <= 128; j++){
+	for (j = 2; j <= K; j++){
     //for(i=0;i<128;i++)
     //mat[j][i]=gf[mlt(fg[mat[j-1][i]],fg[x.x[i]])];
     GF_mul(mat[j], mat[j-1], x.x);
@@ -160,8 +160,8 @@ int i,j,k;
   }
   //exit(1);
 		//
-  for(i=0;i<128;i++){
-    for(j=0;j<128+1;j++){
+  for(i=0;i<K;i++){
+    for(j=0;j<K+1;j++){
         a.x[i][j]=mat[j][i];
         printf("%d,",mat[j][i]);
     }
@@ -180,7 +180,7 @@ v=renritu(a);
 //printsage(v);
 //printf("\n");
 
-for(i=0;i<128;i++){
+for(i=0;i<K;i++){
 out[i]=v.x[i];
 printf("%d,",out[i]);
 }
@@ -1237,8 +1237,8 @@ ginit(unsigned short *g)
   // printf("in ginit\n");
 
   g[K] = 1;          // xor128();
-  g[0] = rand() % N; // or N
-  k = rand() % (K - 1);
+  g[0] = rand() % 2; // or N
+  k = rand() % 2; //(K - 1);
   if (k > 0)
   {
     while (count < k)
@@ -1633,7 +1633,7 @@ int irr_poly_to_file()
 int main(void)
 {
   vec g, w;
-  int i, count = 0;
+  int i,j, count = 0;
   vec e[10] = {0}, v = {0}, x = {0}, z = {0}, ee = {0}, y = {0}, tt = {0}, ww, xx,f;
   int l = -1, m, n;
   int ii = 0;
@@ -1641,27 +1641,74 @@ int main(void)
   vec q = {0}, r = {0};
 unsigned short ff[256]={1,1,1,1};
 unsigned short gg[256]={0,0,1,1};
-
+MTX a={0};
 vec pp={0};
 
-//srand(clock());
+
+srand(clock());
+
 for(i=0;i<256;i++)
 ff[i]=rand()%N;
 f=(setpol(ff,256));
 for(i=0;i<256;i++)
 gg[i]=rand()%N;
 g=(setpol(gg,256));
-for(i=0;i<128;i++)
+for(i=0;i<K;i++)
 pp.x[i]=rand()%N;
+MTX opu={0};
+vec cc={0};
+
+	opu.x[0][0] = 1234;
+
+	for (i = 1; i < K; i++)
+		opu.x[0][i] = rand()%N;
+
+	for (i = 0; i < K; i++)
+		opu.x[1][i] = pp.x[i];
+  for(i=0;i<K;i++)
+  {
+    for(j=1;j<=K;j++){
+      //opu.x[j][i]=rand()%N; //gf[mltn(j,fg[pp.x[i]])];
+      GF_mul(opu.x[j], opu.x[j-1], pp.x);
+      
+      }
+  }
+
+    for(i=0;i<K;i++){
+    for(j=0;j<K+1;j++){
+        a.x[i][j]=opu.x[j][i];
+        printf("%d,",opu.x[j][i]);
+    }
+    printf(" ===\n");
+  }
+  printf("\n");
+
+v=renritu(a);
+
+for(i=0;i<K;i++)
+x.x[K-i+1]=v.x[i];
+x.x[K]=1;
+
+v.x[K]=1;
+printsage(v);
+printf("\n");
+unsigned short o=0;
+for(i=0;i<K;i++)
+o^=gf[mlt(fg[pp.x[i]],fg[x.x[i]])];
+printf("total=%d\n",o);
+exit(1);
 
 
-
+/*
 mykey(tt.x,pp);
 tt.x[128]=1;
-ben_or(tt);
+if(ben_or(tt)==0){
+  printf("\n");
 printsage(tt);
 printf("\n");
-//exit(1);
+}
+exit(1);
+*/
 /*
 for(i=0;i<100000;i++){
 //vmul_2(f,g);
@@ -1673,7 +1720,7 @@ exit(1);
 */
 /*
 //q=karatuba(f,g);
-q=kara(f,g);
+q=karatuba(f,g);
 r=vmul_2(f,g);
 printpol(q);
 printf("===q\n\n");
@@ -1694,7 +1741,6 @@ exit(1);
     {
       printsage(w);
       printf(" ==irr\n");
-      printf("total=%d %d vm=%d kara=%d\n", mul, mul2, vm,cnty);
       exit(1);
       ii++;
     }
