@@ -79,18 +79,18 @@ int atom(unsigned short a){
   }
 }
 
+//a<b : gf[b]%gf[a]
 unsigned short imod(unsigned short a,unsigned short b){
-  int i=fg[a]-fg[b];
+  int i=fg[b]%fg[a];
+  int k=0;
 
+  printf("a=%d b=%d\n",fg[a],fg[b]);
   if(i>0){
-    while(i>fg[b])
-    i-=fg[b];
-  return i;
+  return i+1;
   }
-  if(i<0)
-  return fg[a];
   if(i==0)
-  return 0;
+  return 1;
+  
 }
 
 unsigned short gcd(unsigned short a, unsigned short b)
@@ -1727,6 +1727,7 @@ int irr_poly_to_file()
   return 0;
 }
 
+
 // 言わずもがな
 int main(void)
 {
@@ -1756,6 +1757,11 @@ int main(void)
   vec cc = {0};
 
   opu.x[0][0] = 1234;
+
+  i=4;
+  j=8;
+  printf("%d\n",gf[imod(gf[5],gf[9])]);
+  //exit(1);
 
   for (i = 1; i < K; i++)
     opu.x[0][i] = rand() % N;
