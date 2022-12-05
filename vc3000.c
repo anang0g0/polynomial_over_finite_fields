@@ -1760,7 +1760,7 @@ int main(void)
 
   i=4;
   j=8;
-  printf("%d\n",gf[imod(gf[5],gf[9])]);
+  printf("%d\n",gf[imod(gf[5],gf[8])]);
   //exit(1);
 
   for (i = 1; i < K; i++)
