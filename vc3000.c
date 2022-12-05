@@ -56,6 +56,48 @@ static unsigned short c[E * K + 1] = {0};
 
 unsigned short oinv(unsigned short a);
 
+unsigned short gcd(unsigned short a, unsigned short b)
+{
+  int r, tmp;
+
+  /* 自然数 a > b を確認・入替 */
+  if (a < b)
+  {
+    tmp = a;
+    a = b;
+    b = tmp;
+  }
+
+  /* ユークリッドの互除法 */
+  r = a % b;
+  while (r != 0)
+  {
+    a = b;
+    b = r;
+    r = a % b;
+  }
+
+  /* 最大公約数を出力 */
+  printf("最大公約数 = %d\n", b);
+
+  return b;
+}
+
+int primitive(vec x){
+  int i,j,k=deg(x),l;
+
+  for(i=0;i<k;i++){
+    for(j=i;j<k;j++){
+    if(i!=j){
+    l=gcd(x.x[i],x.x[j]);
+    if(l>1)
+    return -1;
+    }
+    }
+  }
+return 0;
+}
+
 /* input: in0, in1 in GF((2^m)^t)*/
 /* output: out = in0*in1 */
 void GF_mul(unsigned short *out, unsigned short *in0, unsigned short *in1)
@@ -361,7 +403,7 @@ void printpol(vec a)
       printf("%u", a.x[i]);
       // if (i > 0)
       printf("x^%d", i);
-      // if (i > 0)
+       if (i > 0)
       printf("+");
     }
   }
@@ -1129,7 +1171,7 @@ unsigned short v2a(oterm a)
 
 void printsage(vec a)
 {
-  int i, j, k;
+  int i, j, k=deg(a);
   oterm b;
 
   printf("poly=");
@@ -1142,7 +1184,9 @@ void printsage(vec a)
       j = v2a(b);
       // printf("%d,==ba\n",b.a);
       // printf ("X**%d+", i); //for GF2
-      printf("B('a^%d')*X**%d+", j, i); // for GF(2^m)
+      printf("B('a^%d')*X**%d", j, i); // for GF(2^m)
+      if(i!=k)
+      printf("+");
     }
   }
 }
