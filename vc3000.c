@@ -1169,6 +1169,16 @@ unsigned short v2a(oterm a)
   exit(1);
 }
 
+unsigned short imod(unsigned short a,unsigned short b){
+  int i=fg[a]-fg[b];
+
+  if(i>0)
+  return i;
+  if(i<0)
+  return fg[b];
+  if(i==0)
+  return 0;
+}
 void printsage(vec a)
 {
   int i, j, k=deg(a);
