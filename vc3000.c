@@ -56,12 +56,49 @@ static unsigned short c[E * K + 1] = {0};
 
 unsigned short oinv(unsigned short a);
 
+
+//整数のべき乗
+unsigned int
+ipow(unsigned int q, unsigned int u)
+{
+  unsigned int i, m = 1;
+
+  for (i = 0; i < u; i++)
+    m = gf[mlt(fg[m],fg[q])];
+
+  printf("in ipow====%d\n", m);
+
+  return m;
+}
+
+int atom(unsigned short a){
+  if(ipow(a,N-1)==1){
+  return 0;
+  }else{
+    return -1;
+  }
+}
+
+unsigned short imod(unsigned short a,unsigned short b){
+  int i=fg[a]-fg[b];
+
+  if(i>0){
+    while(i>fg[b])
+    i-=fg[b];
+  return i;
+  }
+  if(i<0)
+  return fg[a];
+  if(i==0)
+  return 0;
+}
+
 unsigned short gcd(unsigned short a, unsigned short b)
 {
   int r, tmp;
 
   /* 自然数 a > b を確認・入替 */
-  if (a < b)
+  if (fg[a] < fg[b])
   {
     tmp = a;
     a = b;
@@ -69,12 +106,12 @@ unsigned short gcd(unsigned short a, unsigned short b)
   }
 
   /* ユークリッドの互除法 */
-  r = a % b;
+  r = gf[imod(a , b)];
   while (r != 0)
   {
     a = b;
     b = r;
-    r = a % b;
+    r = gf[imod(a , b)];
   }
 
   /* 最大公約数を出力 */
@@ -1169,16 +1206,6 @@ unsigned short v2a(oterm a)
   exit(1);
 }
 
-unsigned short imod(unsigned short a,unsigned short b){
-  int i=fg[a]-fg[b];
-
-  if(i>0)
-  return i;
-  if(i<0)
-  return fg[b];
-  if(i==0)
-  return 0;
-}
 void printsage(vec a)
 {
   int i, j, k=deg(a);
