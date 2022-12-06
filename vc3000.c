@@ -135,6 +135,7 @@ int primitive(vec x){
 return 0;
 }
 
+
 /* input: in0, in1 in GF((2^m)^t)*/
 /* output: out = in0*in1 */
 void GF_mul(unsigned short *out, unsigned short *in0, unsigned short *in1)
@@ -155,9 +156,24 @@ void GF_mul(unsigned short *out, unsigned short *in0, unsigned short *in1)
 
   for (i = (K - 1) * 2; i >= K; i--)
   {
-    prod[i - K + 241] ^= prod[i];
-    prod[i - K + 178] ^= prod[i];
-    prod[i - K + 121] ^= prod[i];
+    /*
+    //GF(2^1024)
+    prod[i - K + 19] ^= prod[i];
+    prod[i - K + 6] ^= prod[i];
+    prod[i - K + 1] ^= prod[i];
+    prod[i - K + 0] ^= prod[i];
+    */
+    /*
+    //GF(2^512)
+    prod[i - K + 8] ^= prod[i];
+    prod[i - K + 5] ^= prod[i];
+    prod[i - K + 2] ^= prod[i];
+    prod[i - K + 0] ^= prod[i];
+    */
+    //GF(2^256)
+    prod[i - K + 10] ^= prod[i];
+    prod[i - K + 5] ^= prod[i];
+    prod[i - K + 2] ^= prod[i];
     prod[i - K + 0] ^= prod[i];
   }
 
@@ -1756,15 +1772,26 @@ int main(void)
   MTX opu = {0};
   vec cc = {0};
 
-  opu.x[0][0] = 1234;
+//  opu.x[0][0] = 1234;
+
+/*
+for(i=0;i<2000000000;i++){
+//printf("%d\n",gf_mul(111,222));
+gf_mul(111,222);
+//printf("%d\n",gf[mlt(fg[111],fg[222])]);
+//gf[mlt(fg[111],fg[222])];
+}
+exit(1);
 
   i=4;
   j=8;
   printf("%d\n",gf[imod(gf[5],gf[8])]);
   //exit(1);
+*/
 
+  opu.x[0][0]=1;
   for (i = 1; i < K; i++)
-    opu.x[0][i] = rand() % N;
+    opu.x[0][i] = 0; //rand() % N;
 
   for (i = 0; i < K; i++)
     opu.x[1][i] = pp.x[i];
