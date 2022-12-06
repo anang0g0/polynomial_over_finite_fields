@@ -157,20 +157,20 @@ void GF_mul(unsigned short *out, unsigned short *in0, unsigned short *in1)
   for (i = (K - 1) * 2; i >= K; i--)
   {
     /*
-    //GF(2^1024)
+    //GF(2^1024) from sage
     prod[i - K + 19] ^= prod[i];
     prod[i - K + 6] ^= prod[i];
     prod[i - K + 1] ^= prod[i];
     prod[i - K + 0] ^= prod[i];
     */
     /*
-    //GF(2^512)
+    //GF(2^512) from sage
     prod[i - K + 8] ^= prod[i];
     prod[i - K + 5] ^= prod[i];
     prod[i - K + 2] ^= prod[i];
     prod[i - K + 0] ^= prod[i];
     */
-    //GF(2^256)
+    //GF(2^256) from sage
     prod[i - K + 10] ^= prod[i];
     prod[i - K + 5] ^= prod[i];
     prod[i - K + 2] ^= prod[i];
