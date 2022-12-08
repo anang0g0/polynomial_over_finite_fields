@@ -33,6 +33,7 @@
 #include <err.h>
 #include <errno.h>
 
+extern int mltu();
 extern int mlt();
 extern int mltn();
 extern void print_trace();
@@ -72,7 +73,7 @@ ipow(unsigned int q, unsigned int u)
 }
 
 int atom(unsigned short a){
-  if(ipow(a,N-1)==1){
+  if(mltn(N-1,a)==1){
   return 0;
   }else{
     return -1;
@@ -80,7 +81,7 @@ int atom(unsigned short a){
 }
 
 //a<b : gf[b]%gf[a]
-unsigned short imod(unsigned short a,unsigned short b){
+unsigned short gf_mod(unsigned short a,unsigned short b){
   int i=fg[b]%fg[a];
   int k=0;
 
@@ -90,6 +91,8 @@ unsigned short imod(unsigned short a,unsigned short b){
   }
   if(i==0)
   return 1;
+  if(fg[b]<fg[a])
+  return fg[b];
   
 }
 
@@ -106,12 +109,12 @@ unsigned short gcd(unsigned short a, unsigned short b)
   }
 
   /* ユークリッドの互除法 */
-  r = gf[imod(a , b)];
+  r = gf[gf_mod(a , b)];
   while (r != 0)
   {
     a = b;
     b = r;
-    r = gf[imod(a , b)];
+    r = gf[gf_mod(a , b)];
   }
 
   /* 最大公約数を出力 */
@@ -163,18 +166,20 @@ void GF_mul(unsigned short *out, unsigned short *in0, unsigned short *in1)
     prod[i - K + 1] ^= prod[i];
     prod[i - K + 0] ^= prod[i];
     */
-    /*
+    
     //GF(2^512) from sage
     prod[i - K + 8] ^= prod[i];
     prod[i - K + 5] ^= prod[i];
     prod[i - K + 2] ^= prod[i];
     prod[i - K + 0] ^= prod[i];
-    */
+    
+   /*
     //GF(2^256) from sage
     prod[i - K + 10] ^= prod[i];
     prod[i - K + 5] ^= prod[i];
     prod[i - K + 2] ^= prod[i];
     prod[i - K + 0] ^= prod[i];
+    */
   }
 
   for (i = 0; i < K; i++)
@@ -290,6 +295,16 @@ int mykey(unsigned short *out, vec x)
   printf("\n");
   // exit(1);
 }
+
+
+unsigned int gf_div(unsigned int a,unsigned int b){
+  if(fg[a]<fg[b])
+  return fg[a];
+  return fg[a]-fg[b];
+  if(fg[a]==fg[b])
+  return 1;
+}
+
 
 // 有限体の元の逆数
 unsigned short
@@ -1195,7 +1210,7 @@ vec vpp(vec f, vec mod)
   // 繰り返し２乗法
   for (i = 1; i < E + 1; i++)
   {
-    s = vmod(karatuba(s, s), mod);
+    s = vmod(vmul_2(s, s), mod);
   }
 
   return s;
@@ -1309,7 +1324,7 @@ vec vgcd(vec xx, vec yy)
 }
 
 // ０多項式かどうかのチェック
-unsigned char
+unsigned short
 chk(vec f)
 {
   int i, flg = 0;
@@ -1748,7 +1763,7 @@ int irr_poly_to_file()
 int main(void)
 {
   vec g, w;
-  int i, j, count = 0;
+  unsigned int i, j, count = 0;
   vec e[10] = {0}, v = {0}, x = {0}, z = {0}, ee = {0}, y = {0}, tt = {0}, ww, xx, f;
   int l = -1, m, n;
   int ii = 0;
@@ -1758,6 +1773,7 @@ int main(void)
   unsigned short gg[256] = {0, 0, 1, 1};
   MTX a = {0};
   vec pp = {0};
+  char rr[16]={0};
 
   srand(clock());
 
@@ -1773,21 +1789,36 @@ int main(void)
   vec cc = {0};
 
 //  opu.x[0][0] = 1234;
-
 /*
-for(i=0;i<2000000000;i++){
-//printf("%d\n",gf_mul(111,222));
-gf_mul(111,222);
-//printf("%d\n",gf[mlt(fg[111],fg[222])]);
+for(i=0;i<100000000;i++){
+//if(mltn(i,fg[i%N])!=mlt2(i,fg[i%N]))
+{
+//printf("%d %d %d\n",i,
+//gf[mltn(i,fg[i%N])];
+//gf[mlt2(i,fg[i%N])];
+gf[mltu(i,fg[5])];
+
+}
+}
+//exit(1);
+*/
+
+for(i=0;i<10;i++){
+printf("%d\n",gf_mul(333,222));
+//gf_mul(111,222);
+//printf("%d\n",pd(333,222));
+printf("%d\n",gf[mlt(fg[333],fg[222])]);
 //gf[mlt(fg[111],fg[222])];
 }
+//pd(333,222);
+printf("%d\n",itob(6447,rr));
 exit(1);
 
   i=4;
   j=8;
   printf("%d\n",gf[imod(gf[5],gf[8])]);
   //exit(1);
-*/
+
 
   opu.x[0][0]=1;
   for (i = 1; i < K; i++)
@@ -1825,6 +1856,7 @@ exit(1);
   printsage(v);
   printf("\n");
 
+exit(1);
   /*
   mykey(tt.x,pp);
   tt.x[128]=1;

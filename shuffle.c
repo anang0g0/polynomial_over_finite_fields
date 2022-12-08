@@ -4,9 +4,12 @@
 #include <ctype.h>
 #include <string.h>
 #include <stdint.h>
+#include <inttypes.h>
 
 #include "global.h"
 #include "8192.h"
+#include "params.h"
+
 
 // static const unsigned short gf[8]={0,1,2,4,3,6,7,5};
 // static const unsigned short fg[8]={0,1,2,4,3,7,5,6};
@@ -553,7 +556,7 @@ int mlt2(int n, int x)
 {
   int i, j;
 
-  if (n == 0)
+  if (n%N == 0)
     return 1;
   i = x;
   for (j = 0; j < n - 1; j++)
@@ -582,8 +585,14 @@ int mktbl()
 }
 
 
-int mltn(int n, int x) {
-    int ret = 1;
+unsigned int mltn(unsigned int n,unsigned int u){
+  if(n%N==0)
+  return 1;
+  return (u*n-n)%(N-1)+1;
+}
+
+unsigned int mltu(unsigned int n, unsigned int x) {
+    unsigned int ret = 1;
     while (n > 0) {
         if (n & 1) ret = mlt(ret , x) ;  // n の最下位bitが 1 ならば x^(2^i) をかける
         x = mlt(x , x);
@@ -638,7 +647,7 @@ static const unsigned char inv_s_box[256] = {
     0xa0, 0xe0, 0x3b, 0x4d, 0xae, 0x2a, 0xf5, 0xb0, 0xc8, 0xeb, 0xbb, 0x3c, 0x83, 0x53, 0x99, 0x61,  // e
     0x17, 0x2b, 0x04, 0x7e, 0xba, 0x77, 0xd6, 0x26, 0xe1, 0x69, 0x14, 0x63, 0x55, 0x21, 0x0c, 0x7d}; // f
 
-void rp2(unsigned char *a)
+void rp2(unsigned short *a)
 {
   int i, j, x;
   time_t t;
@@ -682,5 +691,151 @@ int print_uint128(__uint128_t n)
     n /= 10;                     // drop it
   }
   return printf("%s", s);
+}
+
+unsigned long long int seki_u64(unsigned long long int a, unsigned long long int b)
+{
+    unsigned long long int c = 0;
+
+    while (a != 0)
+    {
+        if ((a & 1) == 1)
+            c ^= b;
+
+        b <<= 1;
+        a >>= 1;
+    }
+}
+
+/* ���r�b�g�������Ԃ� */
+short cb(unsigned int x)
+{
+int i,j;
+
+i=0;
+while(x>0){
+x=(x>>1); i++;
+}
+return i;
+
+}
+
+
+/* F_2 ��̑������̐� */
+int seki(unsigned short a,unsigned short b)
+{
+unsigned int c;
+unsigned short d=7;
+unsigned short e=0;
+unsigned short f=0;
+
+c=0;
+while(a!=0){
+if (a & 1) c^=b;
+b<<=1; a>>=1;
+}
+return c%8192+d;
+}
+
+
+/* F_2 ��̑������̊���Z */
+unsigned int pd(unsigned int p,unsigned int d)
+{
+unsigned int x,y,r,q,i,j;
+
+q=p; y=d;
+r=0;
+i=cb(q)-cb(y);
+y=(y<<i);
+
+while(y > 0){
+if(cb(q)==cb(y)){
+r=r + (1<<i);
+itob(q);
+itob(y);
+q=(q^y);
+itob(q);
+itob(y);
+	}
+y=q;
+i=cb(q)-cb(y);
+if(i>=0)
+y=(y<<i);
+y^=q;
+}
+itob(y);
+printf("q=");
+itob(q);
+
+return q;
+/* printf("%b %b\n",r,q); */
+}
+
+
+/* �x�N�g���̏d�݌v�Z */
+int itob(int n)
+{
+int i,j,k=0,c=cb(n)-1;
+char rr[32],s[32]={0};
+
+for(i=c,j=0;i>=0;i--,j++){
+s[j]=((n>>i) & 0x0001) + '0';
+if(s[j]-48==1)
+k++;
+}
+printf("%s\n",s);
+printf("%d\n",strtol(s,&rr,2));
+
+return k;
+}
+
+uint16_t gf_mul(uint16_t in0, uint16_t in1)
+{
+	int i;
+
+	uint64_t tmp;
+	uint64_t t0;
+	uint64_t t1;
+	uint64_t t;
+
+	t0 = in0;
+	t1 = in1;
+
+	tmp = t0 * (t1 & 1);
+
+	for (i = 1; i < GFBITS; i++)
+		tmp ^= (t0 * (t1 & (1 << i)));
+
+	//
+
+	t = tmp & 0x1FF0000;
+	tmp ^= (t >> 9) ^ (t >> 10) ^ (t >> 12) ^ (t >> 13);
+
+	t = tmp & 0x000E000;
+	tmp ^= (t >> 9) ^ (t >> 10) ^ (t >> 12) ^ (t >> 13);
+
+	return tmp & GFMASK;
+}
+
+
+uint_fast64_t inv(int a,int n){
+
+  int d = n;
+  int x = 0;
+  int s = 1;
+  int q, r, t, gcd;
+
+  while (a != 0){
+    q = d / a;
+    r = d % a;
+    d = a;
+    a = r;
+    t = x - q * s;
+    x = s;
+    s = t;
+  }
+  gcd = d; //  # $\gcd(a, n)$ 
+
+  return ((x + n) % (n / d));
 }
 
