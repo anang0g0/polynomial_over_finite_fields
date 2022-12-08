@@ -298,11 +298,16 @@ int mykey(unsigned short *out, vec x)
 
 
 unsigned int gf_div(unsigned int a,unsigned int b){
-  if(fg[a]<fg[b])
-  return fg[a];
-  return fg[a]-fg[b];
-  if(fg[a]==fg[b])
+int i=fg[a]-fg[b];
+
+if(a==0 || b==0)
+  return 0;
+if(i==0)
   return 1;
+if(i>0)
+  return (N-i);
+if(i<0)
+  return fg[b]-fg[a]+1;
 }
 
 
@@ -1804,14 +1809,14 @@ gf[mltu(i,fg[5])];
 */
 
 for(i=0;i<10;i++){
-printf("%d\n",gf_mul(333,222));
+printf("%d %d\n",gf_div(i%(N-1),222),mlt(oinv(i%(N-1)),fg[222]));
 //gf_mul(111,222);
 //printf("%d\n",pd(333,222));
-printf("%d\n",gf[mlt(fg[333],fg[222])]);
+//printf("%d\n"
 //gf[mlt(fg[111],fg[222])];
 }
 //pd(333,222);
-printf("%d\n",itob(6447,rr));
+//printf("%d\n",itob(6447,rr));
 exit(1);
 
   i=4;
