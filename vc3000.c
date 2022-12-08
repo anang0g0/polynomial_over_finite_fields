@@ -166,13 +166,13 @@ void GF_mul(unsigned short *out, unsigned short *in0, unsigned short *in1)
     prod[i - K + 1] ^= prod[i];
     prod[i - K + 0] ^= prod[i];
     */
-    
+    /*
     //GF(2^512) from sage
     prod[i - K + 8] ^= prod[i];
     prod[i - K + 5] ^= prod[i];
     prod[i - K + 2] ^= prod[i];
     prod[i - K + 0] ^= prod[i];
-    
+    */
    /*
     //GF(2^256) from sage
     prod[i - K + 10] ^= prod[i];
@@ -180,6 +180,11 @@ void GF_mul(unsigned short *out, unsigned short *in0, unsigned short *in1)
     prod[i - K + 2] ^= prod[i];
     prod[i - K + 0] ^= prod[i];
     */
+		prod[i - K + 7] ^= prod[i];
+		prod[i - K + 2] ^= prod[i];
+		prod[i - K + 1] ^= prod[i];
+		prod[i - K + 0] ^= prod[i];
+	
   }
 
   for (i = 0; i < K; i++)
@@ -307,9 +312,27 @@ if(i==0)
 if(i>0)
   return (N-i);
 if(i<0)
-  return fg[b]-fg[a]+1;
+  return 1-i;
 }
 
+
+static uint8_t xtime(uint8_t x)
+{
+  return ((x<<1) ^ (((x>>7) & 1) * 0x1b));
+}
+
+// Multiply is used to multiply numbers in the field GF(2^8)
+// Note: The last call to xtime() is unneeded, but often ends up generating a smaller binary
+//       The compiler seems to be able to vectorize the operation better this way.
+//       See https://github.com/kokke/tiny-AES-c/pull/34
+static uint8_t Multiply(uint8_t x, uint8_t y)
+{
+  return (((y & 1) * x) ^
+       ((y>>1 & 1) * xtime(x)) ^
+       ((y>>2 & 1) * xtime(xtime(x))) ^
+       ((y>>3 & 1) * xtime(xtime(xtime(x)))) ^
+       ((y>>4 & 1) * xtime(xtime(xtime(xtime(x)))))); /* this last call to xtime() can be omitted */
+  }
 
 // 有限体の元の逆数
 unsigned short
@@ -1807,9 +1830,14 @@ gf[mltu(i,fg[5])];
 }
 //exit(1);
 */
-
+uint8_t x0=123;
+uint8_t y0=234;
 for(i=0;i<10;i++){
-printf("%d %d\n",gf_div(i%(N-1),222),mlt(oinv(i%(N-1)),fg[222]));
+
+//printf("%d %d\n",gf_frac(123,456),gf_mlt(oinv(123),456));
+//printf("%d %d\n",
+//gf_div(i%(N-1),222);
+//mlt(oinv(i%(N-1)),fg[222]);
 //gf_mul(111,222);
 //printf("%d\n",pd(333,222));
 //printf("%d\n"
@@ -1817,14 +1845,14 @@ printf("%d %d\n",gf_div(i%(N-1),222),mlt(oinv(i%(N-1)),fg[222]));
 }
 //pd(333,222);
 //printf("%d\n",itob(6447,rr));
-exit(1);
+//exit(1);
 
   i=4;
   j=8;
-  printf("%d\n",gf[imod(gf[5],gf[8])]);
+  printf("%d\n",gf[gf_mod(gf[5],gf[8])]);
   //exit(1);
 
-
+/*
   opu.x[0][0]=1;
   for (i = 1; i < K; i++)
     opu.x[0][i] = 0; //rand() % N;
@@ -1861,8 +1889,8 @@ exit(1);
   printsage(v);
   printf("\n");
 
-exit(1);
-  /*
+//exit(1);
+  */
   mykey(tt.x,pp);
   tt.x[128]=1;
   if(ben_or(tt)==0){
@@ -1871,7 +1899,7 @@ exit(1);
   printf("\n");
   }
   exit(1);
-  */
+  
   /*
   for(i=0;i<100000;i++){
   //vmul_2(f,g);

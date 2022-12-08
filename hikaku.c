@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdint.h>
+#include <stdlib.h>
 
 #include "8192.h"
 #include "params.h"
@@ -51,7 +52,7 @@ uint64_t gf_mul(uint64_t in0, uint64_t in1)
 }
 
 
-unsigned int gf_pow(unsigned int n,unsigned int u){
+static inline unsigned int gf_pow(unsigned int n,unsigned int u){
   if(n%N==0)
   return 1;
   return (u*n-n)%(N-1)+1;
@@ -59,7 +60,7 @@ unsigned int gf_pow(unsigned int n,unsigned int u){
 
 
 // 繰り返し自乗法（遅い）
-unsigned int gf_exp(unsigned int n, unsigned int x) {
+static inline unsigned int gf_exp(unsigned int n, unsigned int x) {
     unsigned int ret = 1;
     while (n > 0) {
         if (n & 1) ret = gf_mlt(ret , x) ;  // n の最下位bitが 1 ならば x^(2^i) をかける
@@ -206,7 +207,7 @@ unsigned short gf_inv(unsigned short den)
 }
 
 // 有限体の元の逆数
-unsigned short
+static inline unsigned short
 oinv(unsigned short a)
 {
   int i;
@@ -221,35 +222,18 @@ oinv(unsigned short a)
   exit(1);
 }
 
-/*
-int gf8(){
-    int s = (1 << 4) | (1 << 3) | (1 << 2) | 1;
-    int n = 1;
-
-    byte[] nof = new byte[256];
-    byte[] iof = new byte[256];
-
-    for (int i = 0; i < 255; i++)
-    {
-        nof[i] = (byte)n;
-        iof[n] = (byte)i;
-
-        n <<= 1;
-        n = ((n >> 8) * s) ^ (n & 0xff);
-    }
-
-    nof[255] = (byte)n;
-}
-*/
 
 
 void main(){
 unsigned long long int i;
 
-for(i=0;i<10;i++){
+for(i=0;i<10000000000;i++){
 //printf("%d %d\n",gf_inv(i%N),gf[oinv(i%N)]);
-printf("%d %d\n",gf[gf_mlt(oinv(123),fg[456])],gf_frac(123,456));
-
+//printf("%d %d\n",
+//gf[gf_mlt(oinv(123),fg[456])];
+//gf_frac(123,456);
+gf[oinv(1234)];
+//gf_inv(1234);
 //printf("%d\n",
 //gf_mul(333,222);
 //printf("%d\n",
