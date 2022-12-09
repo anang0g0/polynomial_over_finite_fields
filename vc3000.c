@@ -22,8 +22,9 @@
 #include <unistd.h>
 #include <sys/types.h>
 
+//#include "2048.h"
 #include "8192.h"
-// #include "4096.h"
+//#include "512.h"
 #include "global.h"
 #include "struct.h"
 // #include "debug.c"
@@ -166,25 +167,45 @@ void GF_mul(unsigned short *out, unsigned short *in0, unsigned short *in1)
     prod[i - K + 1] ^= prod[i];
     prod[i - K + 0] ^= prod[i];
     */
-    /*
+/*
     //GF(2^512) from sage
     prod[i - K + 8] ^= prod[i];
     prod[i - K + 5] ^= prod[i];
     prod[i - K + 2] ^= prod[i];
     prod[i - K + 0] ^= prod[i];
-    */
-   /*
+  */      
+
     //GF(2^256) from sage
     prod[i - K + 10] ^= prod[i];
     prod[i - K + 5] ^= prod[i];
     prod[i - K + 2] ^= prod[i];
     prod[i - K + 0] ^= prod[i];
-    */
+  
+/*
+   //128
 		prod[i - K + 7] ^= prod[i];
 		prod[i - K + 2] ^= prod[i];
 		prod[i - K + 1] ^= prod[i];
 		prod[i - K + 0] ^= prod[i];
-	
+*/
+
+/*
+//32
+		prod[i - K + 15] ^= prod[i];
+		prod[i - K + 9] ^= prod[i];
+		prod[i - K + 7] ^= prod[i];
+		prod[i - K + 4] ^= prod[i];
+		prod[i - K + 3] ^= prod[i];
+		prod[i - K + 0] ^= prod[i];
+*/
+/*
+//16
+		prod[i - K + 5] ^= prod[i];
+		prod[i - K + 3] ^= prod[i];
+		prod[i - K + 2] ^= prod[i];
+		prod[i - K + 0] ^= prod[i];
+*/
+
   }
 
   for (i = 0; i < K; i++)
@@ -1236,7 +1257,7 @@ vec vpp(vec f, vec mod)
   s = f;
 
   // 繰り返し２乗法
-  for (i = 1; i < E + 1; i++)
+  for (i = 1; i < E+2; i++)
   {
     s = vmod(vmul_2(s, s), mod);
   }
@@ -1418,35 +1439,6 @@ ginit(unsigned short *g)
   memcpy(g, gg, sizeof(K + 1));
 }
 
-// 整数からベクトル型への変換
-vec i2v(unsigned short n)
-{
-  vec v = {0};
-  int i = 0;
-
-  while (n > 0)
-  {
-    v.x[i++] = n % 2;
-    n = (n >> 1);
-  }
-
-  return v;
-}
-
-// ベクトル型から整数への変換
-unsigned short
-v2i(vec v)
-{
-  unsigned int d = 0, i, e = 0;
-
-  for (i = 0; i < deg(v) + 1; i++)
-  {
-    e = v.x[i];
-    d ^= (e << i);
-  }
-
-  return d;
-}
 
 // 配列からベクトル表現の多項式へ変換する
 vec Setvec(int n)
@@ -1804,13 +1796,14 @@ int main(void)
   char rr[16]={0};
 
   srand(clock());
-
+/*
   for (i = 0; i < 256; i++)
     ff[i] = rand() % N;
   f = (setpol(ff, 256));
   for (i = 0; i < 256; i++)
     gg[i] = rand() % N;
   g = (setpol(gg, 256));
+  */
   for (i = 0; i < K; i++)
     pp.x[i] = rand() % N;
   MTX opu = {0};
@@ -1891,12 +1884,13 @@ for(i=0;i<10;i++){
 
 //exit(1);
   */
+ 
   mykey(tt.x,pp);
-  tt.x[128]=1;
+  tt.x[K]=1;
   if(ben_or(tt)==0){
     printf("\n");
   printsage(tt);
-  printf("\n");
+  printf(" ==irr\n");
   }
   exit(1);
   

@@ -4,25 +4,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define O 256
+#define O 4096
 
 /* generate Galois Field over GF(2^?) */
 static const unsigned long long int normal[15] = {
     0b1011,
-    //"11001", /* GF(16) */
     0b10011,
     0b110111,
     0b1100001,
     0b11000001,
-    //0b110101001,
     0b100011101, // sage
-    //0b100011011, //AES:原始多項式でない
-    //0b11000010011,
     0b1000010001, //sage512
     0b10001101111, // sage1024
-    0b110000001101,
+    0b100000000101, //2048
     0b1000011101011, // sage 4096
-    //0b1100101000001, /* 4096 */
     //0b11011000000001, /* 8192 */
     0b10000000011011, /* Classic McEliece */
     0b110000100010001,
