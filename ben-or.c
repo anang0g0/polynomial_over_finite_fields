@@ -22,8 +22,8 @@
 #include <unistd.h>
 #include <sys/types.h>
 
-#include "8192.h"
-//#include "4096.h"
+//#include "8192.h"
+#include "4096.h"
 //#include "2048.h"
 //#include "1024.h"
 #include "global.h"
@@ -1211,23 +1211,33 @@ int irr_poly_to_file()
 
 int main(void)
 {
-  unsigned short f[K + 1] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0}; // big indian
+  unsigned short f[K + 1] = {0}; //{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0}; // big indian
   OP g;
-  int i;
-
+  vec ff[1024]={0};
+  int i,j;
+  vec x={0};
+  /*
+  f[K-1]=1;
+  f[K-3]=1;
+  f[0]=1;
+  g=setpol(f,K+1);
+  printpol(o2v(g));
+  printf("\n");
+//  exit(1);
+*/
 srand(clock());
   // test , usage and example
   for (i = 0; i < N; i++)
   {
-    memset(&g, 0, sizeof(g));
+    printf("i=%d\n",i);
+    memset(&g, 0, sizeof(g)); 
     g = mkpol();
-    //printpol(o2v(g));
-    // f[K] = i;
+    //f[K]=i;
     //g = setpol(f, K + 1);
     if (ben_or(g) == 0)
     {
       printsage(o2v(g));
-      printf(" is irreducible\n");
+      printf(" is irreducible i=%d\n",i);
     }
     else
     {

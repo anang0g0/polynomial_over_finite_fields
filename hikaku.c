@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 #include "8192.h"
-#include "params.h"
+//#include "params.h"
 
 #define N 8192
 #define GFBITS 13
@@ -232,12 +232,11 @@ for(i=0;i<10000000000;i++){
 //printf("%d %d\n",
 //gf[gf_mlt(oinv(123),fg[456])];
 //gf_frac(123,456);
-gf[oinv(1234)];
+//gf[oinv(1234)];
 //gf_inv(1234);
 //printf("%d\n",
-//gf_mul(333,222);
-//printf("%d\n",
-//gf[gf_mlt(fg[333],fg[222])];
+gf_mul(333,222);
+printf("%d\n",gf[gf_mlt(fg[333],fg[222])]);
 }
 
 }

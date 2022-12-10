@@ -7,7 +7,7 @@
 #include <inttypes.h>
 
 #include "global.h"
-#include "8192.h"
+#include "4096.h"
 #include "params.h"
 
 
@@ -789,6 +789,7 @@ printf("%d\n",strtol(s,&rr,2));
 return k;
 }
 
+/*
 uint16_t gf_mul(uint16_t in0, uint16_t in1)
 {
 	int i;
@@ -816,7 +817,7 @@ uint16_t gf_mul(uint16_t in0, uint16_t in1)
 
 	return tmp & GFMASK;
 }
-
+*/
 
 uint_fast64_t inv(int a,int n){
 

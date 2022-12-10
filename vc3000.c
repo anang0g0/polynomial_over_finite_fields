@@ -21,6 +21,8 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include <sys/types.h>
+//#include "4096.h"
+//#include "1024.h"
 
 //#include "2048.h"
 #include "8192.h"
@@ -58,6 +60,33 @@ static unsigned short c[E * K + 1] = {0};
 
 unsigned short oinv(unsigned short a);
 
+unsigned short gf_mul(unsigned short in0, unsigned short in1)
+{
+	int i;
+
+	uint32_t tmp;
+	uint32_t t0;
+	uint32_t t1;
+	uint32_t t;
+
+	t0 = in0;
+	t1 = in1;
+
+	tmp = t0 * (t1 & 1);
+
+	for (i = 1; i < 12; i++)
+		tmp ^= (t0 * (t1 & (1 << i)));
+
+	t = tmp & 0x7FC000;
+	tmp ^= t >> 9;
+	tmp ^= t >> 12;
+
+	t = tmp & 0x3000;
+	tmp ^= t >> 9;
+	tmp ^= t >> 12;
+
+	return tmp & ((1 << 12)-1);
+}
 
 //整数のべき乗
 unsigned int
@@ -139,6 +168,34 @@ int primitive(vec x){
 return 0;
 }
 
+/* input: in0, in1 in GF((2^m)^t)*/
+/* output: out = in0*in1 */
+void GF_mul2(unsigned short *out, unsigned short *in0, unsigned short *in1)
+{
+	int i, j;
+
+	unsigned short prod[ K*2-1 ];
+
+	for (i = 0; i < K*2-1; i++)
+		prod[i] = 0;
+
+	for (i = 0; i < K; i++)
+		for (j = 0; j < K; j++)
+			prod[i+j] ^= gf_mul(in0[i], in1[j]);
+
+	//
+ 
+	for (i = (K-1)*2; i >= K; i--)
+	{
+		prod[i - K + 3] ^= prod[i];
+		prod[i - K + 1] ^= prod[i];
+		prod[i - K + 0] ^= gf_mul(prod[i], (unsigned short) 2);
+	}
+
+	for (i = 0; i < K; i++)
+		out[i] = prod[i];
+}
+
 
 /* input: in0, in1 in GF((2^m)^t)*/
 /* output: out = in0*in1 */
@@ -180,7 +237,7 @@ void GF_mul(unsigned short *out, unsigned short *in0, unsigned short *in1)
     prod[i - K + 5] ^= prod[i];
     prod[i - K + 2] ^= prod[i];
     prod[i - K + 0] ^= prod[i];
-  
+
 /*
    //128
 		prod[i - K + 7] ^= prod[i];
@@ -188,7 +245,12 @@ void GF_mul(unsigned short *out, unsigned short *in0, unsigned short *in1)
 		prod[i - K + 1] ^= prod[i];
 		prod[i - K + 0] ^= prod[i];
 */
-
+/*
+//x^64+1x^3+1x^1+37x^0
+		prod[i - K + 3] ^= prod[i];
+		prod[i - K + 1] ^= prod[i];
+		prod[i - K + 0] ^= gf_mul(prod[i], (unsigned short) 2);
+*/
 /*
 //32
 		prod[i - K + 15] ^= prod[i];
@@ -1257,7 +1319,7 @@ vec vpp(vec f, vec mod)
   s = f;
 
   // 繰り返し２乗法
-  for (i = 1; i < E+2; i++)
+  for (i = 1; i < E+1; i++)
   {
     s = vmod(vmul_2(s, s), mod);
   }
@@ -1839,25 +1901,26 @@ for(i=0;i<10;i++){
 //pd(333,222);
 //printf("%d\n",itob(6447,rr));
 //exit(1);
-
+/*
   i=4;
   j=8;
   printf("%d\n",gf[gf_mod(gf[5],gf[8])]);
   //exit(1);
 
-/*
+
   opu.x[0][0]=1;
   for (i = 1; i < K; i++)
     opu.x[0][i] = 0; //rand() % N;
 
   for (i = 0; i < K; i++)
     opu.x[1][i] = pp.x[i];
+
   for (i = 0; i < K; i++)
   {
-    for (j = 1; j <= K; j++)
+    for (j = 2; j <= K; j++)
     {
-      // opu.x[j][i]=rand()%N; //gf[mltn(j,fg[pp.x[i]])];
-      GF_mul(opu.x[j], opu.x[j - 1], pp.x);
+       opu.x[j][i]=gf[mltn(j,fg[pp.x[i]])];
+      //GF_mul2(opu.x[j], opu.x[j - 1], pp.x);
     }
   }
 
@@ -1882,16 +1945,24 @@ for(i=0;i<10;i++){
   printsage(v);
   printf("\n");
 
-//exit(1);
-  */
- 
+exit(1);
+*/
+
+
+
+ l=-1;
+ while(l<0){
+  for(i=0;i<K;i++)
+  pp.x[i]=rand()%N;
   mykey(tt.x,pp);
   tt.x[K]=1;
   if(ben_or(tt)==0){
     printf("\n");
   printsage(tt);
   printf(" ==irr\n");
+  exit(1);
   }
+ }
   exit(1);
   
   /*
