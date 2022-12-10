@@ -182,7 +182,7 @@ gf[1]=1;
 gf[2]=2;
 for(i=3;i<n;i++){
 gf[i]=(gf[i-1]<<1);
-printf("%d,",gf[i]);
+
 }
 //exit(1);
 for(i=n;i<O;i++){
@@ -190,9 +190,35 @@ for(i=n;i<O;i++){
   gf[i]=(gf[i-1]<<1);
   if(gf[i]>=k)
   gf[i]^=x;
-  printf("%d,",gf[i]);
+//  printf("%d,",gf[i]);
 }
+for(i=0;i<O;i++)
+printf("%d,",gf[i]);
 printf("};\n");
+
+  for (i = 0; i < O; i++)
+  {
+    for (j = 0; j < O; j++)
+    {
+      if (gf[i] == j)
+        fg[j] = i;
+    }
+  }
+  printf("static const unsigned short fg[%d]={", O);
+  for (i = 0; i < O; i++)
+  {
+    if (i < O - 1)
+    {
+      printf("%d,", fg[i]);
+    }
+    else
+    {
+      printf("%d", fg[i]);
+    }
+  }
+  printf("};\n");
+
+
 }
 
 int main()
@@ -208,15 +234,15 @@ while(k>0){
 printf("%d\n",n);
 //exit(1);
 //scanf("%d",&n);
-//x=normal[n-4];
+x=normal[n-4];
   //x=0b1000000001001,
   //  0b1000011101011; // sage 4096
   
-//  ens(x,n-4);
+  ens(x,n-4);
 
 //  exit(1);
-  mkgf(O);
-  makefg(O);
+//  mkgf(O);
+//  makefg(O);
 
   return 0;
 }
