@@ -18,6 +18,7 @@ static const unsigned long long int normal[15] = {
     0b10001101111, // sage1024
     0b100000000101, //2048
     0b1000011101011, // sage 4096
+    //0b1000000001001,
     //0b11011000000001, /* 8192 */
     0b10000000011011, /* Classic McEliece */
     0b110000100010001,
@@ -165,10 +166,55 @@ void mkgf(int n)
   printf("};\n");
 }
 
+
+void ens(unsigned int x, int n){
+unsigned int gf[O]={0};
+int i,j,k=x,count=0;
+
+while(k>0){
+  k=(k>>1);
+  count++;
+}
+  printf("static const unsigned short gf[%d]={\n",O);
+k=(1 << count-1);
+gf[0]=0;
+gf[1]=1;
+gf[2]=2;
+for(i=3;i<n;i++){
+gf[i]=(gf[i-1]<<1);
+printf("%d,",gf[i]);
+}
+//exit(1);
+for(i=n;i<O;i++){
+  if(gf[i]<k)
+  gf[i]=(gf[i-1]<<1);
+  if(gf[i]>=k)
+  gf[i]^=x;
+  printf("%d,",gf[i]);
+}
+printf("};\n");
+}
+
 int main()
 {
-  int i, j, k;
+  int i, j, k=O+1;
+  int x,n=0,l=1;
 
+while(k>0){
+  k=(k>>1);
+  n++;
+}
+
+printf("%d\n",n);
+//exit(1);
+//scanf("%d",&n);
+//x=normal[n-4];
+  //x=0b1000000001001,
+  //  0b1000011101011; // sage 4096
+  
+//  ens(x,n-4);
+
+//  exit(1);
   mkgf(O);
   makefg(O);
 
