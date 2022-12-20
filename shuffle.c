@@ -10,24 +10,23 @@
 #include "4096.h"
 #include "params.h"
 
-
 // static const unsigned short gf[8]={0,1,2,4,3,6,7,5};
 // static const unsigned short fg[8]={0,1,2,4,3,7,5,6};
 
 // nomal bases
-//unsigned short gf[16] = {0, 1, 2, 4, 8, 9, 11, 15, 7, 14, 5, 10, 13, 3, 6, 12};
-//unsigned short fg[16] = {0, 1, 2, 13, 3, 10, 14, 8, 4, 5, 11, 6, 15, 12, 9, 7};
+// unsigned short gf[16] = {0, 1, 2, 4, 8, 9, 11, 15, 7, 14, 5, 10, 13, 3, 6, 12};
+// unsigned short fg[16] = {0, 1, 2, 13, 3, 10, 14, 8, 4, 5, 11, 6, 15, 12, 9, 7};
 
 // sage比較用
 // static const unsigned short gf[16]={0,1,2,4,8,3,6,12,11,5,10,7,14,15,13,9};
 // static const unsigned short fg[16]={0,1,2,5,3,9,6,11,4,15,10,8,7,14,12,13};
 
-//unsigned short gf[N]={0,1,2,4,8,16,32,64,128,29,58,116,232,205,135,19,38,76,152,45,90,180,117,234,201,143,3,6,12,24,48,96,192,157,39,78,156,37,74,148,53,106,212,181,119,238,193,159,35,70,140,5,10,20,40,80,160,93,186,105,210,185,111,222,161,95,190,97,194,153,47,94,188,101,202,137,15,30,60,120,240,253,231,211,187,107,214,177,127,254,225,223,163,91,182,113,226,217,175,67,134,17,34,68,136,13,26,52,104,208,189,103,206,129,31,62,124,248,237,199,147,59,118,236,197,151,51,102,204,133,23,46,92,184,109,218,169,79,158,33,66,132,21,42,84,168,77,154,41,82,164,85,170,73,146,57,114,228,213,183,115,230,209,191,99,198,145,63,126,252,229,215,179,123,246,241,255,227,219,171,75,150,49,98,196,149,55,110,220,165,87,174,65,130,25,50,100,200,141,7,14,28,56,112,224,221,167,83,166,81,162,89,178,121,242,249,239,195,155,43,86,172,69,138,9,18,36,72,144,61,122,244,245,247,243,251,235,203,139,11,22,44,88,176,125,250,233,207,131,27,54,108,216,173,71,142};
-//unsigned short fg[N]={0,1,2,26,3,51,27,199,4,224,52,239,28,105,200,76,5,101,225,15,53,142,240,130,29,194,106,249,201,9,77,114,6,139,102,48,226,37,16,34,54,148,143,219,241,19,131,70,30,182,195,126,107,40,250,186,202,155,10,121,78,229,115,167,7,192,140,99,103,222,49,254,227,153,38,180,17,146,35,137,55,209,149,207,144,151,220,190,242,211,20,93,132,57,71,65,31,67,183,164,196,73,127,111,108,59,41,85,251,134,187,62,203,95,156,160,11,22,122,44,79,213,230,173,116,244,168,88,8,113,193,248,141,129,100,14,104,75,223,238,50,198,255,25,228,166,154,120,39,185,181,125,18,69,147,218,36,33,138,47,56,64,210,92,150,189,208,206,145,136,152,179,221,253,191,98,243,87,212,172,21,43,94,159,133,61,58,84,72,110,66,163,32,46,68,217,184,124,165,119,197,24,74,237,128,13,112,247,109,162,60,83,42,158,86,171,252,97,135,178,188,205,63,91,204,90,96,177,157,170,161,82,12,246,23,236,123,118,45,216,80,175,214,234,231,232,174,233,117,215,245,235,169,81,89,176};
+// unsigned short gf[N]={0,1,2,4,8,16,32,64,128,29,58,116,232,205,135,19,38,76,152,45,90,180,117,234,201,143,3,6,12,24,48,96,192,157,39,78,156,37,74,148,53,106,212,181,119,238,193,159,35,70,140,5,10,20,40,80,160,93,186,105,210,185,111,222,161,95,190,97,194,153,47,94,188,101,202,137,15,30,60,120,240,253,231,211,187,107,214,177,127,254,225,223,163,91,182,113,226,217,175,67,134,17,34,68,136,13,26,52,104,208,189,103,206,129,31,62,124,248,237,199,147,59,118,236,197,151,51,102,204,133,23,46,92,184,109,218,169,79,158,33,66,132,21,42,84,168,77,154,41,82,164,85,170,73,146,57,114,228,213,183,115,230,209,191,99,198,145,63,126,252,229,215,179,123,246,241,255,227,219,171,75,150,49,98,196,149,55,110,220,165,87,174,65,130,25,50,100,200,141,7,14,28,56,112,224,221,167,83,166,81,162,89,178,121,242,249,239,195,155,43,86,172,69,138,9,18,36,72,144,61,122,244,245,247,243,251,235,203,139,11,22,44,88,176,125,250,233,207,131,27,54,108,216,173,71,142};
+// unsigned short fg[N]={0,1,2,26,3,51,27,199,4,224,52,239,28,105,200,76,5,101,225,15,53,142,240,130,29,194,106,249,201,9,77,114,6,139,102,48,226,37,16,34,54,148,143,219,241,19,131,70,30,182,195,126,107,40,250,186,202,155,10,121,78,229,115,167,7,192,140,99,103,222,49,254,227,153,38,180,17,146,35,137,55,209,149,207,144,151,220,190,242,211,20,93,132,57,71,65,31,67,183,164,196,73,127,111,108,59,41,85,251,134,187,62,203,95,156,160,11,22,122,44,79,213,230,173,116,244,168,88,8,113,193,248,141,129,100,14,104,75,223,238,50,198,255,25,228,166,154,120,39,185,181,125,18,69,147,218,36,33,138,47,56,64,210,92,150,189,208,206,145,136,152,179,221,253,191,98,243,87,212,172,21,43,94,159,133,61,58,84,72,110,66,163,32,46,68,217,184,124,165,119,197,24,74,237,128,13,112,247,109,162,60,83,42,158,86,171,252,97,135,178,188,205,63,91,204,90,96,177,157,170,161,82,12,246,23,236,123,118,45,216,80,175,214,234,231,232,174,233,117,215,245,235,169,81,89,176};
 
-//#define O 8  //素数の和(3*5=15 の位数を持つ)
+// #define O 8  //素数の和(3*5=15 の位数を持つ)
 #define MAX 2 // 素数表の先頭から何個素数を足すか
-#define NN 8  //置換配列の次元
+#define NN 8  // 置換配列の次元
 
 // unsigned char p[7] = {2, 3, 5, 7, 11, 13, 23 }; //64
 // unsigned char p[4]={3,5,11,13}; //32
@@ -372,91 +371,87 @@ int chkp(int *x)
   return 0;
 }
 
-
-
 void merge(unsigned short A[], unsigned short B[], unsigned short left, unsigned short mid, unsigned short right)
 {
-    unsigned short i = left;
-    unsigned short j = mid;
-    unsigned short k = 0;
-    unsigned short l;
-    while (i < mid && j < right)
+  unsigned short i = left;
+  unsigned short j = mid;
+  unsigned short k = 0;
+  unsigned short l;
+  while (i < mid && j < right)
+  {
+    if (A[i] <= A[j])
     {
-        if (A[i] <= A[j])
-        {
-            B[k++] = A[i++];
-        }
-        else
-        {
-            B[k++] = A[j++];
-        }
-    }
-    if (i == mid)
-    { /* i側のAをBに移動し尽くしたので、j側も順番にBに入れていく */
-        while (j < right)
-        {
-            B[k++] = A[j++];
-        }
+      B[k++] = A[i++];
     }
     else
     {
-        while (i < mid)
-        { /* j側のAをBに移動し尽くしたので、i側も順番にBに入れていく */
-            B[k++] = A[i++];
-        }
+      B[k++] = A[j++];
     }
-    for (l = 0; l < k; l++)
+  }
+  if (i == mid)
+  { /* i側のAをBに移動し尽くしたので、j側も順番にBに入れていく */
+    while (j < right)
     {
-        A[left + l] = B[l];
+      B[k++] = A[j++];
     }
+  }
+  else
+  {
+    while (i < mid)
+    { /* j側のAをBに移動し尽くしたので、i側も順番にBに入れていく */
+      B[k++] = A[i++];
+    }
+  }
+  for (l = 0; l < k; l++)
+  {
+    A[left + l] = B[l];
+  }
 }
-
 
 void merge_sort(unsigned short A[], unsigned short B[], unsigned short left, unsigned short right)
 {
-    unsigned short mid;
-    if (left == right || left == right - 1)
-    {
-        return;
-    }
-    mid = (left + right) / 2;
-    merge_sort(A, B, left, mid);
-    merge_sort(A, B, mid, right);
-    merge(A, B, left, mid, right);
+  unsigned short mid;
+  if (left == right || left == right - 1)
+  {
+    return;
+  }
+  mid = (left + right) / 2;
+  merge_sort(A, B, left, mid);
+  merge_sort(A, B, mid, right);
+  merge(A, B, left, mid, right);
 }
 
-
-void merge_rand(unsigned short *a,int n)
+void merge_rand(unsigned short *a, int n)
 {
-    //unsigned short a[10000] = {0}; //{8,4,7,2,1,3,5,6,9,10};
-    unsigned short c[65535] = {0};
-    unsigned short b[65535] = {0};
-    //const unsigned short n = 10;
-    int i;
+  // unsigned short a[10000] = {0}; //{8,4,7,2,1,3,5,6,9,10};
+  unsigned short c[65535] = {0};
+  unsigned short b[65535] = {0};
+  // const unsigned short n = 10;
+  int i;
 
-    //srand(clock());
-    memset(a,0,sizeof(a));
-    for (i = 0; i < n; i++)
-        a[i] = rand() % 65536;
+  // srand(clock());
+  memset(a, 0, sizeof(a));
+  for (i = 0; i < n; i++)
+    a[i] = rand() % 65536;
 
-    for (i = 0; i < n; i++)
-    {
-        c[a[i]] = i;
-    }
-    //for (int j = 0; j < 100000; j++)
-    {
-        
-        // memcpy(w,a,sizeof(a));
-        //random_shuffle(a, 8192);
-        merge_sort(a, b, 0, n);
-    }
+  for (i = 0; i < n; i++)
+  {
+    c[a[i]] = i;
+  }
+  // for (int j = 0; j < 100000; j++)
+  {
 
-    for (i = 0; i < n; i++){
-      a[i]=c[a[i]];
-      printf("%d %d\n",i,a[i]);
-    }
-    //exit(1);
+    // memcpy(w,a,sizeof(a));
+    // random_shuffle(a, 8192);
+    merge_sort(a, b, 0, n);
+  }
 
+  for (i = 0; i < n; i++)
+  {
+    a[i] = c[a[i]];
+    printf("%d %d\n", i, a[i]);
+  }
+  // exit(1);
 }
 
 /*
@@ -556,7 +551,7 @@ int mlt2(int n, int x)
 {
   int i, j;
 
-  if (n%N == 0)
+  if (n % N == 0)
     return 1;
   i = x;
   for (j = 0; j < n - 1; j++)
@@ -584,24 +579,25 @@ int mktbl()
   }
 }
 
-
-unsigned int mltn(unsigned int n,unsigned int u){
-  if(n%N==0)
-  return 1;
-  return (u*n-n)%(N-1)+1;
+unsigned int mltn(unsigned int n, unsigned int u)
+{
+  if (n % N == 0)
+    return 1;
+  return (u * n - n) % (N - 1) + 1;
 }
 
-unsigned int mltu(unsigned int n, unsigned int x) {
-    unsigned int ret = 1;
-    while (n > 0) {
-        if (n & 1) ret = mlt(ret , x) ;  // n の最下位bitが 1 ならば x^(2^i) をかける
-        x = mlt(x , x);
-        n >>= 1;  // n を1bit 左にずらす
-    }
-    return ret;
+unsigned int mltu(unsigned int n, unsigned int x)
+{
+  unsigned int ret = 1;
+  while (n > 0)
+  {
+    if (n & 1)
+      ret = mlt(ret, x); // n の最下位bitが 1 ならば x^(2^i) をかける
+    x = mlt(x, x);
+    n >>= 1; // n を1bit 左にずらす
+  }
+  return ret;
 }
-
-
 
 /*
  * S-box transformation table
@@ -695,138 +691,145 @@ int print_uint128(__uint128_t n)
 
 unsigned long long int seki_u64(unsigned long long int a, unsigned long long int b)
 {
-    unsigned long long int c = 0;
+  unsigned long long int c = 0;
 
-    while (a != 0)
-    {
-        if ((a & 1) == 1)
-            c ^= b;
+  while (a != 0)
+  {
+    if ((a & 1) == 1)
+      c ^= b;
 
-        b <<= 1;
-        a >>= 1;
-    }
+    b <<= 1;
+    a >>= 1;
+  }
 }
 
 /* ���r�b�g�������Ԃ� */
 short cb(unsigned int x)
 {
-int i,j;
+  int i, j;
 
-i=0;
-while(x>0){
-x=(x>>1); i++;
+  i = 0;
+  while (x > 0)
+  {
+    x = (x >> 1);
+    i++;
+  }
+  return i;
 }
-return i;
-
-}
-
 
 /* F_2 ��̑������̐� */
-int seki(unsigned short a,unsigned short b)
+int seki(unsigned short a, unsigned short b)
 {
-unsigned int c;
-unsigned short d=7;
-unsigned short e=0;
-unsigned short f=0;
+  unsigned int c;
+  unsigned short d = 7;
+  unsigned short e = 0;
+  unsigned short f = 0;
 
-c=0;
-while(a!=0){
-if (a & 1) c^=b;
-b<<=1; a>>=1;
+  c = 0;
+  while (a != 0)
+  {
+    if (a & 1)
+      c ^= b;
+    b <<= 1;
+    a >>= 1;
+  }
+  return c % 8192 + d;
 }
-return c%8192+d;
-}
-
 
 /* F_2 ��̑������̊���Z */
-unsigned int pd(unsigned int p,unsigned int d)
+unsigned int pd(unsigned int p, unsigned int d)
 {
-unsigned int x,y,r,q,i,j;
+  unsigned int x, y, r, q, i, j;
 
-q=p; y=d;
-r=0;
-i=cb(q)-cb(y);
-y=(y<<i);
+  q = p;
+  y = d;
+  r = 0;
+  i = cb(q) - cb(y);
+  y = (y << i);
 
-while(y > 0){
-if(cb(q)==cb(y)){
-r=r + (1<<i);
-itob(q);
-itob(y);
-q=(q^y);
-itob(q);
-itob(y);
-	}
-y=q;
-i=cb(q)-cb(y);
-if(i>=0)
-y=(y<<i);
-y^=q;
+  while (y > 0)
+  {
+    if (cb(q) == cb(y))
+    {
+      r = r + (1 << i);
+      itob(q);
+      itob(y);
+      q = (q ^ y);
+      itob(q);
+      itob(y);
+    }
+    y = q;
+    i = cb(q) - cb(y);
+    if (i >= 0)
+      y = (y << i);
+    y ^= q;
+  }
+  itob(y);
+  printf("q=");
+  itob(q);
+
+  return q;
+  /* printf("%b %b\n",r,q); */
 }
-itob(y);
-printf("q=");
-itob(q);
-
-return q;
-/* printf("%b %b\n",r,q); */
-}
-
 
 /* �x�N�g���̏d�݌v�Z */
 int itob(int n)
 {
-int i,j,k=0,c=cb(n)-1;
-char rr[32],s[32]={0};
+  int i, j, k = 0, c = cb(n) - 1;
+  char rr[32], s[32] = {0};
 
-for(i=c,j=0;i>=0;i--,j++){
-s[j]=((n>>i) & 0x0001) + '0';
-if(s[j]-48==1)
-k++;
-}
-printf("%s\n",s);
-printf("%d\n",strtol(s,&rr,2));
+  for (i = c, j = 0; i >= 0; i--, j++)
+  {
+    s[j] = ((n >> i) & 0x0001) + '0';
+    if (s[j] - 48 == 1)
+      k++;
+  }
+  printf("%s\n", s);
+  printf("%d\n", strtol(s, &rr, 2));
 
-return k;
+  return k;
 }
 
 /*
 uint16_t gf_mul(uint16_t in0, uint16_t in1)
 {
-	int i;
+  int i;
 
-	uint64_t tmp;
-	uint64_t t0;
-	uint64_t t1;
-	uint64_t t;
+  uint64_t tmp;
+  uint64_t t0;
+  uint64_t t1;
+  uint64_t t;
 
-	t0 = in0;
-	t1 = in1;
+  t0 = in0;
+  t1 = in1;
 
-	tmp = t0 * (t1 & 1);
+  tmp = t0 * (t1 & 1);
 
-	for (i = 1; i < GFBITS; i++)
-		tmp ^= (t0 * (t1 & (1 << i)));
+  for (i = 1; i < GFBITS; i++)
+    tmp ^= (t0 * (t1 & (1 << i)));
 
-	//
+  //
 
-	t = tmp & 0x1FF0000;
-	tmp ^= (t >> 9) ^ (t >> 10) ^ (t >> 12) ^ (t >> 13);
+  t = tmp & 0x1FF0000;
+  tmp ^= (t >> 9) ^ (t >> 10) ^ (t >> 12) ^ (t >> 13);
 
-	t = tmp & 0x000E000;
-	tmp ^= (t >> 9) ^ (t >> 10) ^ (t >> 12) ^ (t >> 13);
+  t = tmp & 0x000E000;
+  tmp ^= (t >> 9) ^ (t >> 10) ^ (t >> 12) ^ (t >> 13);
 
-	return tmp & GFMASK;
+  return tmp & GFMASK;
 }
 */
 
-uint_fast64_t inv(int a,int n){
+uint_fast64_t inv(int a, int n)
+{
 
   int d = n;
   int x = 0;
   int s = 1;
   int q, r, t, gcd;
 
-  while (a != 0){
+  while (a != 0)
+  {
     q = d / a;
     r = d % a;
     d = a;
@@ -835,8 +838,7 @@ uint_fast64_t inv(int a,int n){
     x = s;
     s = t;
   }
-  gcd = d; //  # $\gcd(a, n)$ 
+  gcd = d; //  # $\gcd(a, n)$
 
   return ((x + n) % (n / d));
 }
-
