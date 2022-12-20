@@ -21,12 +21,12 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include <sys/types.h>
-//#include "4096.h"
-//#include "1024.h"
+// #include "4096.h"
+// #include "1024.h"
 
-//#include "2048.h"
+// #include "2048.h"
 #include "8192.h"
-//#include "512.h"
+// #include "512.h"
 #include "global.h"
 #include "struct.h"
 // #include "debug.c"
@@ -62,60 +62,61 @@ unsigned short oinv(unsigned short a);
 
 unsigned short gf_mul(unsigned short in0, unsigned short in1)
 {
-	int i;
+  int i;
 
-	uint32_t tmp;
-	uint32_t t0;
-	uint32_t t1;
-	uint32_t t;
+  uint32_t tmp;
+  uint32_t t0;
+  uint32_t t1;
+  uint32_t t;
 
-	t0 = in0;
-	t1 = in1;
+  t0 = in0;
+  t1 = in1;
 
-	tmp = t0 * (t1 & 1);
+  tmp = t0 * (t1 & 1);
 
-	for (i = 1; i < 12; i++)
-		tmp ^= (t0 * (t1 & (1 << i)));
+  for (i = 1; i < 12; i++)
+    tmp ^= (t0 * (t1 & (1 << i)));
 
-	t = tmp & 0x7FC000;
-	tmp ^= t >> 9;
-	tmp ^= t >> 12;
+  t = tmp & 0x7FC000;
+  tmp ^= t >> 9;
+  tmp ^= t >> 12;
 
-	t = tmp & 0x3000;
-	tmp ^= t >> 9;
-	tmp ^= t >> 12;
+  t = tmp & 0x3000;
+  tmp ^= t >> 9;
+  tmp ^= t >> 12;
 
-	return tmp & ((1 << 12)-1);
+  return tmp & ((1 << 12) - 1);
 }
 
-//整数のべき乗
+// 整数のべき乗
 unsigned int
 ipow(unsigned int q, unsigned int u)
 {
   unsigned int i, m = 1;
 
   for (i = 0; i < u; i++)
-    m = gf[mlt(fg[m],fg[q])];
+    m = gf[mlt(fg[m], fg[q])];
 
   printf("in ipow====%d\n", m);
 
   return m;
 }
 
-//a<b : gf[b]%gf[a]
-unsigned short gf_mod(unsigned short a,unsigned short b){
-  int i=fg[b]%fg[a];
-  int k=0;
+// a<b : gf[b]%gf[a]
+unsigned short gf_mod(unsigned short a, unsigned short b)
+{
+  int i = fg[b] % fg[a];
+  int k = 0;
 
-  printf("a=%d b=%d\n",fg[a],fg[b]);
-  if(i>0){
-  return i+1;
+  printf("a=%d b=%d\n", fg[a], fg[b]);
+  if (i > 0)
+  {
+    return i + 1;
   }
-  if(i==0)
-  return 1;
-  if(fg[b]<fg[a])
-  return fg[b];
-  
+  if (i == 0)
+    return 1;
+  if (fg[b] < fg[a])
+    return fg[b];
 }
 
 unsigned short gcd(unsigned short a, unsigned short b)
@@ -131,12 +132,12 @@ unsigned short gcd(unsigned short a, unsigned short b)
   }
 
   /* ユークリッドの互除法 */
-  r = gf[gf_mod(a , b)];
+  r = gf[gf_mod(a, b)];
   while (r != 0)
   {
     a = b;
     b = r;
-    r = gf[gf_mod(a , b)];
+    r = gf[gf_mod(a, b)];
   }
 
   /* 最大公約数を出力 */
@@ -145,49 +146,34 @@ unsigned short gcd(unsigned short a, unsigned short b)
   return b;
 }
 
-int primitive(vec x){
-  int i,j,k=deg(x),l;
-
-  for(i=0;i<k;i++){
-    for(j=i;j<k;j++){
-    if(i!=j){
-    l=gcd(x.x[i],x.x[j]);
-    if(l>1)
-    return -1;
-    }
-    }
-  }
-return 0;
-}
 
 /* input: in0, in1 in GF((2^m)^t)*/
 /* output: out = in0*in1 */
 void GF_mul2(unsigned short *out, unsigned short *in0, unsigned short *in1)
 {
-	int i, j;
+  int i, j;
 
-	unsigned short prod[ K*2-1 ];
+  unsigned short prod[K * 2 - 1];
 
-	for (i = 0; i < K*2-1; i++)
-		prod[i] = 0;
+  for (i = 0; i < K * 2 - 1; i++)
+    prod[i] = 0;
 
-	for (i = 0; i < K; i++)
-		for (j = 0; j < K; j++)
-			prod[i+j] ^= gf_mul(in0[i], in1[j]);
+  for (i = 0; i < K; i++)
+    for (j = 0; j < K; j++)
+      prod[i + j] ^= gf_mul(in0[i], in1[j]);
 
-	//
- 
-	for (i = (K-1)*2; i >= K; i--)
-	{
-		prod[i - K + 3] ^= prod[i];
-		prod[i - K + 1] ^= prod[i];
-		prod[i - K + 0] ^= gf_mul(prod[i], (unsigned short) 2);
-	}
+  //
 
-	for (i = 0; i < K; i++)
-		out[i] = prod[i];
+  for (i = (K - 1) * 2; i >= K; i--)
+  {
+    prod[i - K + 3] ^= prod[i];
+    prod[i - K + 1] ^= prod[i];
+    prod[i - K + 0] ^= gf_mul(prod[i], (unsigned short)2);
+  }
+
+  for (i = 0; i < K; i++)
+    out[i] = prod[i];
 }
-
 
 /* input: in0, in1 in GF((2^m)^t)*/
 /* output: out = in0*in1 */
@@ -216,50 +202,49 @@ void GF_mul(unsigned short *out, unsigned short *in0, unsigned short *in1)
     prod[i - K + 1] ^= prod[i];
     prod[i - K + 0] ^= prod[i];
     */
-/*
-    //GF(2^512) from sage
-    prod[i - K + 8] ^= prod[i];
-    prod[i - K + 5] ^= prod[i];
-    prod[i - K + 2] ^= prod[i];
-    prod[i - K + 0] ^= prod[i];
-  */      
+    /*
+        //GF(2^512) from sage
+        prod[i - K + 8] ^= prod[i];
+        prod[i - K + 5] ^= prod[i];
+        prod[i - K + 2] ^= prod[i];
+        prod[i - K + 0] ^= prod[i];
+      */
 
-    //GF(2^256) from sage
+    // GF(2^256) from sage
     prod[i - K + 10] ^= prod[i];
     prod[i - K + 5] ^= prod[i];
     prod[i - K + 2] ^= prod[i];
     prod[i - K + 0] ^= prod[i];
 
-/*
-   //128
-		prod[i - K + 7] ^= prod[i];
-		prod[i - K + 2] ^= prod[i];
-		prod[i - K + 1] ^= prod[i];
-		prod[i - K + 0] ^= prod[i];
-*/
-/*
-//x^64+1x^3+1x^1+37x^0
-		prod[i - K + 3] ^= prod[i];
-		prod[i - K + 1] ^= prod[i];
-		prod[i - K + 0] ^= gf_mul(prod[i], (unsigned short) 2);
-*/
-/*
-//32
-		prod[i - K + 15] ^= prod[i];
-		prod[i - K + 9] ^= prod[i];
-		prod[i - K + 7] ^= prod[i];
-		prod[i - K + 4] ^= prod[i];
-		prod[i - K + 3] ^= prod[i];
-		prod[i - K + 0] ^= prod[i];
-*/
-/*
-//16
-		prod[i - K + 5] ^= prod[i];
-		prod[i - K + 3] ^= prod[i];
-		prod[i - K + 2] ^= prod[i];
-		prod[i - K + 0] ^= prod[i];
-*/
-
+    /*
+       //128
+        prod[i - K + 7] ^= prod[i];
+        prod[i - K + 2] ^= prod[i];
+        prod[i - K + 1] ^= prod[i];
+        prod[i - K + 0] ^= prod[i];
+    */
+    /*
+    //x^64+1x^3+1x^1+37x^0
+        prod[i - K + 3] ^= prod[i];
+        prod[i - K + 1] ^= prod[i];
+        prod[i - K + 0] ^= gf_mul(prod[i], (unsigned short) 2);
+    */
+    /*
+    //32
+        prod[i - K + 15] ^= prod[i];
+        prod[i - K + 9] ^= prod[i];
+        prod[i - K + 7] ^= prod[i];
+        prod[i - K + 4] ^= prod[i];
+        prod[i - K + 3] ^= prod[i];
+        prod[i - K + 0] ^= prod[i];
+    */
+    /*
+    //16
+        prod[i - K + 5] ^= prod[i];
+        prod[i - K + 3] ^= prod[i];
+        prod[i - K + 2] ^= prod[i];
+        prod[i - K + 0] ^= prod[i];
+    */
   }
 
   for (i = 0; i < K; i++)
@@ -376,24 +361,23 @@ int mykey(unsigned short *out, vec x)
   // exit(1);
 }
 
+unsigned int gf_div(unsigned int a, unsigned int b)
+{
+  int i = fg[a] - fg[b];
 
-unsigned int gf_div(unsigned int a,unsigned int b){
-int i=fg[a]-fg[b];
-
-if(a==0 || b==0)
-  return 0;
-if(i==0)
-  return 1;
-if(i>0)
-  return (N-i);
-if(i<0)
-  return 1-i;
+  if (a == 0 || b == 0)
+    return 0;
+  if (i == 0)
+    return 1;
+  if (i > 0)
+    return (N - i);
+  if (i < 0)
+    return 1 - i;
 }
-
 
 static uint8_t xtime(uint8_t x)
 {
-  return ((x<<1) ^ (((x>>7) & 1) * 0x1b));
+  return ((x << 1) ^ (((x >> 7) & 1) * 0x1b));
 }
 
 // Multiply is used to multiply numbers in the field GF(2^8)
@@ -403,11 +387,11 @@ static uint8_t xtime(uint8_t x)
 static uint8_t Multiply(uint8_t x, uint8_t y)
 {
   return (((y & 1) * x) ^
-       ((y>>1 & 1) * xtime(x)) ^
-       ((y>>2 & 1) * xtime(xtime(x))) ^
-       ((y>>3 & 1) * xtime(xtime(xtime(x)))) ^
-       ((y>>4 & 1) * xtime(xtime(xtime(xtime(x)))))); /* this last call to xtime() can be omitted */
-  }
+          ((y >> 1 & 1) * xtime(x)) ^
+          ((y >> 2 & 1) * xtime(xtime(x))) ^
+          ((y >> 3 & 1) * xtime(xtime(xtime(x)))) ^
+          ((y >> 4 & 1) * xtime(xtime(xtime(xtime(x)))))); /* this last call to xtime() can be omitted */
+}
 
 // 有限体の元の逆数
 unsigned short
@@ -462,6 +446,25 @@ int deg(vec a)
   return n;
 }
 
+int primitive(vec x)
+{
+  int i, j, k = deg(x), l;
+
+  for (i = 0; i < k; i++)
+  {
+    for (j = i; j < k; j++)
+    {
+      if (i != j)
+      {
+        l = gcd(x.x[i], x.x[j]);
+        if (l > 1)
+          return -1;
+      }
+    }
+  }
+  return 0;
+}
+
 void op_print_raw(const OP f)
 {
   puts("op_print_raw:");
@@ -510,7 +513,7 @@ vec vadd(vec a, vec b)
   vec c = {0};
 
   // printf("deg=%d %d\n",deg(a),deg(b));
-  
+
   for (i = 0; i < DEG; i++)
     c.x[i] = a.x[i] ^ b.x[i];
 
@@ -574,8 +577,8 @@ void printpol(vec a)
       printf("%u", a.x[i]);
       // if (i > 0)
       printf("x^%d", i);
-       if (i > 0)
-      printf("+");
+      if (i > 0)
+        printf("+");
     }
   }
   printf("\n");
@@ -1211,22 +1214,25 @@ vec kara(vec a, vec b)
   return d;
 }
 
-static inline unsigned int gf_pow(unsigned int n,unsigned int u){
+static inline unsigned int gf_pow(unsigned int n, unsigned int u)
+{
 
-  if(n%N==0)
-  return 1;
-  return (u*n-n)%(N-1)+1;
+  if (n % N == 0)
+    return 1;
+  return (u * n - n) % (N - 1) + 1;
 }
 
-int atom(unsigned short a){
-  if(gf_pow(N-1,a)==1){
-  return 0;
-  }else{
+int atom(unsigned short a)
+{
+  if (gf_pow(N - 1, a) == 1)
+  {
+    return 0;
+  }
+  else
+  {
     return -1;
   }
 }
-
-
 
 vec vpowmod(vec f, vec mod)
 {
@@ -1328,7 +1334,7 @@ vec vpp(vec f, vec mod)
   s = f;
 
   // 繰り返し２乗法
-  for (i = 1; i < E+1; i++)
+  for (i = 1; i < E + 1; i++)
   {
     s = vmod(vmul_2(s, s), mod);
   }
@@ -1359,7 +1365,7 @@ unsigned short v2a(oterm a)
 
 void printsage(vec a)
 {
-  int i, j, k=deg(a);
+  int i, j, k = deg(a);
   oterm b;
 
   printf("poly=");
@@ -1373,8 +1379,8 @@ void printsage(vec a)
       // printf("%d,==ba\n",b.a);
       // printf ("X**%d+", i); //for GF2
       printf("B('a^%d')*X**%d", j, i); // for GF(2^m)
-      if(i!=k)
-      printf("+");
+      if (i != k)
+        printf("+");
     }
   }
 }
@@ -1509,7 +1515,6 @@ ginit(unsigned short *g)
 
   memcpy(g, gg, sizeof(K + 1));
 }
-
 
 // 配列からベクトル表現の多項式へ変換する
 vec Setvec(int n)
@@ -1849,7 +1854,6 @@ int irr_poly_to_file()
   return 0;
 }
 
-
 // 言わずもがな
 int main(void)
 {
@@ -1864,118 +1868,119 @@ int main(void)
   unsigned short gg[256] = {0, 0, 1, 1};
   MTX a = {0};
   vec pp = {0};
-  char rr[16]={0};
+  char rr[16] = {0};
 
   srand(clock());
-/*
-  for (i = 0; i < 256; i++)
-    ff[i] = rand() % N;
-  f = (setpol(ff, 256));
-  for (i = 0; i < 256; i++)
-    gg[i] = rand() % N;
-  g = (setpol(gg, 256));
-  */
-  
-//  opu.x[0][0] = 1234;
-/*
-for(i=0;i<100000000;i++){
-//if(mltn(i,fg[i%N])!=mlt2(i,fg[i%N]))
-{
-//printf("%d %d %d\n",i,
-//gf[mltn(i,fg[i%N])];
-//gf[mlt2(i,fg[i%N])];
-gf[mltu(i,fg[5])];
+  /*
+    for (i = 0; i < 256; i++)
+      ff[i] = rand() % N;
+    f = (setpol(ff, 256));
+    for (i = 0; i < 256; i++)
+      gg[i] = rand() % N;
+    g = (setpol(gg, 256));
+    */
 
-}
-}
-//exit(1);
-*/
-uint8_t x0=123;
-uint8_t y0=234;
-for(i=0;i<10;i++){
+  //  opu.x[0][0] = 1234;
+  /*
+  for(i=0;i<100000000;i++){
+  //if(mltn(i,fg[i%N])!=mlt2(i,fg[i%N]))
+  {
+  //printf("%d %d %d\n",i,
+  //gf[mltn(i,fg[i%N])];
+  //gf[mlt2(i,fg[i%N])];
+  gf[mltu(i,fg[5])];
 
-//printf("%d %d\n",gf_frac(123,456),gf_mlt(oinv(123),456));
-//printf("%d %d\n",
-//gf_div(i%(N-1),222);
-//mlt(oinv(i%(N-1)),fg[222]);
-//gf_mul(111,222);
-//printf("%d\n",pd(333,222));
-//printf("%d\n"
-//gf[mlt(fg[111],fg[222])];
-}
-//pd(333,222);
-//printf("%d\n",itob(6447,rr));
-//exit(1);
-
-  i=4;
-  j=8;
-  printf("%d\n",gf[gf_mod(gf[5],gf[8])]);
+  }
+  }
   //exit(1);
-/*
-do{
-for (i = 0; i < K; i++)
-    pp.x[i] = rand() % N;
-  MTX opu = {0};
-  vec cc = {0};
-
-  opu.x[0][0]=1;
-  for (i = 1; i < K; i++)
-    opu.x[0][i] = 0; //rand() % N;
-
-  for (i = 0; i < K; i++)
-    opu.x[1][i] = pp.x[i];
-
-  for (i = 0; i < K; i++)
+  */
+  uint8_t x0 = 123;
+  uint8_t y0 = 234;
+  for (i = 0; i < 10; i++)
   {
-    for (j = 2; j <= K; j++)
-    {
-       opu.x[j][i]=gf[mltn(j,fg[pp.x[i]])];
-      //GF_mul2(opu.x[j], opu.x[j - 1], pp.x);
-    }
+
+    // printf("%d %d\n",gf_frac(123,456),gf_mlt(oinv(123),456));
+    // printf("%d %d\n",
+    // gf_div(i%(N-1),222);
+    // mlt(oinv(i%(N-1)),fg[222]);
+    // gf_mul(111,222);
+    // printf("%d\n",pd(333,222));
+    // printf("%d\n"
+    // gf[mlt(fg[111],fg[222])];
   }
+  // pd(333,222);
+  // printf("%d\n",itob(6447,rr));
+  // exit(1);
 
+  i = 4;
+  j = 8;
+  printf("%d\n", gf[gf_mod(gf[5], gf[8])]);
+  // exit(1);
+  /*
+  do{
   for (i = 0; i < K; i++)
-  {
-    for (j = 0; j < K + 1; j++)
+      pp.x[i] = rand() % N;
+    MTX opu = {0};
+    vec cc = {0};
+
+    opu.x[0][0]=1;
+    for (i = 1; i < K; i++)
+      opu.x[0][i] = 0; //rand() % N;
+
+    for (i = 0; i < K; i++)
+      opu.x[1][i] = pp.x[i];
+
+    for (i = 0; i < K; i++)
     {
-      a.x[i][j] = opu.x[j][i];
-      printf("%d,", opu.x[j][i]);
+      for (j = 2; j <= K; j++)
+      {
+         opu.x[j][i]=gf[mltn(j,fg[pp.x[i]])];
+        //GF_mul2(opu.x[j], opu.x[j - 1], pp.x);
+      }
     }
-    printf(" ===\n");
-  }
-  printf("\n");
 
-  v = renritu(a);
-
-  for (i = 0; i < K; i++)
-    x.x[K - i + 1] = v.x[i];
-  x.x[K] = 1;
-
-  v.x[K] = 1;
-
-  printsage(v);
-  printf("\n");
-}while(ben_or(v)== -1);
-exit(1);
-*/
-
-
-
- l=-1;
- while(l<0){
-  for(i=0;i<K;i++)
-  pp.x[i]=rand()%N;
-  mykey(tt.x,pp);
-  tt.x[K]=1;
-  if(ben_or(tt)==0){
+    for (i = 0; i < K; i++)
+    {
+      for (j = 0; j < K + 1; j++)
+      {
+        a.x[i][j] = opu.x[j][i];
+        printf("%d,", opu.x[j][i]);
+      }
+      printf(" ===\n");
+    }
     printf("\n");
-  printsage(tt);
-  printf(" ==irr\n");
+
+    v = renritu(a);
+
+    for (i = 0; i < K; i++)
+      x.x[K - i + 1] = v.x[i];
+    x.x[K] = 1;
+
+    v.x[K] = 1;
+
+    printsage(v);
+    printf("\n");
+  }while(ben_or(v)== -1);
   exit(1);
+  */
+
+  l = -1;
+  while (l < 0)
+  {
+    for (i = 0; i < K; i++)
+      pp.x[i] = rand() % N;
+    mykey(tt.x, pp);
+    tt.x[K] = 1;
+    if (ben_or(tt) == 0)
+    {
+      printf("\n");
+      printsage(tt);
+      printf(" ==irr\n");
+      exit(1);
+    }
   }
- }
   exit(1);
-  
+
   /*
   for(i=0;i<100000;i++){
   //vmul_2(f,g);

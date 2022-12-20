@@ -1,5 +1,6 @@
 
 /* -*- mode: C; coding:utf-8 -*- */
+#include <assert.h>
 
 // monomial
 typedef struct

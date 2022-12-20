@@ -80,7 +80,7 @@ int mltn(int n, int x)
     return 1;
   if (n == 1)
     return x;
-  return mlt(x, mltn(n - 1, x))
+  return mlt(x, mltn(n - 1, x));
 }
 
 int mltn2(int n, int x)
