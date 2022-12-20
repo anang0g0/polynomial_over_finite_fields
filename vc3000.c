@@ -102,14 +102,6 @@ ipow(unsigned int q, unsigned int u)
   return m;
 }
 
-int atom(unsigned short a){
-  if(mltn(N-1,a)==1){
-  return 0;
-  }else{
-    return -1;
-  }
-}
-
 //a<b : gf[b]%gf[a]
 unsigned short gf_mod(unsigned short a,unsigned short b){
   int i=fg[b]%fg[a];
@@ -518,7 +510,7 @@ vec vadd(vec a, vec b)
   vec c = {0};
 
   // printf("deg=%d %d\n",deg(a),deg(b));
-  // #pragma omp parallel for schedule(static)
+  
   for (i = 0; i < DEG; i++)
     c.x[i] = a.x[i] ^ b.x[i];
 
@@ -1219,6 +1211,23 @@ vec kara(vec a, vec b)
   return d;
 }
 
+static inline unsigned int gf_pow(unsigned int n,unsigned int u){
+
+  if(n%N==0)
+  return 1;
+  return (u*n-n)%(N-1)+1;
+}
+
+int atom(unsigned short a){
+  if(gf_pow(N-1,a)==1){
+  return 0;
+  }else{
+    return -1;
+  }
+}
+
+
+
 vec vpowmod(vec f, vec mod)
 {
   vec v = {0};
@@ -1641,7 +1650,7 @@ trace(vec f, unsigned short x)
 
   for (i = 0; i < d + 1; i++)
   {
-    u ^= gf[mlt(fg[f.x[i]], mltn(f.x[i], fg[x]))];
+    u ^= gf[mlt(fg[f.x[i]], gf_pow(f.x[i], fg[x]))];
   }
 
   return u;
@@ -1866,11 +1875,7 @@ int main(void)
     gg[i] = rand() % N;
   g = (setpol(gg, 256));
   */
-  for (i = 0; i < K; i++)
-    pp.x[i] = rand() % N;
-  MTX opu = {0};
-  vec cc = {0};
-
+  
 //  opu.x[0][0] = 1234;
 /*
 for(i=0;i<100000000;i++){
@@ -1901,12 +1906,17 @@ for(i=0;i<10;i++){
 //pd(333,222);
 //printf("%d\n",itob(6447,rr));
 //exit(1);
-/*
+
   i=4;
   j=8;
   printf("%d\n",gf[gf_mod(gf[5],gf[8])]);
   //exit(1);
-
+/*
+do{
+for (i = 0; i < K; i++)
+    pp.x[i] = rand() % N;
+  MTX opu = {0};
+  vec cc = {0};
 
   opu.x[0][0]=1;
   for (i = 1; i < K; i++)
@@ -1942,9 +1952,10 @@ for(i=0;i<10;i++){
   x.x[K] = 1;
 
   v.x[K] = 1;
+
   printsage(v);
   printf("\n");
-
+}while(ben_or(v)== -1);
 exit(1);
 */
 

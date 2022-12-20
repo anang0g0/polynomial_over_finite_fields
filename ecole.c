@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define O 8192
+#define O 4096
 
 /* generate Galois Field over GF(2^?) */
 static const unsigned long long int normal[15] = {
@@ -231,16 +231,12 @@ while(k>0){
   n++;
 }
 
-printf("%d\n",n);
-//exit(1);
-//scanf("%d",&n);
 x=normal[n-4];
-  //x=0b1000000001001,
+
   //  0b1000011101011; // sage 4096
   
   ens(x,n-4);
 
-//  exit(1);
 //  mkgf(O);
 //  makefg(O);
 
