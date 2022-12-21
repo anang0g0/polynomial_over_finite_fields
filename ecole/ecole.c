@@ -6,30 +6,10 @@
 
 #define ORD 65536
 
-/* generate Galois Field over GF(2^?) */
-static const unsigned long long int normal[15] = {
-    0b1011,
-    0b10011,
-    0b110111,
-    0b1100001,
-    0b11000001,
-    0b100011101,     // sage
-    0b1000010001,    // sage512
-    0b10001101111,   // sage1024
-    0b100000000101,  // 2048
-    0b1000011101011, // sage 4096
-    // 0b1000000001001,
-    // 0b11011000000001, /* 8192 */
-    0b10000000011011, /* Classic McEliece */
-    0b110000100010001,
-    0b1100000000000001,
-    0b11010000000010001};
-
-
 void ens(unsigned int x, int n)
 {
   int i, j, k = x, count = 0;
-  unsigned int gf[ORD]={0}, fg[ORD]={0};
+  unsigned int gf[ORD] = {0}, fg[ORD] = {0};
 
   while (k > 0)
   {
@@ -54,11 +34,12 @@ void ens(unsigned int x, int n)
       gf[i] ^= x;
     //  printf("%d,",gf[i]);
   }
-  for (i = 0; i < ORD; i++){
-  if(i<ORD-1)
-    printf("%d,", gf[i]);
-  if(i==ORD-1)
-    printf("%d", gf[i]);
+  for (i = 0; i < ORD; i++)
+  {
+    if (i < ORD - 1)
+      printf("%d,", gf[i]);
+    if (i == ORD - 1)
+      printf("%d", gf[i]);
   }
   printf("};\n");
 
@@ -89,6 +70,24 @@ int main()
 {
   int k = ORD + 1;
   int x, n = 0;
+  /* generate Galois Field over GF(2^?) */
+  static const unsigned int normal[15] = {
+      0b1011,
+      0b10011,
+      0b110111,
+      0b1100001,
+      0b11000001,
+      0b100011101,     // sage
+      0b1000010001,    // sage512
+      0b10001101111,   // sage1024
+      0b100000000101,  // 2048
+      0b1000011101011, // sage 4096
+      // 0b1000000001001,
+      // 0b11011000000001, /* 8192 */
+      0b10000000011011, /* Classic McEliece */
+      0b110000100010001,
+      0b1100000000000001,
+      0b11010000000010001};
 
   while (k > 0)
   {
