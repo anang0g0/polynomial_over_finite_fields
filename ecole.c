@@ -1,10 +1,10 @@
 /* generate GF(2^n) using irreducible polynomial */
-// ゼフ対数表を作るためのプログラム。正規基底を生成します。
+//ゼフ対数表を作るためのプログラム。正規基底を生成します。
 
 #include <stdio.h>
 #include <stdlib.h>
 
-#define ORD 4096
+#define O 2048
 
 /* generate Galois Field over GF(2^?) */
 static const unsigned long long int normal[15] = {
@@ -25,52 +25,24 @@ static const unsigned long long int normal[15] = {
     0b1100000000000001,
     0b11010000000010001};
 
-unsigned int gf[ORD], fg[ORD];
+unsigned int gf[O], fg[O];
 
-void ens(unsigned int x, int n)
+void makefg(int n)
 {
-  unsigned int gf[ORD] = {0};
-  int i, j, k = x, count = 0;
+  int i, j;
 
-  while (k > 0)
+  for (i = 0; i < n; i++)
   {
-    k = (k >> 1);
-    count++;
-  }
-  printf("static const unsigned short gf[%d]={\n", ORD);
-  k = (1 << (count - 1));
-  gf[0] = 0;
-  gf[1] = 1;
-  gf[2] = 2;
-  for (i = 3; i < n; i++)
-  {
-    gf[i] = (gf[i - 1] << 1);
-  }
-  // exit(1);
-  for (i = n; i < ORD; i++)
-  {
-    if (gf[i] < k)
-      gf[i] = (gf[i - 1] << 1);
-    if (gf[i] >= k)
-      gf[i] ^= x;
-    //  printf("%d,",gf[i]);
-  }
-  for (i = 0; i < ORD; i++)
-    printf("%d,", gf[i]);
-  printf("};\n");
-
-  for (i = 0; i < ORD; i++)
-  {
-    for (j = 0; j < ORD; j++)
+    for (j = 0; j < n; j++)
     {
       if (gf[i] == j)
         fg[j] = i;
     }
   }
-  printf("static const unsigned short fg[%d]={", ORD);
-  for (i = 0; i < ORD; i++)
+  printf("static const unsigned short fg[%d]={", O);
+  for (i = 0; i < O; i++)
   {
-    if (i < ORD - 1)
+    if (i < O - 1)
     {
       printf("%d,", fg[i]);
     }
@@ -80,22 +52,126 @@ void ens(unsigned int x, int n)
     }
   }
   printf("};\n");
+
+  return;
+}
+
+void mkgf(int n)
+{
+  int i, j, bit, count = 0;
+  unsigned int pol, N, M, L;
+
+  for (i = 0; i < 13; i++)
+    pol = normal[i]; //strtoul(normal[i],(char **)NULL,2);
+
+  /* define pol */
+  switch (n)
+  {
+
+  case 8:
+    pol = normal[0];
+    printf("%d\n", n);
+    break;
+
+  case 16:
+    pol = normal[1];
+    printf("%d\n", n);
+    break;
+
+  case 32:
+    pol = normal[2];
+    printf("%d\n", n);
+    break;
+
+  case 64:
+    pol = normal[3];
+    printf("%d\n", n);
+    break;
+
+  case 128:
+    pol = normal[4];
+    printf("%d\n", n);
+    break;
+
+  case 256:
+    pol = normal[5];
+    printf("%d\n", n);
+    break;
+
+  case 512:
+    pol = normal[6];
+    printf("%d\n", n);
+    break;
+
+  case 1024:
+    pol = normal[7];
+    printf("%d\n", n);
+    break;
+
+  case 2048:
+    pol = normal[8];
+    printf("%d\n", n);
+    break;
+
+  case 4096:
+    pol = normal[9];
+    printf("%d\n", n);
+    break;
+
+  case 8192:
+    pol = normal[10];
+    printf("%d\n", n);
+    break;
+
+  default: /* 16384 */
+    pol = normal[11];
+    printf("%d\n", n);
+    break;
+  }
+
+  L = 1;
+  while (pol > L) //原始多項式の最大次数を計算する。
+  {
+    L = (L << 1);
+    count++;
+  }
+  L = (L >> 1);
+  N = pol ^ L; //原始多項式の最大次数を消した多項式の残り。
+
+  gf[0] = 0;
+  bit = 1;
+  for (i = 1; i < L; i++)
+  {
+    if (bit > L - 1) //もしbitが最大次数に達したら
+    {
+      bit = bit - L; //bitから最大次数の項 x^n を消す。
+      bit = bit ^ N; //最大次数の項以下の原始多項式を bit に xorする。
+    }
+    gf[i] = bit; //最初は何もしないでx^iを入れていく。
+    bit = (bit << 1); //原始多項式の次数を1上げる。
+  }
+  printf("static const unsigned short gf[%d]={", O);
+  for (i = 0; i < L; i++)
+  {
+    if (i < O - 1)
+    {
+      printf("%u,", gf[i]);
+    }
+    else
+    {
+      printf("%u", gf[i]);
+    }
+  }
+
+  printf("};\n");
 }
 
 int main()
 {
-  int k = ORD + 1;
-  int x, n = 0;
+  int i, j, k;
 
-  while (k > 0)
-  {
-    k = (k >> 1);
-    n++;
-  }
-
-  x = normal[n - 4];
-
-  ens(x, n - 4);
+  mkgf(O);
+  makefg(O);
 
   return 0;
 }
