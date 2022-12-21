@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define ORD 4096
+#define ORD 65536
 
 /* generate Galois Field over GF(2^?) */
 static const unsigned long long int normal[15] = {
@@ -25,11 +25,11 @@ static const unsigned long long int normal[15] = {
     0b1100000000000001,
     0b11010000000010001};
 
-  unsigned int gf[ORD], fg[ORD];
 
 void ens(unsigned int x, int n)
 {
   int i, j, k = x, count = 0;
+  unsigned int gf[ORD]={0}, fg[ORD]={0};
 
   while (k > 0)
   {
@@ -54,8 +54,12 @@ void ens(unsigned int x, int n)
       gf[i] ^= x;
     //  printf("%d,",gf[i]);
   }
-  for (i = 0; i < ORD; i++)
+  for (i = 0; i < ORD; i++){
+  if(i<ORD-1)
     printf("%d,", gf[i]);
+  if(i==ORD-1)
+    printf("%d", gf[i]);
+  }
   printf("};\n");
 
   for (i = 0; i < ORD; i++)
