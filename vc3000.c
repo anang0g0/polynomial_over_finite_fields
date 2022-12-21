@@ -146,7 +146,6 @@ unsigned short gcd(unsigned short a, unsigned short b)
   return b;
 }
 
-
 /* input: in0, in1 in GF((2^m)^t)*/
 /* output: out = in0*in1 */
 void GF_mul2(unsigned short *out, unsigned short *in0, unsigned short *in1)
@@ -1854,78 +1853,22 @@ int irr_poly_to_file()
   return 0;
 }
 
-// 言わずもがな
-int main(void)
+void compare()
 {
-  vec g, w;
-  unsigned int i, j, count = 0;
-  vec e[10] = {0}, v = {0}, x = {0}, z = {0}, ee = {0}, y = {0}, tt = {0}, ww, xx, f;
-  int l = -1, m, n;
-  int ii = 0;
-  // irreducible goppa code (既役多項式が必要なら、ここのコメントを外すこと。)
-  vec q = {0}, r = {0};
-  unsigned short ff[256] = {1, 1, 1, 1};
-  unsigned short gg[256] = {0, 0, 1, 1};
+  int i, j;
   MTX a = {0};
-  vec pp = {0};
-  char rr[16] = {0};
+  vec pp = {0}, x = {0}, v = {0};
 
-  srand(clock());
-  /*
-    for (i = 0; i < 256; i++)
-      ff[i] = rand() % N;
-    f = (setpol(ff, 256));
-    for (i = 0; i < 256; i++)
-      gg[i] = rand() % N;
-    g = (setpol(gg, 256));
-    */
-
-  //  opu.x[0][0] = 1234;
-  /*
-  for(i=0;i<100000000;i++){
-  //if(mltn(i,fg[i%N])!=mlt2(i,fg[i%N]))
+  do
   {
-  //printf("%d %d %d\n",i,
-  //gf[mltn(i,fg[i%N])];
-  //gf[mlt2(i,fg[i%N])];
-  gf[mltu(i,fg[5])];
-
-  }
-  }
-  //exit(1);
-  */
-  uint8_t x0 = 123;
-  uint8_t y0 = 234;
-  for (i = 0; i < 10; i++)
-  {
-
-    // printf("%d %d\n",gf_frac(123,456),gf_mlt(oinv(123),456));
-    // printf("%d %d\n",
-    // gf_div(i%(N-1),222);
-    // mlt(oinv(i%(N-1)),fg[222]);
-    // gf_mul(111,222);
-    // printf("%d\n",pd(333,222));
-    // printf("%d\n"
-    // gf[mlt(fg[111],fg[222])];
-  }
-  // pd(333,222);
-  // printf("%d\n",itob(6447,rr));
-  // exit(1);
-
-  i = 4;
-  j = 8;
-  printf("%d\n", gf[gf_mod(gf[5], gf[8])]);
-  // exit(1);
-  /*
-  do{
-  for (i = 0; i < K; i++)
+    for (i = 0; i < K; i++)
       pp.x[i] = rand() % N;
     MTX opu = {0};
     vec cc = {0};
 
-    opu.x[0][0]=1;
+    opu.x[0][0] = 1;
     for (i = 1; i < K; i++)
-      opu.x[0][i] = 0; //rand() % N;
+      opu.x[0][i] = 0; // rand() % N;
 
     for (i = 0; i < K; i++)
       opu.x[1][i] = pp.x[i];
@@ -1934,8 +1877,8 @@ int main(void)
     {
       for (j = 2; j <= K; j++)
       {
-         opu.x[j][i]=gf[mltn(j,fg[pp.x[i]])];
-        //GF_mul2(opu.x[j], opu.x[j - 1], pp.x);
+        opu.x[j][i] = gf[mltn(j, fg[pp.x[i]])];
+        // GF_mul2(opu.x[j], opu.x[j - 1], pp.x);
       }
     }
 
@@ -1960,9 +1903,58 @@ int main(void)
 
     printsage(v);
     printf("\n");
-  }while(ben_or(v)== -1);
+  } while (ben_or(v) == -1);
   exit(1);
-  */
+}
+
+void speed()
+{
+  int i;
+  vec f, g, q, r;
+
+  for (i = 0; i < 100000; i++)
+  {
+    // vmul_2(f,g);
+    karatuba(f, g);
+    // karatubaka(f,f);
+    // kara(f,g);
+  }
+  exit(1);
+
+  // q=karatuba(f,g);
+  q = karatuba(f, g);
+  r = vmul_2(f, g);
+  printpol(q);
+  printf("===q\n\n");
+  printpol(r);
+  printf("\naaa\n");
+  for (i = 0; i < deg(r); i++)
+    if (q.x[i] != r.x[i])
+      printf("i=%d, %d %d\n", i, q.x[i], r.x[i]);
+  exit(1);
+}
+// 言わずもがな
+int main(void)
+{
+  vec g, w;
+  unsigned int i, j, count = 0;
+  vec e[10] = {0}, v = {0}, x = {0}, z = {0}, ee = {0}, y = {0}, tt = {0}, ww, xx, f;
+  int l = -1, m, n;
+  int ii = 0;
+  // irreducible goppa code (既役多項式が必要なら、ここのコメントを外すこと。)
+  vec q = {0}, r = {0};
+  unsigned short ff[256] = {1, 1, 1, 1};
+  unsigned short gg[256] = {0, 0, 1, 1};
+  MTX a = {0};
+  char rr[16] = {0};
+
+  srand(clock());
+  i = 4;
+  j = 8;
+  printf("%d\n", gf[gf_mod(gf[5], gf[8])]);
+  // exit(1);
+
+  vec pp = {0};
 
   l = -1;
   while (l < 0)
@@ -1980,29 +1972,6 @@ int main(void)
     }
   }
   exit(1);
-
-  /*
-  for(i=0;i<100000;i++){
-  //vmul_2(f,g);
-  karatuba(f,g);
-  //karatubaka(f,f);
-  //kara(f,g);
-  }
-  exit(1);
-  */
-  /*
-  //q=karatuba(f,g);
-  q=karatuba(f,g);
-  r=vmul_2(f,g);
-  printpol(q);
-  printf("===q\n\n");
-  printpol(r);
-  printf("\naaa\n");
-  for(i=0;i<deg(r);i++)
-  if(q.x[i]!=r.x[i])
-  printf("i=%d, %d %d\n",i,q.x[i],r.x[i]);
-  exit(1);
-  */
 
   while (1) //(l == -1)
   {
