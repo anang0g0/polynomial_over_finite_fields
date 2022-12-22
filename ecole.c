@@ -30,28 +30,21 @@ void ens(unsigned int x, int n, int ord)
   gf[1] = 1;
 
   for (i = 2; i < n; i++)
-  {
     gf[i] = (gf[i - 1] << 1);
-  }
-
+  
   for (i = 2; i < ord; i++)
   {
     if (gf[i] < k)
       gf[i] = (gf[i - 1] << 1);
     if (gf[i] >= k)
       gf[i] ^= x;
-    //  printf("%d,",gf[i]);
   }
   for (i = 0; i < ord; i++)
   {
     if (i < ord - 1)
-    {
       fprintf(fp, "%d,", gf[i]);
-    }
     if (i == ord - 1)
-    {
       fprintf(fp, "%d", gf[i]);
-    }
   }
   fprintf(fp, "};\n");
 
@@ -67,13 +60,9 @@ void ens(unsigned int x, int n, int ord)
   for (i = 0; i < ord; i++)
   {
     if (i < ord - 1)
-    {
       fprintf(fp, "%d,", fg[i]);
-    }
     else
-    {
       fprintf(fp, "%d", fg[i]);
-    }
   }
   fprintf(fp, "};\n");
 }
@@ -83,9 +72,7 @@ int valid(int k)
   int n = 0;
 
   if (k < 4)
-  {
     printf("Please input more  GF(4).\n");
-  }
 
   while (k > 0)
   {
@@ -105,6 +92,8 @@ int valid(int k)
 
   return n;
 }
+
+
 int main(int argc, char *argv[])
 {
   int k;
@@ -154,8 +143,7 @@ int main(int argc, char *argv[])
   k = atoi(argv[1]);
   n = valid(k);
   x = normal[n - 3];
-  printf("%d %d\n", n - 3, k);
-  // exit(1);
+
   ens(x, n - 3, k);
 
   return 0;
