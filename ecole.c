@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define ORD 32
+#define ORD 256
 
 void ens(unsigned int x, int n)
 {
@@ -110,7 +110,7 @@ int main()
     k = (k >> 1);
     n++;
   }
-  printf("n=%d %d noemal[%d]\n", n, n - 4, normal[n - 4]);
+  //printf("n=%d %d noemal[%d]\n", n, n - 4, normal[n - 4]);
   // exit(1);
   x = normal[n - 4];
 
