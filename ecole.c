@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define ORD 65536
+#define ORD 32
 
 void ens(unsigned int x, int n)
 {
@@ -26,6 +26,8 @@ void ens(unsigned int x, int n)
     gf[i] = (gf[i - 1] << 1);
   }
   // exit(1);
+  if (n < 3)
+    n = 2;
   for (i = n; i < ORD; i++)
   {
     if (gf[i] < k)
@@ -68,33 +70,48 @@ void ens(unsigned int x, int n)
 
 int main()
 {
-  int k = ORD + 1;
+  int k = ORD;
   int x, n = 0;
   /* generate Galois Field over GF(2^?) */
-  static const unsigned int normal[15] = {
-      0b1011,
-      0b10011,
+  static const unsigned int normal[14] = {
+      0b1101,
+      0b11001,
       0b110111,
       0b1100001,
       0b11000001,
-      0b100011101,     // sage
-      0b1000010001,    // sage512
-      0b10001101111,   // sage1024
-      0b100000000101,  // 2048
-      0b1000011101011, // sage 4096
-      // 0b1000000001001,
-      // 0b11011000000001, /* 8192 */
-      0b10000000011011, /* Classic McEliece */
+      0b110101001,
+      0b1100110001,
+      0b11000010011,
+      0b110000001101,
+      0b1100101000001,
+      0b11011000000001,
       0b110000100010001,
       0b1100000000000001,
       0b11010000000010001};
+
+  static const unsigned int sage[14] = {
+      0b1011,
+      0b10011,
+      0b100101,
+      0b1011011,
+      0b10000011,
+      0b100011101,      // sage
+      0b1000010001,     // sage512
+      0b10001101111,    // sage1024
+      0b100000000101,   // 2048
+      0b1000011101011,  /* sage 4096 */
+      0b10000000011011, /* Classic McEliece */
+      0b100000010101001,
+      0b1000000000110101,
+      0b10000000000101101};
 
   while (k > 0)
   {
     k = (k >> 1);
     n++;
   }
-
+  printf("n=%d %d noemal[%d]\n", n, n - 4, normal[n - 4]);
+  // exit(1);
   x = normal[n - 4];
 
   ens(x, n - 4);
