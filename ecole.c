@@ -9,14 +9,15 @@
 
 static unsigned short gf[ORD] = {0}, fg[ORD] = {0};
 
-void ens(unsigned int x, int n, char *argv[])
+void ens(unsigned int x, int n, int ord)
 {
-  int i, j, k = x, count = 0, ord = atoi(argv[1]);
+  int i, j, k = x, count = 0;
   FILE *fp;
-  char c[] = ".h";
+  char c[] = ".h", ch[20];
 
-  strcat(argv[1], c);
-  fp = fopen(argv[1], "wb");
+  sprintf(ch, "%d", ord);
+  strcat(ch, c);
+  fp = fopen(ch, "wb");
 
   while (k > 0)
   {
@@ -27,14 +28,12 @@ void ens(unsigned int x, int n, char *argv[])
   k = (1 << (count - 1));
   gf[0] = 0;
   gf[1] = 1;
-  gf[2] = 2;
-  for (i = 3; i < n; i++)
+
+  for (i = 2; i < n; i++)
   {
     gf[i] = (gf[i - 1] << 1);
   }
-  // exit(1);
-  if (n < 3)
-    n = 2;
+
   for (i = n; i < ord; i++)
   {
     if (gf[i] < k)
@@ -47,11 +46,11 @@ void ens(unsigned int x, int n, char *argv[])
   {
     if (i < ord - 1)
     {
-      fprintf(fp,"%d,",gf[i]);
+      fprintf(fp, "%d,", gf[i]);
     }
     if (i == ord - 1)
     {
-      fprintf(fp,"%d",gf[i]);
+      fprintf(fp, "%d", gf[i]);
     }
   }
   fprintf(fp, "};\n");
@@ -69,11 +68,11 @@ void ens(unsigned int x, int n, char *argv[])
   {
     if (i < ord - 1)
     {
-      fprintf(fp,"%d,",fg[i]);
+      fprintf(fp, "%d,", fg[i]);
     }
     else
     {
-      fprintf(fp,"%d",fg[i]);
+      fprintf(fp, "%d", fg[i]);
     }
   }
   fprintf(fp, "};\n");
@@ -84,7 +83,8 @@ int main(int argc, char *argv[])
   int k;
   int x, n = 0;
   /* Generate nomal basis of Galois Field over GF(2^?) */
-  static const unsigned int normal[15] = {
+  static const unsigned int normal[16] = {
+      0b11,
       0b111,
       0b1101,
       0b11001,
@@ -102,7 +102,8 @@ int main(int argc, char *argv[])
       0b11010000000010001};
 
   // Generate Sagemath based Galois Fields.
-  static const unsigned int sage[15] = {
+  static const unsigned int sage[16] = {
+      011,
       0b111,
       0b1011,
       0b10011,
@@ -125,28 +126,30 @@ int main(int argc, char *argv[])
     exit(1);
   }
   k = atoi(argv[1]);
-  if(k<4){
-    printf("Please input more  GF(4).\n");
+  if (k < 3)
+  {
+    printf("Please input more  GF(2).\n");
   }
 
   while (k > 0)
-  { 
-    if(k%2==1 && k>1){
-    printf("This number is not 2^m.\n");
-    exit(1);
+  {
+    if (k % 2 == 1 && k > 1)
+    {
+      printf("This number is not 2^m.\n");
+      exit(1);
     }
     k = (k >> 1);
     n++;
   }
   if (n == 0)
   {
-    printf("baka\n");
+    printf("n must n>0\n");
     exit(1);
   }
 
-  x = normal[n - 3];
+  x = normal[n - 2];
 
-  ens(x, n - 3, argv);
+  ens(x, n - 2, k);
 
   return 0;
 }
