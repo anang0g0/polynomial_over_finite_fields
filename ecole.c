@@ -13,7 +13,7 @@ void ens(unsigned int x, int n, char *argv[])
 {
   int i, j, k = x, count = 0, ord = atoi(argv[1]);
   FILE *fp;
-  char c[] = ".h", ch[20];
+  char c[] = ".h";
 
   strcat(argv[1], c);
   fp = fopen(argv[1], "wb");
@@ -47,13 +47,11 @@ void ens(unsigned int x, int n, char *argv[])
   {
     if (i < ord - 1)
     {
-      sprintf(ch, "%d,", gf[i]);
-      fprintf(fp, ch);
+      fprintf(fp,"%d,",gf[i]);
     }
     if (i == ord - 1)
     {
-      sprintf(ch, "%d", gf[i]);
-      fprintf(fp, ch);
+      fprintf(fp,"%d",gf[i]);
     }
   }
   fprintf(fp, "};\n");
@@ -71,17 +69,11 @@ void ens(unsigned int x, int n, char *argv[])
   {
     if (i < ord - 1)
     {
-      sprintf(ch, "%d,", fg[i]);
-      fprintf(fp, ch);
-
-      //  fprintf(fp,fg[i],"%d,");
+      fprintf(fp,"%d,",fg[i]);
     }
     else
     {
-      sprintf(ch, "%d", fg[i]);
-      fprintf(fp, ch);
-
-      //    fprintf(fp,fg[i],"%d");
+      fprintf(fp,"%d",fg[i]);
     }
   }
   fprintf(fp, "};\n");
@@ -126,12 +118,16 @@ int main(int argc, char *argv[])
 
   if (argv[1] == NULL)
   {
-    printf("baka\n");
+    printf("please input with order of finite fields.\n");
     exit(1);
   }
   k = atoi(argv[1]);
   while (k > 0)
-  {
+  { 
+    if(k%2==1 && k>1){
+    printf("This number is not 2^m.\n");
+    exit(1);
+    }
     k = (k >> 1);
     n++;
   }
