@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
 {
   int k;
   int x, n = 0;
-  /* generate Galois Field over GF(2^?) */
+  /* Generate nomal basis of Galois Field over GF(2^?) */
   static const unsigned int normal[14] = {
       0b1101,
       0b11001,
@@ -100,6 +100,7 @@ int main(int argc, char *argv[])
       0b1100000000000001,
       0b11010000000010001};
 
+  // Generate Sagemath based Galois Fields.
   static const unsigned int sage[14] = {
       0b1011,
       0b10011,
@@ -118,7 +119,7 @@ int main(int argc, char *argv[])
 
   if (argv[1] == NULL)
   {
-    printf("please input with order of finite fields.\n");
+    printf("Please input with order of finite fields.\n");
     exit(1);
   }
   k = atoi(argv[1]);
