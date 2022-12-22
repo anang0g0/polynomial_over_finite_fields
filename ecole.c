@@ -7,7 +7,7 @@
 
 #define ORD 65536
 
-unsigned int gf[ORD] = {0}, fg[ORD] = {0};
+static unsigned short gf[ORD] = {0}, fg[ORD] = {0};
 
 void ens(unsigned int x, int n, char *argv[])
 {
