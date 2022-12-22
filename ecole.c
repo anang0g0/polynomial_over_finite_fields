@@ -9,15 +9,14 @@
 
 static unsigned short gf[ORD] = {0}, fg[ORD] = {0};
 
-void ens(unsigned int x, int n, int ord)
+void ens(unsigned int x, int n, char *argv[])
 {
-  int i, j, k = x, count = 0;
+  int i, j, k = x, count = 0, ord = atoi(argv[1]);
   FILE *fp;
-  char c[] = ".h", ch[20];
+  char c[] = ".h";
 
-  sprintf(ch, "%d", ord);
-  strcat(ch, c);
-  fp = fopen(ch, "wb");
+  strcat(argv[1], c);
+  fp = fopen(argv[1], "wb");
 
   while (k > 0)
   {
@@ -28,12 +27,14 @@ void ens(unsigned int x, int n, int ord)
   k = (1 << (count - 1));
   gf[0] = 0;
   gf[1] = 1;
-
-  for (i = 2; i < n; i++)
+  gf[2] = 2;
+  for (i = 3; i < n; i++)
   {
     gf[i] = (gf[i - 1] << 1);
   }
-
+  // exit(1);
+  if (n < 3)
+    n = 2;
   for (i = n; i < ord; i++)
   {
     if (gf[i] < k)
@@ -78,13 +79,39 @@ void ens(unsigned int x, int n, int ord)
   fprintf(fp, "};\n");
 }
 
+int valid(int k)
+{
+  int n = 0;
+
+  if (k < 4)
+  {
+    printf("Please input more  GF(4).\n");
+  }
+
+  while (k > 0)
+  {
+    if (k % 2 == 1 && k > 1)
+    {
+      printf("This number is not 2^m.\n");
+      exit(1);
+    }
+    k = (k >> 1);
+    n++;
+  }
+  if (n == 0)
+  {
+    printf("baka\n");
+    exit(1);
+  }
+
+  return n;
+}
 int main(int argc, char *argv[])
 {
   int k;
   int x, n = 0;
   /* Generate nomal basis of Galois Field over GF(2^?) */
-  static const unsigned int normal[16] = {
-      0b11,
+  static const unsigned int normal[15] = {
       0b111,
       0b1101,
       0b11001,
@@ -102,8 +129,7 @@ int main(int argc, char *argv[])
       0b11010000000010001};
 
   // Generate Sagemath based Galois Fields.
-  static const unsigned int sage[16] = {
-      011,
+  static const unsigned int sage[15] = {
       0b111,
       0b1011,
       0b10011,
@@ -125,31 +151,12 @@ int main(int argc, char *argv[])
     printf("Please input with order of finite fields.\n");
     exit(1);
   }
+  
   k = atoi(argv[1]);
-  if (k < 3)
-  {
-    printf("Please input more  GF(2).\n");
-  }
+  n = valid(k);
+  x = normal[n - 3];
 
-  while (k > 0)
-  {
-    if (k % 2 == 1 && k > 1)
-    {
-      printf("This number is not 2^m.\n");
-      exit(1);
-    }
-    k = (k >> 1);
-    n++;
-  }
-  if (n == 0)
-  {
-    printf("n must n>0\n");
-    exit(1);
-  }
-
-  x = normal[n - 2];
-
-  ens(x, n - 2, k);
+  ens(x, n - 3, argv);
 
   return 0;
 }
