@@ -123,6 +123,10 @@ int main(int argc, char *argv[])
     exit(1);
   }
   k = atoi(argv[1]);
+  if(i<8){
+    printf("Please input more  GF(8).\n")
+  }
+
   while (k > 0)
   { 
     if(k%2==1 && k>1){
