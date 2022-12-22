@@ -3,20 +3,27 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-#define ORD 256
+#define ORD 65536
 
-void ens(unsigned int x, int n)
+unsigned int gf[ORD] = {0}, fg[ORD] = {0};
+
+void ens(unsigned int x, int n, char *argv[])
 {
-  int i, j, k = x, count = 0;
-  unsigned int gf[ORD] = {0}, fg[ORD] = {0};
+  int i, j, k = x, count = 0, ord = atoi(argv[1]);
+  FILE *fp;
+  char c[] = ".h", ch[20];
+
+  strcat(argv[1], c);
+  fp = fopen(argv[1], "wb");
 
   while (k > 0)
   {
     k = (k >> 1);
     count++;
   }
-  printf("static const unsigned short gf[%d]={\n", ORD);
+  fprintf(fp, "static const unsigned short gf[%d]={\n", ord);
   k = (1 << (count - 1));
   gf[0] = 0;
   gf[1] = 1;
@@ -28,7 +35,7 @@ void ens(unsigned int x, int n)
   // exit(1);
   if (n < 3)
     n = 2;
-  for (i = n; i < ORD; i++)
+  for (i = n; i < ord; i++)
   {
     if (gf[i] < k)
       gf[i] = (gf[i - 1] << 1);
@@ -36,41 +43,53 @@ void ens(unsigned int x, int n)
       gf[i] ^= x;
     //  printf("%d,",gf[i]);
   }
-  for (i = 0; i < ORD; i++)
+  for (i = 0; i < ord; i++)
   {
-    if (i < ORD - 1)
-      printf("%d,", gf[i]);
-    if (i == ORD - 1)
-      printf("%d", gf[i]);
+    if (i < ord - 1)
+    {
+      sprintf(ch, "%d,", gf[i]);
+      fprintf(fp, ch);
+    }
+    if (i == ord - 1)
+    {
+      sprintf(ch, "%d", gf[i]);
+      fprintf(fp, ch);
+    }
   }
-  printf("};\n");
+  fprintf(fp, "};\n");
 
-  for (i = 0; i < ORD; i++)
+  for (i = 0; i < ord; i++)
   {
-    for (j = 0; j < ORD; j++)
+    for (j = 0; j < ord; j++)
     {
       if (gf[i] == j)
         fg[j] = i;
     }
   }
-  printf("static const unsigned short fg[%d]={", ORD);
-  for (i = 0; i < ORD; i++)
+  fprintf(fp, "static const unsigned short fg[%d]={", ord);
+  for (i = 0; i < ord; i++)
   {
-    if (i < ORD - 1)
+    if (i < ord - 1)
     {
-      printf("%d,", fg[i]);
+      sprintf(ch, "%d,", fg[i]);
+      fprintf(fp, ch);
+
+      //  fprintf(fp,fg[i],"%d,");
     }
     else
     {
-      printf("%d", fg[i]);
+      sprintf(ch, "%d", fg[i]);
+      fprintf(fp, ch);
+
+      //    fprintf(fp,fg[i],"%d");
     }
   }
-  printf("};\n");
+  fprintf(fp, "};\n");
 }
 
-int main()
+int main(int argc, char *argv[])
 {
-  int k = ORD;
+  int k;
   int x, n = 0;
   /* generate Galois Field over GF(2^?) */
   static const unsigned int normal[14] = {
@@ -105,16 +124,26 @@ int main()
       0b1000000000110101,
       0b10000000000101101};
 
+  if (argv[1] == NULL)
+  {
+    printf("baka\n");
+    exit(1);
+  }
+  k = atoi(argv[1]);
   while (k > 0)
   {
     k = (k >> 1);
     n++;
   }
-  //printf("n=%d %d noemal[%d]\n", n, n - 4, normal[n - 4]);
-  // exit(1);
+  if (n == 0)
+  {
+    printf("baka\n");
+    exit(1);
+  }
+
   x = normal[n - 4];
 
-  ens(x, n - 4);
+  ens(x, n - 4, argv);
 
   return 0;
 }
