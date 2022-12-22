@@ -84,7 +84,8 @@ int main(int argc, char *argv[])
   int k;
   int x, n = 0;
   /* Generate nomal basis of Galois Field over GF(2^?) */
-  static const unsigned int normal[14] = {
+  static const unsigned int normal[15] = {
+      0b111,
       0b1101,
       0b11001,
       0b110111,
@@ -101,7 +102,8 @@ int main(int argc, char *argv[])
       0b11010000000010001};
 
   // Generate Sagemath based Galois Fields.
-  static const unsigned int sage[14] = {
+  static const unsigned int sage[15] = {
+      0b111,
       0b1011,
       0b10011,
       0b100101,
@@ -123,8 +125,8 @@ int main(int argc, char *argv[])
     exit(1);
   }
   k = atoi(argv[1]);
-  if(i<8){
-    printf("Please input more  GF(8).\n")
+  if(k<4){
+    printf("Please input more  GF(4).\n");
   }
 
   while (k > 0)
@@ -142,9 +144,9 @@ int main(int argc, char *argv[])
     exit(1);
   }
 
-  x = normal[n - 4];
+  x = normal[n - 3];
 
-  ens(x, n - 4, argv);
+  ens(x, n - 3, argv);
 
   return 0;
 }
