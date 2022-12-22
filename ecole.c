@@ -9,6 +9,42 @@
 
 static unsigned short gf[ORD] = {0}, fg[ORD] = {0};
 
+/* Generate nomal basis of Galois Field over GF(2^?) */
+static const unsigned int normal[15] = {
+    0b111,
+    0b1101,
+    0b11001,
+    0b110111,
+    0b1100001,
+    0b11000001,
+    0b110101001,
+    0b1100110001,
+    0b11000010011,
+    0b110000001101,
+    0b1100101000001,
+    0b11011000000001,
+    0b110000100010001,
+    0b1100000000000001,
+    0b11010000000010001};
+
+// Generate Sagemath based Galois Fields.
+static const unsigned int sage[15] = {
+    0b111,
+    0b1011,
+    0b10011,
+    0b100101,
+    0b1011011,
+    0b10000011,
+    0b100011101,      // sage
+    0b1000010001,     // sage512
+    0b10001101111,    // sage1024
+    0b100000000101,   // 2048
+    0b1000011101011,  /* sage 4096 */
+    0b10000000011011, /* Classic McEliece */
+    0b100000010101001,
+    0b1000000000110101,
+    0b10000000000101101};
+
 void ens(unsigned int x, int n, int ord)
 {
   int i, j, k = x, count = 0;
@@ -31,7 +67,7 @@ void ens(unsigned int x, int n, int ord)
 
   for (i = 2; i < n; i++)
     gf[i] = (gf[i - 1] << 1);
-  
+
   for (i = 2; i < ord; i++)
   {
     if (gf[i] < k)
@@ -93,46 +129,10 @@ int valid(int k)
   return n;
 }
 
-
 int main(int argc, char *argv[])
 {
   int k;
   int x, n = 0;
-  /* Generate nomal basis of Galois Field over GF(2^?) */
-  static const unsigned int normal[15] = {
-      0b111,
-      0b1101,
-      0b11001,
-      0b110111,
-      0b1100001,
-      0b11000001,
-      0b110101001,
-      0b1100110001,
-      0b11000010011,
-      0b110000001101,
-      0b1100101000001,
-      0b11011000000001,
-      0b110000100010001,
-      0b1100000000000001,
-      0b11010000000010001};
-
-  // Generate Sagemath based Galois Fields.
-  static const unsigned int sage[15] = {
-      0b111,
-      0b1011,
-      0b10011,
-      0b100101,
-      0b1011011,
-      0b10000011,
-      0b100011101,      // sage
-      0b1000010001,     // sage512
-      0b10001101111,    // sage1024
-      0b100000000101,   // 2048
-      0b1000011101011,  /* sage 4096 */
-      0b10000000011011, /* Classic McEliece */
-      0b100000010101001,
-      0b1000000000110101,
-      0b10000000000101101};
 
   if (argv[1] == NULL)
   {
