@@ -25,7 +25,8 @@ static const unsigned int normal[15] = {
     0b11011000000001,
     0b110000100010001,
     0b1100000000000001,
-    0b11010000000010001};
+    0b11010000000010001
+    };
 
 // Generate Sagemath based Galois Fields.
 static const unsigned int sage[15] = {
@@ -43,7 +44,8 @@ static const unsigned int sage[15] = {
     0b10000000011011, /* Classic McEliece */
     0b100000010101001,
     0b1000000000110101,
-    0b10000000000101101};
+    0b10000000000101101
+    };
 
 void ens(unsigned int x, int n, int ord)
 {
@@ -55,8 +57,7 @@ void ens(unsigned int x, int n, int ord)
   strcat(ch, c);
   fp = fopen(ch, "wb");
 
-  while (k > 0)
-  {
+  while (k > 0){
     k = (k >> 1);
     count++;
   }
@@ -65,18 +66,13 @@ void ens(unsigned int x, int n, int ord)
   gf[0] = 0;
   gf[1] = 1;
 
-  for (i = 2; i < n; i++)
-    gf[i] = (gf[i - 1] << 1);
-
-  for (i = 2; i < ord; i++)
-  {
+  for (i = 2; i < ord; i++)  {
     if (gf[i] < k)
       gf[i] = (gf[i - 1] << 1);
     if (gf[i] >= k)
       gf[i] ^= x;
   }
-  for (i = 0; i < ord; i++)
-  {
+  for (i = 0; i < ord; i++){
     if (i < ord - 1)
       fprintf(fp, "%d,", gf[i]);
     if (i == ord - 1)
@@ -84,17 +80,14 @@ void ens(unsigned int x, int n, int ord)
   }
   fprintf(fp, "};\n");
 
-  for (i = 0; i < ord; i++)
-  {
-    for (j = 0; j < ord; j++)
-    {
+  for (i = 0; i < ord; i++){
+    for (j = 0; j < ord; j++){
       if (gf[i] == j)
         fg[j] = i;
     }
   }
   fprintf(fp, "static const unsigned short fg[%d]={", ord);
-  for (i = 0; i < ord; i++)
-  {
+  for (i = 0; i < ord; i++){
     if (i < ord - 1)
       fprintf(fp, "%d,", fg[i]);
     else
@@ -110,18 +103,15 @@ int valid(int k)
   if (k < 4)
     printf("Please input more  GF(4).\n");
 
-  while (k > 0)
-  {
-    if (k % 2 == 1 && k > 1)
-    {
+  while (k > 0) {
+    if (k % 2 == 1 && k > 1) {
       printf("This number is not 2^m.\n");
       exit(1);
     }
     k = (k >> 1);
     n++;
   }
-  if (n == 0)
-  {
+  if (n == 0){
     printf("baka\n");
     exit(1);
   }
@@ -134,8 +124,7 @@ int main(int argc, char *argv[])
   int k;
   int x, n = 0;
 
-  if (argv[1] == NULL)
-  {
+  if (argv[1] == NULL){
     printf("Please input with order of finite fields.\n");
     exit(1);
   }
