@@ -49,9 +49,9 @@ void ens(unsigned int x, int n, int ord)
 {
   int i, j, k = x, count = 0;
   FILE *fp;
-  char ch[8]="";
+  char filename[8]="";
 
-  
+
   while (k > 0)
   {
     k = (k >> 1);
@@ -70,8 +70,8 @@ void ens(unsigned int x, int n, int ord)
       gf[i] ^= x;
   }
 
-  sprintf(ch, "%d.h", ord);
-  fp = fopen(ch, "wb");
+  sprintf(filename, "%d.h", ord);
+  fp = fopen(filename, "wb");
 
   fprintf(fp, "static const unsigned short gf[%d]={\n", ord);
   for (i = 0; i < ord; i++)
