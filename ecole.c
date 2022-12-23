@@ -49,7 +49,9 @@ void ens(unsigned int x, int n, int ord)
 {
   int i, j, k = x, count = 0;
   FILE *fp;
+  char ch[8]="";
 
+  
   while (k > 0)
   {
     k = (k >> 1);
