@@ -72,6 +72,15 @@ void ens(unsigned int x, int n, int ord)
     sprintf(filename, "%d.h", ord);
     fp = fopen(filename, "wb");
 
+    for (i = 0; i < ord; i++)
+    {
+        for (j = 0; j < ord; j++)
+        {
+            if (gf[i] == j)
+                fg[j] = i;
+        }
+    }
+
     fprintf(fp, "static const unsigned short gf[%d]={\n", ord);
     for (i = 0; i < ord; i++)
     {
@@ -82,14 +91,6 @@ void ens(unsigned int x, int n, int ord)
     }
     fprintf(fp, "};\n");
 
-    for (i = 0; i < ord; i++)
-    {
-        for (j = 0; j < ord; j++)
-        {
-            if (gf[i] == j)
-                fg[j] = i;
-        }
-    }
     fprintf(fp, "static const unsigned short fg[%d]={", ord);
     for (i = 0; i < ord; i++)
     {
