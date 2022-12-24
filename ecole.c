@@ -47,98 +47,97 @@ static const unsigned int sage[15] = {
 
 void ens(unsigned int x, int n, int ord)
 {
-  int i, j, k = x, count = 0;
-  FILE *fp;
-  char filename[8]="";
+    int i, j, k = x, count = 0;
+    FILE *fp;
+    char filename[8] = "";
 
-
-  while (k > 0)
-  {
-    k = (k >> 1);
-    count++;
-  }
-
-  k = (1 << (count - 1));
-  gf[0] = 0;
-  gf[1] = 1;
-
-  for (i = 2; i < ord; i++)
-  {
-    if (gf[i] < k)
-      gf[i] = (gf[i - 1] << 1);
-    if (gf[i] >= k)
-      gf[i] ^= x;
-  }
-
-  sprintf(filename, "%d.h", ord);
-  fp = fopen(filename, "wb");
-
-  fprintf(fp, "static const unsigned short gf[%d]={\n", ord);
-  for (i = 0; i < ord; i++)
-  {
-    if (i < ord - 1)
-      fprintf(fp, "%d,", gf[i]);
-    if (i == ord - 1)
-      fprintf(fp, "%d", gf[i]);
-  }
-  fprintf(fp, "};\n");
-
-  for (i = 0; i < ord; i++)
-  {
-    for (j = 0; j < ord; j++)
+    while (k > 0)
     {
-      if (gf[i] == j)
-        fg[j] = i;
+        k = (k >> 1);
+        count++;
     }
-  }
-  fprintf(fp, "static const unsigned short fg[%d]={", ord);
-  for (i = 0; i < ord; i++)
-  {
-    if (i < ord - 1)
-      fprintf(fp, "%d,", fg[i]);
-    else
-      fprintf(fp, "%d", fg[i]);
-  }
-  fprintf(fp, "};\n");
+
+    k = (1 << (count - 1));
+    gf[0] = 0;
+    gf[1] = 1;
+
+    for (i = 2; i < ord; i++)
+    {
+        if (gf[i] < k)
+            gf[i] = (gf[i - 1] << 1);
+        if (gf[i] >= k)
+            gf[i] ^= x;
+    }
+
+    sprintf(filename, "%d.h", ord);
+    fp = fopen(filename, "wb");
+
+    fprintf(fp, "static const unsigned short gf[%d]={\n", ord);
+    for (i = 0; i < ord; i++)
+    {
+        if (i < ord - 1)
+            fprintf(fp, "%d,", gf[i]);
+        if (i == ord - 1)
+            fprintf(fp, "%d", gf[i]);
+    }
+    fprintf(fp, "};\n");
+
+    for (i = 0; i < ord; i++)
+    {
+        for (j = 0; j < ord; j++)
+        {
+            if (gf[i] == j)
+                fg[j] = i;
+        }
+    }
+    fprintf(fp, "static const unsigned short fg[%d]={", ord);
+    for (i = 0; i < ord; i++)
+    {
+        if (i < ord - 1)
+            fprintf(fp, "%d,", fg[i]);
+        else
+            fprintf(fp, "%d", fg[i]);
+    }
+    fprintf(fp, "};\n");
 }
 
 int valid(int k)
 {
-  int n = 0;
+    int n = 0;
 
-  if (k < 4)
-    printf("Please input more  GF(4).\n");
+    if (k < 4)
+        printf("Please input more  GF(4).\n");
 
-  while (k > 0)
-  {
-    if (k % 2 == 1 && k > 1)
+    while (k > 0)
     {
-      printf("This number is not 2^m.\n");
-      exit(1);
+        if (k % 2 == 1 && k > 1)
+        {
+            printf("This number is not 2^m.\n");
+            exit(1);
+        }
+        k = (k >> 1);
+        n++;
     }
-    k = (k >> 1);
-    n++;
-  }
 
-  return n;
+    return n;
 }
 
 int main(int argc, char *argv[])
 {
-  int k;
-  int x, n = 0;
+    int k;
+    int x, n = 0;
 
-  if (argv[1] == NULL)
-  {
-    printf("Please input order of finite fields.\n");
-    exit(1);
-  }
+    if (argv[1] == NULL)
+    {
+        printf("Please input order of finite fields.\n");
+        exit(1);
+    }
 
-  k = atoi(argv[1]);
-  n = valid(k);
-  x = normal[n - 3];
+    k = atoi(argv[1]);
+    n = valid(k);
+    x = normal[n - 3];
 
-  ens(x, n - 3, k);
+    ens(x, n - 3, k);
 
-  return 0;
+    return 0;
 }
