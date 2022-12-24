@@ -45,7 +45,7 @@ static const unsigned int sage[15] = {
     0b1000000000110101,
     0b10000000000101101};
 
-void ens(unsigned int x, int n, int ord)
+void gen_gf(unsigned int x, int n, int ord)
 {
     int i, j, k = x, count = 0;
     FILE *fp;
@@ -82,24 +82,14 @@ void ens(unsigned int x, int n, int ord)
     }
 
     fprintf(fp, "static const unsigned short gf[%d]={\n", ord);
-    for (i = 0; i < ord; i++)
-    {
-        if (i < ord - 1)
-            fprintf(fp, "%d,", gf[i]);
-        if (i == ord - 1)
-            fprintf(fp, "%d", gf[i]);
-    }
-    fprintf(fp, "};\n");
+    for (i = 0; i < ord - 1; i++)
+        fprintf(fp, "%d,", gf[i]);
+    fprintf(fp, "%d};\n", gf[ord - 1]);
 
     fprintf(fp, "static const unsigned short fg[%d]={", ord);
-    for (i = 0; i < ord; i++)
-    {
-        if (i < ord - 1)
-            fprintf(fp, "%d,", fg[i]);
-        else
-            fprintf(fp, "%d", fg[i]);
-    }
-    fprintf(fp, "};\n");
+    for (i = 0; i < ord - 1; i++)
+        fprintf(fp, "%d,", fg[i]);
+    fprintf(fp, "%d};\n", fg[ord - 1]);
 }
 
 int valid(int k)
@@ -138,7 +128,7 @@ int main(int argc, char *argv[])
     n = valid(k);
     x = normal[n - 3];
 
-    ens(x, n - 3, k);
+    gen_gf(x, n - 3, k);
 
     return 0;
 }
