@@ -11,8 +11,6 @@ static unsigned short gf[ORD] = {0}, fg[ORD] = {0};
 
 void gen_gf(int n, int order)
 {
-    int i, j, k, x;
-
     /* Generate nomal basis of Galois Field over GF(2^?) */
     static const unsigned int normal[15] = {
         0b111,
@@ -49,6 +47,7 @@ void gen_gf(int n, int order)
         0b1000000000110101,
         0b10000000000101101};
 
+    int i, j, k, x;
     x = normal[n];
     k = (1 << (n + 2));
 
@@ -74,8 +73,7 @@ void gen_gf(int n, int order)
 
 void toFile(FILE *fp, int lastone, unsigned short *gf)
 {
-    int i;
-    for (i = 0; i < lastone; i++)
+    for (int i = 0; i < lastone; i++)
         fprintf(fp, "%d,", gf[i]);
     fprintf(fp, "%d};\n", gf[lastone]);
 }
@@ -120,7 +118,7 @@ int valid(int k)
 
 int main(int argc, char *argv[])
 {
-    int k,n;
+    int k, n;
 
     if (argv[1] == NULL)
     {
