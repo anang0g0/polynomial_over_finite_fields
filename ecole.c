@@ -9,7 +9,8 @@
 
 static unsigned short gf[ORD] = {0}, fg[ORD] = {0};
 
-void gen_gf(int n, int order)
+// Generate Zech logarithm
+void gen_GF(int n, int order)
 {
     int i, j, k, x, count = 0;
 
@@ -71,7 +72,8 @@ void gen_gf(int n, int order)
     }
 }
 
-void put_gf(int order)
+// Write Zech logarithm
+void put_GF(int order)
 {
     FILE *fp;
     char filename[8] = "";
