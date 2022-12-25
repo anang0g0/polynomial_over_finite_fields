@@ -105,13 +105,11 @@ void usage(void)
 #define ERROR (-1)
 int validate(int num)
 {
-    int power2 = 2;
-    for (int nbits = 1; nbits <= 16; nbits++)
+    int power2 = 4;
+    for (int nbits = 2; nbits <= 16; nbits++)
     {
         if (num == power2)
-        {
             return nbits; // 当り。ビット数を返す
-        }
         power2 <<= 1; // 4, 8, 16 ... 65536
     }
     /* ここまできたらハズレ */
