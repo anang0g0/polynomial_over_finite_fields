@@ -47,18 +47,17 @@ void gen_gf(int n, int order)
         0b1000000000110101,
         0b10000000000101101};
 
-    int i, j, k, x;
-    x = normal[n];
-    k = (1 << (n + 2));
+    int i, j, x;
+    x = normal[n-3];
 
     gf[0] = 0;
     gf[1] = 1;
 
     for (i = 2; i < order; i++)
     {
-        if (gf[i] < k)
+        if (gf[i] < order)
             gf[i] = (gf[i - 1] << 1);
-        if (gf[i] >= k)
+        if (gf[i] >= order)
             gf[i] ^= x;
     }
     for (i = 0; i < order; i++)
@@ -99,8 +98,8 @@ int valid(int k)
 {
     int n = 0;
 
-    if (k < 4)
-        printf("Please input more  GF(4).\n");
+    if (k < 2)
+        printf("Please input more  GF(2).\n");
 
     while (k > 0)
     {
@@ -129,7 +128,7 @@ int main(int argc, char *argv[])
     k = atoi(argv[1]);
     n = valid(k);
 
-    gen_gf(n - 3, k);
+    gen_gf(n, k);
     put_gf(k);
     return 0;
 }
