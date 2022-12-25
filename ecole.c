@@ -82,7 +82,7 @@ void toFile(FILE *fp, int order, unsigned short *gf)
 void put_gf(int order)
 {
     FILE *fp;
-    char filename[8];
+    char filename[8] = "";
 
     sprintf(filename, "%d.h", order);
     fp = fopen(filename, "wb");
@@ -121,7 +121,7 @@ int main(int argc, char *argv[])
 {
     int k, n;
 
-    if (argv[1] == NULL)
+    if (argc == 1)
     {
         printf("Please input order of finite fields.\n");
         exit(1);
