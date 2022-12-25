@@ -5,9 +5,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define ORD 65536
+#define MAX_ORD 65536
 
-static unsigned short gf[ORD] = {0}, fg[ORD] = {0};
+// Zech対数の正引き gf と逆引き fg
+static unsigned short gf[MAX_ORD] = {0}, fg[MAX_ORD] = {0};
 
 void gen_gf(int n, int order)
 {
@@ -41,23 +42,24 @@ void gen_gf(int n, int order)
         0b1000010001,     // sage512
         0b10001101111,    // sage1024
         0b100000000101,   // 2048
-        0b1000011101011,  // sage 4096 
-        0b10000000011011, // Classic McEliece 
+        0b1000011101011,  // sage 4096
+        0b10000000011011, // Classic McEliece
         0b100000010101001,
         0b1000000000110101,
         0b10000000000101101};
 
     int i, j, x;
-    x = normal[n-3];
+    x = normal[n - 3];
 
     gf[0] = 0;
     gf[1] = 1;
 
     for (i = 2; i < order; i++)
     {
-        if (gf[i] < order)              //gf[i] 検査１度目
-            gf[i] = (gf[i - 1] << 1);   //gf[i] を更新する
-        if (gf[i] >= order)             //すぐ上で値が更新された（かもしれない）gf[i]を、改めて検査する
+        if (gf[i] < order)            // gf[i] 検査１度目
+            gf[i] = (gf[i - 1] << 1); // gf[i] を更新する
+        // すぐ上で値が更新された（かもしれない）gf[i]を、改めて検査する
+        if (gf[i] >= order)
             gf[i] ^= x;
     }
     for (i = 0; i < order; i++)
@@ -70,17 +72,17 @@ void gen_gf(int n, int order)
     }
 }
 
-void toFile(FILE *fp, int lastone, unsigned short *gf)
+void toFile(FILE *fp, int order, unsigned short *gf)
 {
-    for (int i = 0; i < lastone; i++)
+    for (int i = 0; i < order; i++)
         fprintf(fp, "%d,", gf[i]);
-    fprintf(fp, "%d};\n", gf[lastone]);
+    fprintf(fp, "%d};\n", gf[order]);
 }
 
 void put_gf(int order)
 {
     FILE *fp;
-    char filename[8] = "";
+    char filename[8];
 
     sprintf(filename, "%d.h", order);
     fp = fopen(filename, "wb");
@@ -99,7 +101,7 @@ int valid(int k)
     int n = 0;
 
     if (k < 2)
-        printf("Please input more  GF(2).\n");
+        printf("Please input >1.\n");
 
     while (k > 0)
     {
