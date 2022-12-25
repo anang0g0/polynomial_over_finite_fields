@@ -5,15 +5,15 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MAX_ORD 65536
+#define MAX_ORD 32768
 
 // Zech対数の正引き gf と逆引き fg
-static unsigned int gf[MAX_ORD] = {0}, fg[MAX_ORD] = {0};
+static unsigned short gf[MAX_ORD] = {0}, fg[MAX_ORD] = {0};
 
 void gen_gf(int n, int order)
 {
     /* Generate nomal basis of Galois Field over GF(2^?) */
-    static const unsigned int normal[15] = {
+    static const unsigned int normal[14] = {
         0b111,
         0b1101,
         0b11001,
@@ -28,10 +28,10 @@ void gen_gf(int n, int order)
         0b11011000000001,
         0b110000100010001,
         0b1100000000000001,
-        0b11010000000010001};
+        //0b11010000000010001};
 
     // Generate Sagemath based Galois Fields.
-    static const unsigned int sage[15] = {
+    static const unsigned int sage[14] = {
         0b111,
         0b1011,
         0b10011,
@@ -46,9 +46,10 @@ void gen_gf(int n, int order)
         0b10000000011011, // Classic McEliece
         0b100000010101001,
         0b1000000000110101,
-        0b10000000000101101};
+        //0b10000000000101101};
 
-    unsigned int i, j, x;
+    unsigned int i, j;
+    unsigned short x;
     x = normal[n - 2];
 
     gf[0] = 0;
@@ -72,7 +73,7 @@ void gen_gf(int n, int order)
     }
 }
 
-void toFile(FILE *fp, int order, unsigned int *gf)
+void toFile(FILE *fp, int order, unsigned short *gf)
 {
     for (int i = 0; i < order; i++)
         fprintf(fp, "%d,", gf[i]);
@@ -110,6 +111,7 @@ int validate(int num)
     {
         if (num == power2)
             return nbits; // 当り。ビット数を返す
+
         power2 <<= 1; // 4, 8, 16 ... 65536
     }
     /* ここまできたらハズレ */
