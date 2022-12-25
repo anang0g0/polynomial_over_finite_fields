@@ -51,13 +51,6 @@ void gen_gf(int n, int order)
 
     x = k = normal[n];
 
-    while (k > 0)
-    {
-        k = (k >> 1);
-        count++;
-    }
-
-    k = (1 << (count - 1));
     gf[0] = 0;
     gf[1] = 1;
 
