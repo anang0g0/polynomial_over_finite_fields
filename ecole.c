@@ -8,7 +8,7 @@
 #define MAX_ORD 65536
 
 // Zech対数の正引き gf と逆引き fg
-static unsigned short gf[MAX_ORD] = {0}, fg[MAX_ORD] = {0};
+static unsigned int gf[MAX_ORD] = {0}, fg[MAX_ORD] = {0};
 
 void gen_gf(int n, int order)
 {
@@ -48,8 +48,8 @@ void gen_gf(int n, int order)
         0b1000000000110101,
         0b10000000000101101};
 
-    int i, j, x;
-    x = normal[n - 3];
+    unsigned int i, j, x;
+    x = normal[n - 2];
 
     gf[0] = 0;
     gf[1] = 1;
@@ -72,7 +72,7 @@ void gen_gf(int n, int order)
     }
 }
 
-void toFile(FILE *fp, int order, unsigned short *gf)
+void toFile(FILE *fp, int order, unsigned int *gf)
 {
     for (int i = 0; i < order; i++)
         fprintf(fp, "%d,", gf[i]);
@@ -96,25 +96,27 @@ void put_gf(int order)
     fclose(fp);
 }
 
-int valid(int k)
+void usage(void)
 {
-    int n = 0;
+    printf("Uh!\n");
+    exit(1);
+}
 
-    if (k < 2)
-        printf("Please input >1.\n");
-
-    while (k > 0)
+#define ERROR (-1)
+int validate(int num)
+{
+    int power2 = 2;
+    for (int nbits = 1; nbits <= 16; nbits++)
     {
-        if (k % 2 == 1 && k > 1)
+        if (num == power2)
         {
-            printf("This number is not 2^m.\n");
-            exit(1);
+            return nbits; // 当り。ビット数を返す
         }
-        k = (k >> 1);
-        n++;
+        power2 <<= 1; // 4, 8, 16 ... 65536
     }
-
-    return n;
+    /* ここまできたらハズレ */
+    usage();      // 使用方法を表示して（exit() しちゃう？）
+    return ERROR; // 負の値を返してエラーってことで
 }
 
 int main(int argc, char *argv[])
@@ -128,7 +130,7 @@ int main(int argc, char *argv[])
     }
 
     k = atoi(argv[1]);
-    n = valid(k);
+    n = validate(k);
 
     gen_gf(n, k);
     put_gf(k);
