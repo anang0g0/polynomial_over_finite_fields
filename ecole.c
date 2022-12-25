@@ -41,8 +41,8 @@ void gen_gf(int n, int order)
         0b1000010001,     // sage512
         0b10001101111,    // sage1024
         0b100000000101,   // 2048
-        0b1000011101011,  /* sage 4096 */
-        0b10000000011011, /* Classic McEliece */
+        0b1000011101011,  // sage 4096 
+        0b10000000011011, // Classic McEliece 
         0b100000010101001,
         0b1000000000110101,
         0b10000000000101101};
@@ -55,9 +55,9 @@ void gen_gf(int n, int order)
 
     for (i = 2; i < order; i++)
     {
-        if (gf[i] < order)
-            gf[i] = (gf[i - 1] << 1);
-        if (gf[i] >= order)
+        if (gf[i] < order)              //gf[i] 検査１度目
+            gf[i] = (gf[i - 1] << 1);   //gf[i] を更新する
+        if (gf[i] >= order)             //すぐ上で値が更新された（かもしれない）gf[i]を、改めて検査する
             gf[i] ^= x;
     }
     for (i = 0; i < order; i++)
