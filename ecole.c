@@ -9,9 +9,9 @@
 
 static unsigned short gf[ORD] = {0}, fg[ORD] = {0};
 
-// Generate Zech logarithm
-void gen_GF(int n, int order)
+void gen_gf(int n, int order)
 {
+    int i, j, k, x;
 
     /* Generate nomal basis of Galois Field over GF(2^?) */
     static const unsigned int normal[15] = {
@@ -31,7 +31,6 @@ void gen_GF(int n, int order)
         0b1100000000000001,
         0b11010000000010001};
 
-/*
     // Generate Sagemath based Galois Fields.
     static const unsigned int sage[15] = {
         0b111,
@@ -44,19 +43,18 @@ void gen_GF(int n, int order)
         0b1000010001,     // sage512
         0b10001101111,    // sage1024
         0b100000000101,   // 2048
-        0b1000011101011,  // sage 4096 
-        0b10000000011011, // Classic McEliece 
+        0b1000011101011,  /* sage 4096 */
+        0b10000000011011, /* Classic McEliece */
         0b100000010101001,
         0b1000000000110101,
         0b10000000000101101};
-*/
-    int k, x;
-    x = k = normal[n];
+
+    x = normal[n];
+    k = (1 << (n + 2));
 
     gf[0] = 0;
     gf[1] = 1;
-    
-    int i;
+
     for (i = 2; i < order; i++)
     {
         if (gf[i] < k)
@@ -66,7 +64,7 @@ void gen_GF(int n, int order)
     }
     for (i = 0; i < order; i++)
     {
-        for (int j = 0; j < order; j++)
+        for (j = 0; j < order; j++)
         {
             if (gf[i] == j)
                 fg[j] = i;
@@ -74,8 +72,15 @@ void gen_GF(int n, int order)
     }
 }
 
-// Write Zech logarithm
-void put_GF(int order)
+void toFile(FILE *fp, int lastone, unsigned short *gf)
+{
+    int i;
+    for (i = 0; i < lastone; i++)
+        fprintf(fp, "%d,", gf[i]);
+    fprintf(fp, "%d};\n", gf[lastone]);
+}
+
+void put_gf(int order)
 {
     FILE *fp;
     char filename[8] = "";
@@ -84,16 +89,11 @@ void put_GF(int order)
     fp = fopen(filename, "wb");
 
     int lastone = order - 1;
-    int i;
-    fprintf(fp, "static const unsigned short gf[%d]={\n", order);
-    for (i = 0; i < lastone; i++)
-        fprintf(fp, "%d,", gf[i]);
-    fprintf(fp, "%d};\n", gf[lastone]);
-
+    fprintf(fp, "static const unsigned short gf[%d]={", order);
+    toFile(fp, lastone, gf);
     fprintf(fp, "static const unsigned short fg[%d]={", order);
-    for (i = 0; i < lastone; i++)
-        fprintf(fp, "%d,", fg[i]);
-    fprintf(fp, "%d};\n", fg[lastone]);
+    toFile(fp, lastone, fg);
+
     fclose(fp);
 }
 
@@ -120,6 +120,7 @@ int valid(int k)
 
 int main(int argc, char *argv[])
 {
+    int k,n;
 
     if (argv[1] == NULL)
     {
@@ -127,12 +128,10 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
-    int k;
-    int n = 0;
     k = atoi(argv[1]);
     n = valid(k);
 
-    gen_GF(n - 3, k);
-    put_GF(k);
+    gen_gf(n - 3, k);
+    put_gf(k);
     return 0;
 }
