@@ -28,27 +28,27 @@ void gen_gf(int n, int order)
         0b11011000000001,
         0b110000100010001,
         0b1100000000000001,
-        //0b11010000000010001};
+        // 0b11010000000010001};
 
-    // Generate Sagemath based Galois Fields.
-    static const unsigned int sage[14] = {
-        0b111,
-        0b1011,
-        0b10011,
-        0b100101,
-        0b1011011,
-        0b10000011,
-        0b100011101,      // sage
-        0b1000010001,     // sage512
-        0b10001101111,    // sage1024
-        0b100000000101,   // 2048
-        0b1000011101011,  // sage 4096
-        0b10000000011011, // Classic McEliece
-        0b100000010101001,
-        0b1000000000110101,
-        //0b10000000000101101};
+        // Generate Sagemath based Galois Fields.
+        static const unsigned int sage[14] = {
+            0b111,
+            0b1011,
+            0b10011,
+            0b100101,
+            0b1011011,
+            0b10000011,
+            0b100011101,      // sage
+            0b1000010001,     // sage512
+            0b10001101111,    // sage1024
+            0b100000000101,   // 2048
+            0b1000011101011,  // sage 4096
+            0b10000000011011, // Classic McEliece
+            0b100000010101001,
+            0b1000000000110101,
+            // 0b10000000000101101};
 
-    unsigned int i, j;
+            unsigned int i, j;
     unsigned short x;
     x = normal[n - 2];
 
@@ -77,7 +77,7 @@ void toFile(FILE *fp, int order, unsigned short *gf)
 {
     for (int i = 0; i < order; i++)
         fprintf(fp, "%d,", gf[i]);
-    fprintf(fp, "%d};\n", gf[order]);
+    fprintf(fp, "};\n");
 }
 
 void put_gf(int order)
@@ -90,9 +90,9 @@ void put_gf(int order)
 
     int lastone = order - 1;
     fprintf(fp, "static const unsigned short gf[%d]={", order);
-    toFile(fp, lastone, gf);
+    toFile(fp, order, gf);
     fprintf(fp, "static const unsigned short fg[%d]={", order);
-    toFile(fp, lastone, fg);
+    toFile(fp, order, fg);
 
     fclose(fp);
 }
