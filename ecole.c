@@ -83,7 +83,7 @@ void toFile(FILE *fp, int order, unsigned short *gf)
 void put_gf(int order)
 {
     FILE *fp;
-    char filename[8] = "";
+    char filename[8];
 
     sprintf(filename, "%d.h", order);
     fp = fopen(filename, "wb");
