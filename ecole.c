@@ -28,7 +28,8 @@ void gen_gf(int n, int order)
         0b11011000000001,
         0b110000100010001,
         0b1100000000000001,
-        // 0b11010000000010001};
+        // 0b11010000000010001
+        };
 
         // Generate Sagemath based Galois Fields.
         static const unsigned int sage[14] = {
@@ -46,7 +47,8 @@ void gen_gf(int n, int order)
             0b10000000011011, // Classic McEliece
             0b100000010101001,
             0b1000000000110101,
-            // 0b10000000000101101};
+            // 0b10000000000101101
+            };
 
             unsigned int i, j;
     unsigned short x;
