@@ -10,7 +10,7 @@
 // Zech対数の正引き gf と逆引き fg
 static unsigned short gf[MAX_ORD] = {0}, fg[MAX_ORD] = {0};
 
-void gen_gf(int n, int order)
+void gen_gf(int exp, int order)
 {
     /* Generate nomal basis of Galois Field over GF(2^?) */
     static const unsigned int normal[14] = {
@@ -29,34 +29,44 @@ void gen_gf(int n, int order)
         0b110000100010001,
         0b1100000000000001,
         // 0b11010000000010001
-        };
+    };
 
-        // Generate Sagemath based Galois Fields.
-        static const unsigned int sage[14] = {
-            0b111,
-            0b1011,
-            0b10011,
-            0b100101,
-            0b1011011,
-            0b10000011,
-            0b100011101,      // sage
-            0b1000010001,     // sage512
-            0b10001101111,    // sage1024
-            0b100000000101,   // 2048
-            0b1000011101011,  // sage 4096
-            0b10000000011011, // Classic McEliece
-            0b100000010101001,
-            0b1000000000110101,
-            // 0b10000000000101101
-            };
+    // Generate Sagemath based Galois Fields.
+    static const unsigned int sage[14] = {
+        0b111,
+        0b1011,
+        0b10011,
+        0b100101,
+        0b1011011,
+        0b10000011,
+        0b100011101,      // sage
+        0b1000010001,     // sage512
+        0b10001101111,    // sage1024
+        0b100000000101,   // 2048
+        0b1000011101011,  // sage 4096
+        0b10000000011011, // Classic McEliece
+        0b100000010101001,
+        0b1000000000110101,
+        // 0b10000000000101101
+    };
 
-            unsigned int i, j;
+    unsigned int i, j;
     unsigned short x;
-    x = normal[n - 2];
+    x = normal[exp - 2];
 
+    /* build gf[] */
     gf[0] = 0;
     gf[1] = 1;
 
+    unsigned short  value = 1;
+    for (int i = 2; i < order; i++) {
+        value <<= 1;
+        if (value >= order)
+            value ^= x;
+        
+        gf[i] = value;
+    }
+/*
     for (i = 2; i < order; i++)
     {
         if (gf[i] < order)            // gf[i] 検査１度目
@@ -65,14 +75,9 @@ void gen_gf(int n, int order)
         if (gf[i] >= order)
             gf[i] ^= x;
     }
+    */
     for (i = 0; i < order; i++)
-    {
-        for (j = 0; j < order; j++)
-        {
-            if (gf[i] == j)
-                fg[j] = i;
-        }
-    }
+        fg[gf[i]] = i;
 }
 
 void toFile(FILE *fp, int order, unsigned short *gf)
