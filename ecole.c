@@ -1,5 +1,19 @@
-/* generate GF(2^n) using irreducible polynomial */
-// ゼフ対数表を作るためのプログラム。正規基底を生成します。
+/************************************************************
+ * ecole.c - generate GF(2^n) using irreducible polynomial
+ *  ゼフ対数表を作るプログラム。正規基底を生成します。
+ *  GF : Galois Field
+ * Author: Osamu Sakai, SCI(SAKAI Cryptography Institute)
+ *
+ *  Edition History
+ * version date       comment                                     by
+ * ------- ---------- ------------------------------------------- ---------
+ * V0.5    2022/12/01 beta version                                O.Sakai
+ * V0.6    2022/12/10 refactoring                                 rubato6809
+ * V0.61   2022/12/20 changed not to support order=65536          O.Sakai
+ * V1.0    2023/01/01 1st release                                 O.Sakai
+ *
+ * Copyright(c) 2022 - 2023 SCI, All Rights Reserved
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,7 +27,7 @@ static unsigned short gf[MAX_ORD] = {0}, fg[MAX_ORD] = {0};
 void gen_gf(int exp, int order)
 {
     /* Generate nomal basis of Galois Field over GF(2^?) */
-    static const unsigned int normal[14] = {
+    static const unsigned int normal[] = {
         0b111,
         0b1101,
         0b11001,
@@ -32,7 +46,7 @@ void gen_gf(int exp, int order)
     };
 
     // Generate Sagemath based Galois Fields.
-    static const unsigned int sage[14] = {
+    static const unsigned int sage[] = {
         0b111,
         0b1011,
         0b10011,
@@ -51,8 +65,8 @@ void gen_gf(int exp, int order)
     };
 
     unsigned int i, j;
-    unsigned short x;
-    x = normal[exp - 2];
+
+    unsigned short x = normal[exp - 2];
 
     /* build gf[] */
     gf[0] = 0;
@@ -80,8 +94,9 @@ void gen_gf(int exp, int order)
         fg[gf[i]] = i;
 }
 
-void toFile(FILE *fp, int order, unsigned short *gf)
+void toFile(FILE *fp, int order, unsigned short *gf, char *name)
 {
+        fprintf(fp, "static const unsigned short %s[%d]={", name, order);
     for (int i = 0; i < order; i++)
         fprintf(fp, "%d,", gf[i]);
     fprintf(fp, "};\n");
@@ -89,17 +104,14 @@ void toFile(FILE *fp, int order, unsigned short *gf)
 
 void put_gf(int order)
 {
-    FILE *fp;
     char filename[8];
-
     sprintf(filename, "%d.h", order);
-    fp = fopen(filename, "wb");
+    FILE *fp = fopen(filename, "wb");
 
     int lastone = order - 1;
-    fprintf(fp, "static const unsigned short gf[%d]={", order);
-    toFile(fp, order, gf);
-    fprintf(fp, "static const unsigned short fg[%d]={", order);
-    toFile(fp, order, fg);
+
+    toFile(fp, order, gf,"gf");
+    toFile(fp, order, fg,"fg");
 
     fclose(fp);
 }
@@ -109,9 +121,29 @@ void usage(void)
     printf("Uh!\n");
     exit(1);
 }
-
+/***************************************************************
+ * 関数名     : int bitsize(int num)
+ * 機能       : 引数 num が 2 のべき乗数ならば、べき数 exponent を返す.
+ *              許容する num の範囲は 4(=2^2) から 32768(=2^15) まで.
+ *              許容しない値なら、使用法を表示し、exit(1) する.
+ *
+ * 入力引数   : int num
+ * 出力引数   : none
+ * 戻り値     : 2 ～ 15
+ *              エラー（許容しない値）の場合、戻り値無し。プロセス終了
+ * 入力情報   : none
+ * 出力情報   : none
+ * 注意事項   :     num         | return value
+ *              ----------------+-------------
+ *                    2 = 2^1   |   exit(1)
+ *                    4 = 2^2   |         2
+ *                    8 = 2^3   |         3
+ *                    :         |         :
+ *                32768 = 2^15  |        15
+ *                65536 = 2^16  |   exit(1)
+ ****************************************************************/
 #define ERROR (-1)
-int validate(int num)
+int bitsize(int num)
 {
     int power2 = 4;
     for (int nbits = 2; nbits <= 16; nbits++)
@@ -128,7 +160,6 @@ int validate(int num)
 
 int main(int argc, char *argv[])
 {
-    int k, n;
 
     if (argc == 1)
     {
@@ -136,10 +167,11 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
-    k = atoi(argv[1]);
-    n = validate(k);
+    int k = atoi(argv[1]);
+    int n = bitsize(k);
 
     gen_gf(n, k);
     put_gf(k);
+
     return 0;
 }
