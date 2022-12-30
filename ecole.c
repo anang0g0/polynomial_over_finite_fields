@@ -66,7 +66,7 @@ void gen_gf(int exp, int order)
 
     /* build gf[] */
     gf[0] = 0;
-    //gf[1] = 1;
+    gf[1] = 1;
     /*
     for (int i = 2; i < order; i++)
     {
@@ -77,7 +77,7 @@ void gen_gf(int exp, int order)
     */
     
     unsigned short value = 1;
-    for (int i = 1; i < order; i++)
+    for (int i = 2; i < order; i++)
     {
         value <<= 1;
         if (value >= order)
