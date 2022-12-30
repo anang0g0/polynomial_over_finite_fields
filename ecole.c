@@ -93,11 +93,11 @@ void gen_gf(int exp, int order)
         fg[gf[i]] = i;
 }
 
-void toFile(FILE *fp, int order, unsigned short *gf, char *name)
+void toFile(FILE *fp, int order, unsigned short *array, char *name)
 {
     fprintf(fp, "static const unsigned short %s[%d]={", name, order);
     for (int i = 0; i < order; i++)
-        fprintf(fp, "%d,", gf[i]);
+        fprintf(fp, "%d,", array[i]);
     fprintf(fp, "};\n");
 }
 
