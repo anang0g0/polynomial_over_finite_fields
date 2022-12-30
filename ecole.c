@@ -21,7 +21,8 @@
 #define MAX_ORD 32768
 
 // Zech対数の正引き gf と逆引き fg
-static unsigned short gf[MAX_ORD] = {0}, fg[MAX_ORD] = {0};
+static unsigned short gf[MAX_ORD];
+static unsigned short fg[MAX_ORD];
 
 void gen_gf(int exp, int order)
 {
@@ -61,7 +62,7 @@ void gen_gf(int exp, int order)
         0b1000000000110101,
     };
 
-    unsigned int i, j;
+
 
     unsigned short x = normal[exp - 2];
 
@@ -88,7 +89,7 @@ void gen_gf(int exp, int order)
                 gf[i] ^= x;
         }
         */
-    for (i = 0; i < order; i++)
+    for (int i = 0; i < order; i++)
         fg[gf[i]] = i;
 }
 
@@ -140,7 +141,6 @@ void usage(void)
  *                32768 = 2^15  |        15
  *                65536 = 2^16  |   exit(1)
  ****************************************************************/
-#define ERROR (-1)
 int bitsize(int num)
 {
     int power2 = 4;
@@ -153,7 +153,7 @@ int bitsize(int num)
     }
     /* ここまできたらハズレ */
     usage();      // 使用方法を表示して（exit() しちゃう？）
-    return ERROR; // 負の値を返してエラーってことで
+    return 0; // 負の値を返してエラーってことで
 }
 
 int main(int argc, char *argv[])
