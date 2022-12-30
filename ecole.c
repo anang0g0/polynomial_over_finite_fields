@@ -10,14 +10,13 @@
  * V0.5    2022/12/01 beta version                                O.Sakai
  * V0.6    2022/12/10 refactoring                                 rubato6809
  * V0.61   2022/12/20 changed not to support order=65536          O.Sakai
- * V1.0    2023/01/01 1st release                                 O.Sakai
+ * V0.8    2023/12/30 remove a order 65536                        O.Sakai
  *
  * Copyright(c) 2022 - 2023 SCI, All Rights Reserved
  */
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 #define MAX_ORD 32768
 
@@ -42,7 +41,6 @@ void gen_gf(int exp, int order)
         0b11011000000001,
         0b110000100010001,
         0b1100000000000001,
-        // 0b11010000000010001
     };
 
     // Generate Sagemath based Galois Fields.
@@ -61,7 +59,6 @@ void gen_gf(int exp, int order)
         0b10000000011011, // Classic McEliece
         0b100000010101001,
         0b1000000000110101,
-        // 0b10000000000101101
     };
 
     unsigned int i, j;
