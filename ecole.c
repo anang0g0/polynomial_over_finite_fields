@@ -62,14 +62,19 @@ void gen_gf(int exp, int order)
         0b1000000000110101,
     };
 
-
-
     unsigned short x = normal[exp - 2];
 
     /* build gf[] */
     gf[0] = 0;
     gf[1] = 1;
 
+    for (int i = 2; i < order; i++)
+    {
+        gf[i] = (gf[i - 1] << 1); // gf[i] を更新する
+        if (gf[i] >= order)       // gf[i] 検査
+            gf[i] ^= x;
+    }
+    /*
     unsigned short value = 1;
     for (int i = 2; i < order; i++)
     {
@@ -79,16 +84,7 @@ void gen_gf(int exp, int order)
 
         gf[i] = value;
     }
-    /*
-        for (i = 2; i < order; i++)
-        {
-            if (gf[i] < order)            // gf[i] 検査１度目
-                gf[i] = (gf[i - 1] << 1); // gf[i] を更新する
-            // すぐ上で値が更新された（かもしれない）gf[i]を、改めて検査する
-            if (gf[i] >= order)
-                gf[i] ^= x;
-        }
-        */
+    */
     for (int i = 0; i < order; i++)
         fg[gf[i]] = i;
 }
@@ -106,8 +102,6 @@ void put_gf(int order)
     char filename[8];
     sprintf(filename, "%d.h", order);
     FILE *fp = fopen(filename, "wb");
-
-    int lastone = order - 1;
 
     toFile(fp, order, gf, "gf");
     toFile(fp, order, fg, "fg");
@@ -152,7 +146,7 @@ int bitsize(int num)
         power2 <<= 1; // 4, 8, 16 ... 65536
     }
     /* ここまできたらハズレ */
-    usage();      // 使用方法を表示して（exit() しちゃう？）
+    usage();  // 使用方法を表示して（exit() しちゃう？）
     return 0; // 負の値を返してエラーってことで
 }
 
