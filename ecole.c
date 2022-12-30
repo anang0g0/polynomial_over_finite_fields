@@ -72,31 +72,32 @@ void gen_gf(int exp, int order)
     gf[0] = 0;
     gf[1] = 1;
 
-    unsigned short  value = 1;
-    for (int i = 2; i < order; i++) {
+    unsigned short value = 1;
+    for (int i = 2; i < order; i++)
+    {
         value <<= 1;
         if (value >= order)
             value ^= x;
-        
+
         gf[i] = value;
     }
-/*
-    for (i = 2; i < order; i++)
-    {
-        if (gf[i] < order)            // gf[i] 検査１度目
-            gf[i] = (gf[i - 1] << 1); // gf[i] を更新する
-        // すぐ上で値が更新された（かもしれない）gf[i]を、改めて検査する
-        if (gf[i] >= order)
-            gf[i] ^= x;
-    }
-    */
+    /*
+        for (i = 2; i < order; i++)
+        {
+            if (gf[i] < order)            // gf[i] 検査１度目
+                gf[i] = (gf[i - 1] << 1); // gf[i] を更新する
+            // すぐ上で値が更新された（かもしれない）gf[i]を、改めて検査する
+            if (gf[i] >= order)
+                gf[i] ^= x;
+        }
+        */
     for (i = 0; i < order; i++)
         fg[gf[i]] = i;
 }
 
 void toFile(FILE *fp, int order, unsigned short *gf, char *name)
 {
-        fprintf(fp, "static const unsigned short %s[%d]={", name, order);
+    fprintf(fp, "static const unsigned short %s[%d]={", name, order);
     for (int i = 0; i < order; i++)
         fprintf(fp, "%d,", gf[i]);
     fprintf(fp, "};\n");
@@ -110,8 +111,8 @@ void put_gf(int order)
 
     int lastone = order - 1;
 
-    toFile(fp, order, gf,"gf");
-    toFile(fp, order, fg,"fg");
+    toFile(fp, order, gf, "gf");
+    toFile(fp, order, fg, "fg");
 
     fclose(fp);
 }
