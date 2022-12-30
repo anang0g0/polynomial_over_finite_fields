@@ -66,17 +66,18 @@ void gen_gf(int exp, int order)
 
     /* build gf[] */
     gf[0] = 0;
-    gf[1] = 1;
-
+    //gf[1] = 1;
+    /*
     for (int i = 2; i < order; i++)
     {
         gf[i] = (gf[i - 1] << 1); // gf[i] を更新する
         if (gf[i] >= order)       // gf[i] 検査
             gf[i] ^= x;
     }
-    /*
+    */
+    
     unsigned short value = 1;
-    for (int i = 2; i < order; i++)
+    for (int i = 1; i < order; i++)
     {
         value <<= 1;
         if (value >= order)
@@ -84,7 +85,7 @@ void gen_gf(int exp, int order)
 
         gf[i] = value;
     }
-    */
+    
     for (int i = 0; i < order; i++)
         fg[gf[i]] = i;
 }
