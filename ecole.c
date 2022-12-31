@@ -151,6 +151,7 @@ void put_gf(int order)
 void usage(void)
 {
     printf("Please input size of element of GF(2^i). Then 2^i=4 to 32768.\n");
+    printf("-s:sagemath basis,none:normal basis.\n");
     exit(1);
 }
 
