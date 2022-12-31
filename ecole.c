@@ -45,6 +45,7 @@ static unsigned short gf[MAX_ORD];
 static unsigned short fg[MAX_ORD];
 void gen_gf(int deg, int order)
 {
+    #if 1
     /* Generate nomal basis of Galois Field over GF(2^?) */
     static const unsigned int normal[] = {
         0b111,
@@ -62,7 +63,7 @@ void gen_gf(int deg, int order)
         0b110000100010001,
         0b1100000000000001,
     };
-
+    #else
     // Generate Sagemath based Galois Fields.
     static const unsigned int sage[] = {
         0b111,
@@ -80,7 +81,8 @@ void gen_gf(int deg, int order)
         0b100000010101001,
         0b1000000000110101,
     };
-
+    #endif
+    // deg : degree of primitive poinomial and deg-2 is position of array.
     unsigned short x = normal[deg - 2];
 
     /* build gf[] */
