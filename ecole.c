@@ -20,10 +20,30 @@
 
 #define MAX_ORD 32768
 
+/***************************************************************
+ * 関数名     : void gen_gf(int deg, int order)
+ * 機能       : 引数 deg をもつ原始多項式を使って、order 個の有限体を生成する。
+ *              許容する order の範囲は 4(=2^2) から 32768(=2^15) まで.
+ *              許容しない値なら、使用法を表示し、exit(1) する.
+ *
+ * 入力引数   : int deg, int order
+ * 出力引数   : none
+ * 戻り値     : 2 ～ 15
+ *              エラー（許容しない値）の場合、戻り値無し。プロセス終了
+ * 入力情報   : none
+ * 出力情報   : none
+ * 注意事項   :     num         | return value
+ *              ----------------+-------------
+ *                    2 = 2^1   |   exit(1)
+ *                    4 = 2^2   |         2
+ *                    8 = 2^3   |         3
+ *                    :         |         :
+ *                32768 = 2^15  |        15
+ *                65536 = 2^16  |   exit(1)
+ ****************************************************************/
 // Zech対数の正引き gf と逆引き fg
 static unsigned short gf[MAX_ORD];
 static unsigned short fg[MAX_ORD];
-
 void gen_gf(int exp, int order)
 {
     /* Generate nomal basis of Galois Field over GF(2^?) */
@@ -75,7 +95,7 @@ void gen_gf(int exp, int order)
             gf[i] ^= x;
     }
     */
-    
+
     unsigned short value = 1;
     for (int i = 2; i < order; i++)
     {
@@ -85,7 +105,7 @@ void gen_gf(int exp, int order)
 
         gf[i] = value;
     }
-    
+    /* build fg[] */
     for (int i = 0; i < order; i++)
         fg[gf[i]] = i;
 }
@@ -112,9 +132,10 @@ void put_gf(int order)
 
 void usage(void)
 {
-    printf("Uh!\n");
+    printf("Please input order of finite fields.\n");
     exit(1);
 }
+
 /***************************************************************
  * 関数名     : int bitsize(int num)
  * 機能       : 引数 num が 2 のべき乗数ならば、べき数 exponent を返す.
@@ -139,7 +160,7 @@ void usage(void)
 int bitsize(int num)
 {
     int power2 = 4;
-    for (int nbits = 2; nbits <= 16; nbits++)
+    for (int nbits = 2; nbits < 16; nbits++)
     {
         if (num == power2)
             return nbits; // 当り。ビット数を返す
@@ -147,21 +168,18 @@ int bitsize(int num)
         power2 <<= 1; // 4, 8, 16 ... 65536
     }
     /* ここまできたらハズレ */
-    usage();  // 使用方法を表示して（exit() しちゃう？）
+    usage();      // 使用方法を表示して（exit() しちゃう？）
     return 0; // 負の値を返してエラーってことで
 }
 
 int main(int argc, char *argv[])
 {
-
     if (argc == 1)
-    {
-        printf("Please input order of finite fields.\n");
-        exit(1);
-    }
+        usage();
 
     int k = atoi(argv[1]);
     int n = bitsize(k);
+    printf("n=%d\n",n);
 
     gen_gf(n, k);
     put_gf(k);
