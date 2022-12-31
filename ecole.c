@@ -193,11 +193,10 @@ int bitsize(int num)
 
 int main(int argc, char *argv[])
 {
-    int k, c;
-
     if (argc == 1)
         usage();
 
+    int k, c;
     if (argc == 3)
     {
         k = atoi(argv[2]);
