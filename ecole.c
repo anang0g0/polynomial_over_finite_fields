@@ -12,8 +12,9 @@
  * V0.6    2022/12/10 refactoring                                 rubato6809
  * V0.61   2022/12/20 changed not to support order=65536          O.Sakai
  * V0.62   2022/12/30 remove a order 65536                        O.Sakai
- * V0.63   2022/12/31 add preprocessor                            rubato-Sakai
+ * V0.8 　 2022/12/31 add preprocessor                            rubato-Sakai
  * Copyright(c) 1995 - 2022 SIC, All Rights Reserved
+ * Special thanks to Mr.Rubato
  */
 
 #include <stdio.h>
@@ -118,6 +119,22 @@ void toFile(FILE *fp, int order, unsigned short *array, char *name)
     fprintf(fp, "};\n");
 }
 
+/***************************************************************
+ * 関数名     : void put_gf(int order)
+ * 機能       : Zech対数表をファイルに書き出す。
+ * 
+ * 入力引数   : int order
+ * 出力引数   : none
+ * 戻り値     : none
+ * 入力情報   : none
+ * 出力情報   : gf[2^i],fg[2^i],i=2~15をヘッダファイル 2^i.h に書き出す。
+ * 注意事項   :     order       | generate Zech logarithm
+ *              ----------------+-------------
+ *                    4 = 2^2   |         GF(4)
+ *                    8 = 2^3   |         GF(8)
+ *                    :         |         :
+ *                32768 = 2^15  |        GF(32768)
+ ****************************************************************/
 void put_gf(int order)
 {
     char filename[8];
