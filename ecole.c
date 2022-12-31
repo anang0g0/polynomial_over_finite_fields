@@ -12,7 +12,7 @@
  * V0.6    2022/12/10 refactoring                                 rubato6809
  * V0.61   2022/12/20 changed not to support order=65536          O.Sakai
  * V0.62   2022/12/30 remove a order 65536                        O.Sakai
- * V0.8 　 2022/12/31 add preprocessor                            rubato-Sakai
+ * V0.8 　 2022/12/31 change preprocessor to command line opton   rubato-Sakai
  * Copyright(c) 1995 - 2022 SIC, All Rights Reserved
  * Special thanks to Mr.Rubato
  */
