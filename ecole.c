@@ -82,7 +82,7 @@ void gen_gf(int deg, int order, int c)
     };
     unsigned short x;
     if (c == -1)
-        x = normal[deg - 2]; // 通常はこちら
+        x = normal[deg - 2];
     else
         x = sage[deg - 2];
 
