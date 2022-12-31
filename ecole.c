@@ -1,18 +1,19 @@
 /************************************************************
- * ecole.c - generate GF(2^n) using irreducible polynomial
+ * ecole.c - generate GF(2^n) using primitive polynomial
  *  ゼフ対数表を作るプログラム。正規基底を生成します。
  *  GF : Galois Field
- * Author: Osamu Sakai, SCI(SAKAI Cryptography Institute)
+ * Author: Osamu Sakai, SIC(SAKAI Institute of Cryptology)
  *
  *  Edition History
  * version date       comment                                     by
  * ------- ---------- ------------------------------------------- ---------
+ * V0.1    1995/12/01 first version                               O.Sakai
  * V0.5    2022/12/01 beta version                                O.Sakai
  * V0.6    2022/12/10 refactoring                                 rubato6809
  * V0.61   2022/12/20 changed not to support order=65536          O.Sakai
- * V0.62    2023/12/30 remove a order 65536                        O.Sakai
- *
- * Copyright(c) 2022 - 2023 SCI, All Rights Reserved
+ * V0.62   2022/12/30 remove a order 65536                        O.Sakai
+ * V0.63   2022/12/31 add preprocessor                            rubato-Sakai
+ * Copyright(c) 1995 - 2022 SIC, All Rights Reserved
  */
 
 #include <stdio.h>
