@@ -27,24 +27,23 @@
  *              許容しない値なら、使用法を表示し、exit(1) する.
  *
  * 入力引数   : int deg, int order
- * 出力引数   : none
- * 戻り値     : 2 ～ 15
- *              エラー（許容しない値）の場合、戻り値無し。プロセス終了
+ * 出力引数   : 有限体の演算テーブルgf[],fg[]をファイルに出力。
+ * 戻り値     : なし
  * 入力情報   : none
  * 出力情報   : none
- * 注意事項   :     num         | return value
+ * 注意事項   :     deg         | output value
  *              ----------------+-------------
- *                    2 = 2^1   |   exit(1)
- *                    4 = 2^2   |         2
- *                    8 = 2^3   |         3
+ *                    2 = 2^1   |    exit(1)
+ *                    4 = 2^2   |      GF(4)
+ *                    8 = 2^3   |      GF(8)
  *                    :         |         :
- *                32768 = 2^15  |        15
+ *                32768 = 2^15  |  GF(32768)
  *                65536 = 2^16  |   exit(1)
  ****************************************************************/
 // Zech対数の正引き gf と逆引き fg
 static unsigned short gf[MAX_ORD];
 static unsigned short fg[MAX_ORD];
-void gen_gf(int exp, int order)
+void gen_gf(int deg, int order)
 {
     /* Generate nomal basis of Galois Field over GF(2^?) */
     static const unsigned int normal[] = {
@@ -82,7 +81,7 @@ void gen_gf(int exp, int order)
         0b1000000000110101,
     };
 
-    unsigned short x = normal[exp - 2];
+    unsigned short x = normal[deg - 2];
 
     /* build gf[] */
     gf[0] = 0;
@@ -179,7 +178,7 @@ int main(int argc, char *argv[])
 
     int k = atoi(argv[1]);
     int n = bitsize(k);
-    printf("n=%d\n",n);
+    printf("GF[%d] の生成に成功しました。\n",k);
 
     gen_gf(n, k);
     put_gf(k);
