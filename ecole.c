@@ -191,17 +191,22 @@ int bitsize(int num)
     return 0; // （警告を避けるため）
 }
 
-int main(int argc, char *argv[])
+void opt(int argc, char *argv[], int *k, int *c)
 {
     if (argc == 1)
         usage();
-    int k;
-    int c = getopt(argc, argv, "s");
-    if (argc == 3)
-        k = atoi(argv[2]);
-    else
-        k = atoi(argv[1]);
 
+    *c = getopt(argc, argv, "s");
+    *k = atoi(argv[1]);
+
+    if (argc == 3)
+        *k = atoi(argv[2]);
+}
+
+int main(int argc, char *argv[])
+{
+    int c, k;
+    opt(argc, argv, &k, &c);
     int n = bitsize(k);
     gen_gf(n, k, c);
     put_gf(k);
