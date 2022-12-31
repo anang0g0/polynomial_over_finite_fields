@@ -43,7 +43,6 @@ static unsigned short gf[MAX_ORD];
 static unsigned short fg[MAX_ORD];
 void gen_gf(int deg, int order)
 {
-
 #ifdef SAGE
     // Generate Sagemath based Galois Fields.
     static const unsigned int sage[] = {
@@ -132,7 +131,7 @@ void put_gf(int order)
 
 void usage(void)
 {
-    printf("Please input order of finite fields.\n");
+    printf("Please input size of element of GF(2^i). Then i=4 to 32768.\n");
     exit(1);
 }
 
@@ -159,7 +158,7 @@ void usage(void)
  ****************************************************************/
 int bitsize(int num)
 {
-    int power2 = 4;
+    int power2 = 4; //2^2
     for (int nbits = 2; nbits < 16; nbits++)
     {
         if (num == power2)
