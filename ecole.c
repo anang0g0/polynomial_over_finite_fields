@@ -82,7 +82,7 @@ void gen_gf(int deg, int order, int c)
         0b1100000000000001,
     };
     unsigned short x;
-    if (c == 0)
+    if (c == -1)
         x = sage[deg - 2];
     else
         x = normal[deg - 2]; // 通常はこちら
@@ -195,18 +195,13 @@ int main(int argc, char *argv[])
 {
     if (argc == 1)
         usage();
-
-    int k, c;
+    int k;
+    int c = getopt(argc, argv, "s");
     if (argc == 3)
-    {
         k = atoi(argv[2]);
-        c = strcmp(argv[1], "-s");
-    }
     else
-    {
         k = atoi(argv[1]);
-        c = 1;
-    }
+
     int n = bitsize(k);
     gen_gf(n, k, c);
     put_gf(k);
