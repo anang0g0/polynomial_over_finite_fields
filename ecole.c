@@ -131,7 +131,7 @@ void put_gf(int order)
 
 void usage(void)
 {
-    printf("Please input size of element of GF(2^i). Then i=4 to 32768.\n");
+    printf("Please input size of element of GF(2^i). Then 2^i=4 to 32768.\n");
     exit(1);
 }
 
