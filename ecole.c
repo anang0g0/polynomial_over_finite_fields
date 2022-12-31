@@ -19,6 +19,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
 
 #define MAX_ORD 32768
 
@@ -43,9 +45,8 @@
 // Zech対数の正引き gf と逆引き fg
 static unsigned short gf[MAX_ORD];
 static unsigned short fg[MAX_ORD];
-void gen_gf(int deg, int order)
+void gen_gf(int deg, int order, int c)
 {
-#ifdef SAGE
     // Generate Sagemath based Galois Fields.
     static const unsigned int sage[] = {
         0b111,
@@ -63,8 +64,6 @@ void gen_gf(int deg, int order)
         0b100000010101001,
         0b1000000000110101,
     };
-    unsigned short x = sage[deg - 2];
-#else
     /* Generate nomal basis of Galois Field over GF(2^?) */
     static const unsigned int normal[] = {
         0b111,
@@ -82,8 +81,11 @@ void gen_gf(int deg, int order)
         0b110000100010001,
         0b1100000000000001,
     };
-    unsigned short x = normal[deg - 2]; // 通常はこちら
-#endif
+    unsigned short x;
+    if (c == 0)
+        x = sage[deg - 2];
+    else
+        x = normal[deg - 2]; // 通常はこちら
 
     /* build gf[] */
     gf[0] = 0;
@@ -122,7 +124,7 @@ void toFile(FILE *fp, int order, unsigned short *array, char *name)
 /***************************************************************
  * 関数名     : void put_gf(int order)
  * 機能       : Zech対数表をファイルに書き出す。
- * 
+ *
  * 入力引数   : int order
  * 出力引数   : none
  * 戻り値     : none
@@ -176,7 +178,7 @@ void usage(void)
  ****************************************************************/
 int bitsize(int num)
 {
-    int power2 = 4; //2^2
+    int power2 = 4; // 2^2
     for (int nbits = 2; nbits < 16; nbits++)
     {
         if (num == power2)
@@ -191,13 +193,23 @@ int bitsize(int num)
 
 int main(int argc, char *argv[])
 {
+    int k, c;
+
     if (argc == 1)
         usage();
 
-    int k = atoi(argv[1]);
+    if (argc == 3)
+    {
+        k = atoi(argv[2]);
+        c = strcmp(argv[1], "-s");
+    }
+    else
+    {
+        k = atoi(argv[1]);
+        c = 1;
+    }
     int n = bitsize(k);
-
-    gen_gf(n, k);
+    gen_gf(n, k, c);
     put_gf(k);
     printf("GF[%d] の生成に成功しました。\n", k);
 
