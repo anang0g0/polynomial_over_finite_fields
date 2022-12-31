@@ -10,7 +10,7 @@
  * V0.5    2022/12/01 beta version                                O.Sakai
  * V0.6    2022/12/10 refactoring                                 rubato6809
  * V0.61   2022/12/20 changed not to support order=65536          O.Sakai
- * V0.8    2023/12/30 remove a order 65536                        O.Sakai
+ * V0.62    2023/12/30 remove a order 65536                        O.Sakai
  *
  * Copyright(c) 2022 - 2023 SCI, All Rights Reserved
  */
@@ -22,48 +22,29 @@
 
 /***************************************************************
  * 関数名     : void gen_gf(int deg, int order)
- * 機能       : 引数 deg をもつ原始多項式を使って、order 個の有限体を生成する。
- *              許容する order の範囲は 4(=2^2) から 32768(=2^15) まで.
- *              許容しない値なら、使用法を表示し、exit(1) する.
- *
- * 入力引数   : int deg, int order
- * 出力引数   : 有限体の演算テーブルgf[],fg[]をファイルに出力。
- * 戻り値     : なし
+ * 機能       : 引数 deg をもつ原始多項式 normal[] を使い、
+ *              order 個の有限体を生成する。
+ * 入力引数   : int deg   （ビットサイズ）
+ *              int order （== 2 ^ deg)
+ * 戻り値     : none
  * 入力情報   : none
- * 出力情報   : none
- * 注意事項   :     deg         | output value
- *              ----------------+-------------
- *                    2 = 2^1   |    exit(1)
- *                    4 = 2^2   |      GF(4)
- *                    8 = 2^3   |      GF(8)
- *                    :         |         :
- *                32768 = 2^15  |  GF(32768)
- *                65536 = 2^16  |    exit(1)
+ * 出力情報   : gf[] : 生成したZech対数の正引き配列
+ *              fg[] : 逆引き配列
+ * 注意事項   : 通常は normal[] 配列を使って生成します。
+ *              sage[] 配列も原始多項式のリスト。暗号の仕様によっては
+ *              同じ有限体の生成方法が取られるとは限らないので、
+ *              テーブルを分けてあります。
+ *              sage計算代数ソフトで計算結果が正しいか検証します。
+ *              sage[] 配列を使用する場合は、
+ *              "-D SAGE" コンパイルスイッチを指定すること。
  ****************************************************************/
 // Zech対数の正引き gf と逆引き fg
 static unsigned short gf[MAX_ORD];
 static unsigned short fg[MAX_ORD];
 void gen_gf(int deg, int order)
 {
-    #if 1
-    /* Generate nomal basis of Galois Field over GF(2^?) */
-    static const unsigned int normal[] = {
-        0b111,
-        0b1101,
-        0b11001,
-        0b110111,
-        0b1100001,
-        0b11000001,
-        0b110101001,
-        0b1100110001,
-        0b11000010011,
-        0b110000001101,
-        0b1100101000001,
-        0b11011000000001,
-        0b110000100010001,
-        0b1100000000000001,
-    };
-    #else
+
+#ifdef SAGE
     // Generate Sagemath based Galois Fields.
     static const unsigned int sage[] = {
         0b111,
@@ -81,9 +62,27 @@ void gen_gf(int deg, int order)
         0b100000010101001,
         0b1000000000110101,
     };
-    #endif
-    // deg : degree of primitive poinomial and deg-2 is position of array.
-    unsigned short x = normal[deg - 2];
+    unsigned short x = sage[deg - 2];
+#else
+    /* Generate nomal basis of Galois Field over GF(2^?) */
+    static const unsigned int normal[] = {
+        0b111,
+        0b1101,
+        0b11001,
+        0b110111,
+        0b1100001,
+        0b11000001,
+        0b110101001,
+        0b1100110001,
+        0b11000010011,
+        0b110000001101,
+        0b1100101000001,
+        0b11011000000001,
+        0b110000100010001,
+        0b1100000000000001,
+    };
+    unsigned short x = normal[deg - 2]; // 通常はこちら
+#endif
 
     /* build gf[] */
     gf[0] = 0;
@@ -169,8 +168,8 @@ int bitsize(int num)
         power2 <<= 1; // 4, 8, 16 ... 65536
     }
     /* ここまできたらハズレ */
-    usage();      // 使用方法を表示して（exit() しちゃう？）
-    return 0; // 負の値を返してエラーってことで
+    usage();  // 使用方法を表示してexitする。
+    return 0; // （警告を避けるため）
 }
 
 int main(int argc, char *argv[])
@@ -180,10 +179,10 @@ int main(int argc, char *argv[])
 
     int k = atoi(argv[1]);
     int n = bitsize(k);
-    printf("GF[%d] の生成に成功しました。\n",k);
 
     gen_gf(n, k);
     put_gf(k);
+    printf("GF[%d] の生成に成功しました。\n", k);
 
     return 0;
 }
