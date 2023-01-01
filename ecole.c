@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #define MAX_ORD 32768
 
@@ -39,14 +40,16 @@
  *              テーブルを分けてあります。
  *              sage計算代数ソフトで計算結果が正しいか検証します。
  *              sage[] 配列を使用する場合は、
- *              "-D SAGE" コンパイルスイッチを指定すること。
- ****************************************************************/
+ *              コマンドラインオプションで "-s" を指定するとsage用の
+ *              有限体を生成することができます。 
+ *  ****************************************************************/
 // Zech対数の正引き gf と逆引き fg
 static unsigned short gf[MAX_ORD];
 static unsigned short fg[MAX_ORD];
 void gen_gf(int deg, int order, int c)
 {
-    // Generate Sagemath based Galois Fields.
+    // #ifdef SAGE
+    //  Generate Sagemath based Galois Fields.
     static const unsigned int sage[] = {
         0b111,
         0b1011,
@@ -63,6 +66,8 @@ void gen_gf(int deg, int order, int c)
         0b100000010101001,
         0b1000000000110101,
     };
+    // unsigned short x = sage[deg - 2];
+    // #else
     /* Generate nomal basis of Galois Field over GF(2^?) */
     static const unsigned int normal[] = {
         0b111,
@@ -80,6 +85,9 @@ void gen_gf(int deg, int order, int c)
         0b110000100010001,
         0b1100000000000001,
     };
+    //unsigned short x = normal[deg - 2]; // 通常はこちら
+    // #endif
+
     unsigned short x;
     if (c == 1)
         x = normal[deg - 2];
@@ -205,7 +213,6 @@ void opt(int argc, char *argv[], int *k, int *c)
         *k = atoi(argv[2]);
         *c = 0;
     }
-    *c = -1;
 }
 
 int main(int argc, char *argv[])
