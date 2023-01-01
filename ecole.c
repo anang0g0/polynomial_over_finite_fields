@@ -207,11 +207,13 @@ void opt(int argc, char *argv[], int *k, int *c)
     {
         *k = atoi(argv[1]);
         *c = 1;
-    }
+    } else
     if (argc == 3 && strcmp(argv[1], "-s") == 0)
     {
         *k = atoi(argv[2]);
         *c = 0;
+    }else{
+        usage();
     }
 }
 
