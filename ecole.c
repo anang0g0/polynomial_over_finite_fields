@@ -20,7 +20,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
+#include <ctype.h>
 
 #define MAX_ORD 32768
 
@@ -41,7 +41,7 @@
  *              sage計算代数ソフトで計算結果が正しいか検証します。
  *              sage[] 配列を使用する場合は、
  *              コマンドラインオプションで "-s" を指定するとsage用の
- *              有限体を生成することができます。 
+ *              有限体を生成することができます。
  *  ****************************************************************/
 // Zech対数の正引き gf と逆引き fg
 static unsigned short gf[MAX_ORD];
@@ -85,8 +85,8 @@ void gen_gf(int deg, int order, int c)
         0b110000100010001,
         0b1100000000000001,
     };
-    //unsigned short x = normal[deg - 2]; // 通常はこちら
-    // #endif
+    // unsigned short x = normal[deg - 2]; // 通常はこちら
+    //  #endif
 
     unsigned short x;
     if (c == 1)
@@ -203,17 +203,21 @@ void opt(int argc, char *argv[], int *k, int *c)
 {
     if (argc == 1)
         usage();
-    if (argc == 2 && *argv[1]>='0' && *argv[1]<='9')
+    if (argc == 2)
     {
         *k = atoi(argv[1]);
-        printf("k=%d\n",*k);
-        *c = 1;
-    } else
-    if (argc == 3 && strcmp(argv[1], "-s") == 0)
+        if (*k > 2)
+            *c = 1;
+        else
+            usage();
+    }
+    else if (argc == 3 && strcmp(argv[1], "-s") == 0)
     {
         *k = atoi(argv[2]);
         *c = 0;
-    }else{
+    }
+    else
+    {
         usage();
     }
 }
