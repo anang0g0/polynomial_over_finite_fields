@@ -206,7 +206,7 @@ void opt(int argc, char *argv[], int *k, int *c)
     if (argc == 2)
     {
         *k = atoi(argv[1]);
-        if (*k > 2)
+        if (*k > 2 && *k<32769)
             *c = 1;
         else
             usage();
