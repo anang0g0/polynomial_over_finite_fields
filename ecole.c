@@ -203,9 +203,10 @@ void opt(int argc, char *argv[], int *k, int *c)
 {
     if (argc == 1)
         usage();
-    if (argc == 2)
+    if (argc == 2 && *argv[1]>='0' && *argv[1]<='9')
     {
         *k = atoi(argv[1]);
+        printf("k=%d\n",*k);
         *c = 1;
     } else
     if (argc == 3 && strcmp(argv[1], "-s") == 0)
