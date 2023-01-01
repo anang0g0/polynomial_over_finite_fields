@@ -205,6 +205,7 @@ void opt(int argc, char *argv[], int *k, int *c)
         *k = atoi(argv[2]);
         *c = 0;
     }
+    *c = -1;
 }
 
 int main(int argc, char *argv[])
