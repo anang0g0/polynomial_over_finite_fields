@@ -158,14 +158,14 @@ void put_gf(int order)
 
 void usage(void)
 {
-    printf("Please input size of element of GF(2^i). Then 2^i=4 to 32768.\n");
+    printf("Usage : ./a.out -s 2^i i=2..15.\n");
     printf("Option -s:sagemath basis,none:normal basis.\n");
     exit(1);
 }
 
 /***************************************************************
  * 関数名     : int bitsize(int num)
- * 機能       : 引数 num が 2 のべき乗数ならば、べき数 exponent を返す.
+ * 機能       : 引数 num が 2 のべき乗数ならば、num のサイズ nbit を返す.
  *              許容する num の範囲は 4(=2^2) から 32768(=2^15) まで.
  *              許容しない値なら、使用法を表示し、exit(1) する.
  *
@@ -199,35 +199,55 @@ int bitsize(int num)
     return 0; // （警告を避けるため）
 }
 
-void opt(int argc, char *argv[], int *k, int *c)
+/***************************************************************
+ * 関数名     : int opt(int argc, char *argv[], int *k, int *c)
+ * 機能       : 引数 num が 2 のべき乗数ならば、num のサイズ nbit を返す.
+ *              許容する num の範囲は 4(=2^2) から 32768(=2^15) まで.
+ *              許容しない値なら、使用法を表示し、exit(1) する.
+ *
+ * 入力引数   : int num
+ * 出力引数   : none
+ * 戻り値     : 2 ～ 15
+ *              エラー（許容しない値）の場合、戻り値無し。プロセス終了
+ * 入力情報   : none
+ * 出力情報   : none
+ * 注意事項   :     num         | return value
+ *              ----------------+-------------
+ *                    2 = 2^1   |   exit(1)
+ *                    4 = 2^2   |         2
+ *                    8 = 2^3   |         3
+ *                    :         |         :
+ *                32768 = 2^15  |        15
+ *                65536 = 2^16  |   exit(1)
+ ****************************************************************/
+void opt(int argc, char *argv[], int *k, int *s)
 {
-    if (argc == 1)
+    if (argc == 1 || argc > 3)
         usage();
     if (argc == 2)
     {
         *k = atoi(argv[1]);
         if (*k >= 4 && *k <= 32768)
-            *c = 1;
+            *s = 1;
         else
             usage();
     }
     else if (argc == 3 && strcmp(argv[1], "-s") == 0)
     {
         *k = atoi(argv[2]);
-        *c = 0;
-    }
-    else
-    {
-        usage();
+        if (*k >= 4 && *k <= 32768)
+            *s = 0;
+        else
+            usage();
     }
 }
 
 int main(int argc, char *argv[])
 {
-    int c, k;
-    opt(argc, argv, &k, &c);
+    int s, k;
+    opt(argc, argv, &k, &s);
     int n = bitsize(k);
-    gen_gf(n, k, c);
+    gen_gf(n, k, s);
     put_gf(k);
     printf("GF[%d] の生成に成功しました。\n", k);
 
