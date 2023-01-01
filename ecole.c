@@ -19,7 +19,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
+#include <string.h>
 
 #define MAX_ORD 32768
 
@@ -81,7 +81,7 @@ void gen_gf(int deg, int order, int c)
         0b1100000000000001,
     };
     unsigned short x;
-    if (c == -1)
+    if (c == 1)
         x = normal[deg - 2];
     else
         x = sage[deg - 2];
@@ -195,12 +195,16 @@ void opt(int argc, char *argv[], int *k, int *c)
 {
     if (argc == 1)
         usage();
-
-    *c = getopt(argc, argv, "s");
-    *k = atoi(argv[1]);
-
-    if (argc == 3)
+    if (argc == 2)
+    {
+        *k = atoi(argv[1]);
+        *c = 1;
+    }
+    if (argc == 3 && strcmp(argv[1], "-s") == 0)
+    {
         *k = atoi(argv[2]);
+        *c = 0;
+    }
 }
 
 int main(int argc, char *argv[])
