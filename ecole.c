@@ -192,7 +192,7 @@ int bitsize(int num)
         if (num == power2)
             return nbits; // 当り。ビット数を返す
 
-        power2 <<= 1; // 4, 8, 16 ... 65536
+        power2 <<= 1; // 4, 8, 16 ... 32768
     }
     /* ここまできたらハズレ */
     usage();  // 使用方法を表示してexitする。
@@ -222,24 +222,15 @@ int bitsize(int num)
  ****************************************************************/
 void opt(int argc, char *argv[], int *k, int *s)
 {
+
     if (argc == 1 || argc > 3)
         usage();
-    if (argc == 2)
-    {
-        *k = atoi(argv[1]);
-        if (*k >= 4 && *k <= 32768)
-            *s = 1;
-        else
-            usage();
-    }
-    else if (argc == 3 && strcmp(argv[1], "-s") == 0)
-    {
-        *k = atoi(argv[2]);
-        if (*k >= 4 && *k <= 32768)
-            *s = 0;
-        else
-            usage();
-    }
+    *k=atoi(argv[argc-1]);
+    if (argc == 3 && strcmp(argv[1], "-s") == 0)
+        *s = 0;
+    else
+        *s = 1;
+    
 }
 
 int main(int argc, char *argv[])
