@@ -223,6 +223,7 @@ int bitsize(int num)
 void opt(int argc, char *argv[], int *k, int *s)
 {
     *k = atoi(argv[argc - 1]);
+    // 2 patterns are acceptable: argc must be 2 or 3.
     if (argc == 3 && strcmp(argv[1], "-s") == 0)
         *s = 0; // -s 無し、e.g. $ecole 16
     else if (argc == 2)
