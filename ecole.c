@@ -225,12 +225,13 @@ void opt(int argc, char *argv[], int *k, int *s)
     if (argc == 1 || argc > 3)
         usage();
     *k = atoi(argv[argc - 1]);
-    if (argc == 3 && strcmp(argv[1], "-s") == 0 || argc == 2)
+    *s = 1;
+    if (argc == 3 && strcmp(argv[1], "-s") == 0)
     {
         *s = 0;
-        if (argc == 2)
-            *s = 1;
     }
+    else if (argc == 2)
+        *s = 1;
     else
         usage();
 }
