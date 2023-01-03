@@ -222,19 +222,37 @@ int bitsize(int num)
  ****************************************************************/
 void opt(int argc, char *argv[], int *k, int *s)
 {
+    *k = atoi(argv[argc - 1]);
+    if (argc == 3 && strcmp(argv[1], "-s") == 0)
+        *s = 0; // -s 無し、e.g. $ecole 16
+    else if (argc == 2)
+        *s = 1; // -s 有り、e.g. $ecole -s 16
+    else // otherwise, error-exit
+        usage();
+}
 
+/*
+void opt(int argc, char *argv[], int *k, int *s)
+{
+    // 2 patterns are acceptable: argc must be 2 or 3.
+    if (argc == 2)
+    {
+        // e.g. $ ecole 8192
+        *s = 0; // -s 無し
+        *k = atoi(argv[1]);
+        return;
+    }
     if (argc == 3 && strcmp(argv[1], "-s") == 0)
     {
+        // e.g. $ ecole -s 8192
+        *s = 1; // -s 有り
         *k = atoi(argv[2]);
-        *s = 0;
+        return;
     }
-    else if (argc == 2)
-    {
-        *k = atoi(argv[1]);
-        *s = 1;
-    }
+    // otherwise, error-exit
     usage();
 }
+*/
 
 int main(int argc, char *argv[])
 {
