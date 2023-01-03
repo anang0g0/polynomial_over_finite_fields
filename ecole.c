@@ -222,17 +222,18 @@ int bitsize(int num)
  ****************************************************************/
 void opt(int argc, char *argv[], int *k, int *s)
 {
-    *k = atoi(argv[argc - 1]);
+
     if (argc == 3 && strcmp(argv[1], "-s") == 0)
     {
+        *k = atoi(argv[2]);
         *s = 0;
-    } 
-    else if(argc == 2)
-   {
-        *s = 1;
-   }else{
-        usage();
     }
+    else if (argc == 2)
+    {
+        *k = atoi(argv[1]);
+        *s = 1;
+    }
+    usage();
 }
 
 int main(int argc, char *argv[])
