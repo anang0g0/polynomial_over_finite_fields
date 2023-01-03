@@ -220,20 +220,21 @@ int bitsize(int num)
  *                32768 = 2^15  |        15
  *                65536 = 2^16  |   exit(1)
  ****************************************************************/
-void opt(int argc, char *argv[], int *k, int *s)
+void opt(int argc, char *argv[], int *k, bool *s)
 {
     if (argc == 1 || argc > 3)
         usage();
     *k = atoi(argv[argc - 1]);
-    *s = 1;
     if (argc == 3 && strcmp(argv[1], "-s") == 0)
     {
-        *s = 0;
-    }
-    else if (argc == 2)
-        *s = 1;
-    else
+        *s = false;
+    } 
+    else if(argc == 2)
+   {
+        *s = true;
+   }else{
         usage();
+    }
 }
 
 int main(int argc, char *argv[])
