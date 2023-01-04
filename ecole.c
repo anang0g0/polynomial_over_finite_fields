@@ -40,7 +40,7 @@
  *              テーブルを分けてあります。
  *              sage計算代数ソフトで計算結果が正しいか検証します。
  *              sage[] 配列を使用する場合は、
- *              コマンドラインオプションで "-s" を指定するとsage用の
+ *              コマンドラインオプションで "-opt_s" を指定するとsage用の
  *              有限体を生成することができます。
  *  ****************************************************************/
 // Zech対数の正引き gf と逆引き fg
@@ -159,8 +159,8 @@ void put_gf(int order)
 
 void usage(void)
 {
-    printf("Usage : ./a.out -s 2^i i=2..15.\n");
-    printf("Option -s:sagemath basis,none:normal basis.\n");
+    printf("Usage : ./a.out -opt_s 2^i i=2..15.\n");
+    printf("Option -opt_s:sagemath basis,none:normal basis.\n");
     exit(1);
 }
 
@@ -226,9 +226,9 @@ void opt(int argc, char *argv[], int *k, int *opt_sage)
     *k = atoi(argv[argc - 1]);
     // 2 patterns are acceptable: argc must be 2 or 3.
     if (argc == 3 && strcmp(argv[1], "-opt_s") == 0)
-        *opt_sage = 0; // -s 無し、e.g. $ecole 16
+        *opt_sage = 0; // -opt_s 無し、e.g. $ecole 16
     else if (argc == 2)
-        *opt_sage = 1; // -s 有り、e.g. $ecole -s 16
+        *opt_sage = 1; // -opt_s 有り、e.g. $ecole -opt_s 16
     else // otherwise, error-exit
         usage();
 }
