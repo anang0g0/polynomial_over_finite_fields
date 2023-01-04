@@ -46,7 +46,7 @@
 // Zech対数の正引き gf と逆引き fg
 static unsigned short gf[MAX_ORD];
 static unsigned short fg[MAX_ORD];
-void gen_gf(int deg, int order, int _sage)
+void gen_gf(int deg, int order, int opt_sage)
 {
     // #ifdef SAGE
     //  Generate Sagemath based Galois Fields.
@@ -89,7 +89,7 @@ void gen_gf(int deg, int order, int _sage)
     //  #endif
 
     unsigned short x;
-    if (_sage)
+    if (opt_sage)
         x = sage[deg - 2];        
     else
         x = normal[deg - 2];
