@@ -46,7 +46,7 @@
 // Zech対数の正引き gf と逆引き fg
 static unsigned short gf[MAX_ORD];
 static unsigned short fg[MAX_ORD];
-void gen_gf(int deg, int order, int c)
+void gen_gf(int deg, int order, int _sage)
 {
     // #ifdef SAGE
     //  Generate Sagemath based Galois Fields.
@@ -89,10 +89,11 @@ void gen_gf(int deg, int order, int c)
     //  #endif
 
     unsigned short x;
-    if (c == 1)
-        x = normal[deg - 2];
+    if (_sage)
+        x = sage[deg - 2];        
     else
-        x = sage[deg - 2];
+        x = normal[deg - 2];
+
 
     /* build gf[] */
     gf[0] = 0;
@@ -220,14 +221,14 @@ int bitsize(int num)
  *                32768 = 2^15  |        15
  *                65536 = 2^16  |   exit(1)
  ****************************************************************/
-void opt(int argc, char *argv[], int *k, int *s)
+void opt(int argc, char *argv[], int *k, int *opt_sage)
 {
     *k = atoi(argv[argc - 1]);
     // 2 patterns are acceptable: argc must be 2 or 3.
     if (argc == 3 && strcmp(argv[1], "-s") == 0)
-        *s = 0; // -s 無し、e.g. $ecole 16
+        *opt_sage = 0; // -s 無し、e.g. $ecole 16
     else if (argc == 2)
-        *s = 1; // -s 有り、e.g. $ecole -s 16
+        *opt_sage = 1; // -s 有り、e.g. $ecole -s 16
     else // otherwise, error-exit
         usage();
 }
