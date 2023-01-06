@@ -208,12 +208,19 @@ void GF_mul(unsigned short *out, unsigned short *in0, unsigned short *in1)
         prod[i - K + 2] ^= prod[i];
         prod[i - K + 0] ^= prod[i];
       */
-
+     
     // GF(2^256) from sage
     prod[i - K + 10] ^= prod[i];
     prod[i - K + 5] ^= prod[i];
     prod[i - K + 2] ^= prod[i];
     prod[i - K + 0] ^= prod[i];
+    
+    /*    //  GF(2^16) sage
+    prod[i - K + 5] ^= prod[i];
+    prod[i - K + 3] ^= prod[i];
+    prod[i - K + 2] ^= prod[i];
+    prod[i - K + 0] ^= prod[i];
+    
 
     /*
        //128
