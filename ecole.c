@@ -161,7 +161,7 @@ void put_gf(int order)
 
 void usage(void)
 {
-    printf("Usage : ./a.out [option] 4,8,...,32768 i.e.i=2..15.\n");
+    printf("Usage : ./a.out [option] 4,8,...,32768 i.e. 2^i: i=2..15.\n");
     printf("Option --sage:sagemath basis,none:normal basis\n");
     exit(1);
 }
