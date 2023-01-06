@@ -89,11 +89,13 @@ void gen_gf(int deg, int order, int opt_sage)
     //  #endif
 
     unsigned short x;
-    if (opt_sage)
-        x = sage[deg - 2];        
-    else
+    if (opt_sage){
+        x = sage[deg - 2];
+        printf("DEBUG: use sage[]\n");
+    } else {
         x = normal[deg - 2];
-
+        printf("DEBUG: use normal[]\n");
+    }
 
     /* build gf[] */
     gf[0] = 0;
@@ -159,8 +161,8 @@ void put_gf(int order)
 
 void usage(void)
 {
-    printf("Usage : ./a.out -opt_s 2^i i=2..15.\n");
-    printf("Option -opt_s:sagemath basis,none:normal basis.\n");
+    printf("Usage : ./a.out [option] 4,8,...,32768 i.e.i=2..15.\n");
+    printf("Option --sage:sagemath basis,none:normal basis\n");
     exit(1);
 }
 
@@ -225,10 +227,10 @@ void opt(int argc, char *argv[], int *k, int *opt_sage)
 {
     *k = atoi(argv[argc - 1]);
     // 2 patterns are acceptable: argc must be 2 or 3.
-    if (argc == 3 && strcmp(argv[1], "-opt_s") == 0)
-        *opt_sage = 0; // -opt_s 無し、e.g. $ecole 16
+    if (argc == 3 && strcmp(argv[1], "--sage") == 0)
+        *opt_sage = 1; // -opt_s 無し、e.g. $ecole 16
     else if (argc == 2)
-        *opt_sage = 1; // -opt_s 有り、e.g. $ecole -opt_s 16
+        *opt_sage = 0; // -opt_s 有り、e.g. $ecole -opt_s 16
     else // otherwise, error-exit
         usage();
 }
