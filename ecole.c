@@ -228,9 +228,9 @@ void opt(int argc, char *argv[], int *k, int *opt_sage)
     *k = atoi(argv[argc - 1]);
     // 2 patterns are acceptable: argc must be 2 or 3.
     if (argc == 3 && strcmp(argv[1], "--sage") == 0)
-        *opt_sage = 1; // -opt_s 無し、e.g. $ecole 16
+        *opt_sage = 1; // --sage 有り、e.g. $ecole --sage 16
     else if (argc == 2)
-        *opt_sage = 0; // -opt_s 有り、e.g. $ecole -opt_s 16
+        *opt_sage = 0; // --sage 無し、e.g. $ecole 16
     else // otherwise, error-exit
         usage();
 }
