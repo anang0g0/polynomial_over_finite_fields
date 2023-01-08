@@ -208,20 +208,15 @@ int bitsize(int num)
  *              許容する num の範囲は 4(=2^2) から 32768(=2^15) まで.
  *              許容しない値なら、使用法を表示し、exit(1) する.
  *
- * 入力引数   : int num
+ * 入力引数   : int argc,char *argv[],int *k,int *opt_sage
  * 出力引数   : none
- * 戻り値     : 2 ～ 15
+ * 戻り値     : 0 or 1
  *              エラー（許容しない値）の場合、戻り値無し。プロセス終了
  * 入力情報   : none
  * 出力情報   : none
- * 注意事項   :     num         | return value
- *              ----------------+-------------
- *                    2 = 2^1   |   exit(1)
- *                    4 = 2^2   |         2
- *                    8 = 2^3   |         3
- *                    :         |         :
- *                32768 = 2^15  |        15
- *                65536 = 2^16  |   exit(1)
+ * 注意事項   : if opt_sage=0: select normal basis;
+ *              if opt_sage=1: select basis of sagemath
+ *              else exit(1);
  ****************************************************************/
 void opt(int argc, char *argv[], int *k, int *opt_sage)
 {
