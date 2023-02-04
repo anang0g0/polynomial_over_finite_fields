@@ -147,34 +147,6 @@ unsigned short gcd(unsigned short a, unsigned short b)
 
 /* input: in0, in1 in GF((2^m)^t)*/
 /* output: out = in0*in1 */
-void GF_mul2(unsigned short *out, unsigned short *in0, unsigned short *in1)
-{
-  int i, j;
-
-  unsigned short prod[K * 2 - 1];
-
-  for (i = 0; i < K * 2 - 1; i++)
-    prod[i] = 0;
-
-  for (i = 0; i < K; i++)
-    for (j = 0; j < K; j++)
-      prod[i + j] ^= gf_mul(in0[i], in1[j]);
-
-  //
-
-  for (i = (K - 1) * 2; i >= K; i--)
-  {
-    prod[i - K + 3] ^= prod[i];
-    prod[i - K + 1] ^= prod[i];
-    prod[i - K + 0] ^= gf_mul(prod[i], (unsigned short)2);
-  }
-
-  for (i = 0; i < K; i++)
-    out[i] = prod[i];
-}
-
-/* input: in0, in1 in GF((2^m)^t)*/
-/* output: out = in0*in1 */
 void GF_mul(unsigned short *out, unsigned short *in0, unsigned short *in1)
 {
   int i, j;
