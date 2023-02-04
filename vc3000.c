@@ -1930,6 +1930,7 @@ int main(void)
 
   vec pp = {0};
 
+if(K==16 || K==32 || K==64 || K==128 || K==256){
   l = -1;
   while (l < 0)
   {
@@ -1945,11 +1946,12 @@ int main(void)
       exit(1);
     }
   }
-  exit(1);
-
-  while (1) //(l == -1)
+}else{
+  l= -1;
+  while (l<0) 
   {
-    // w = mkpol();
+    l= -1;
+    v = mkpol();
     l = ben_or(v);
     printf("irr=%d\n", l);
     if (l == 0)
@@ -1968,7 +1970,8 @@ int main(void)
     //
   }
   printf("aa\n");
-  //  exit(1);
+}
+//    exit(1);
 
   // multi_process();
   // irr_poly_to_file();
