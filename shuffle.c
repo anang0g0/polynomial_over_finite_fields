@@ -8,7 +8,7 @@
 
 #include "global.h"
 #include "4096.h"
-#include "params.h"
+//#include "params.h"
 
 // static const unsigned short gf[8]={0,1,2,4,3,6,7,5};
 // static const unsigned short fg[8]={0,1,2,4,3,7,5,6};

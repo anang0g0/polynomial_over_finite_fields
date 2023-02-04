@@ -21,11 +21,10 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include <sys/types.h>
-// #include "4096.h"
 // #include "1024.h"
-
-// #include "2048.h"
 #include "8192.h"
+// #include "2048.h"
+//#include "4096.h"
 // #include "512.h"
 #include "global.h"
 #include "struct.h"
