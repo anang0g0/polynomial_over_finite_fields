@@ -55,14 +55,10 @@ int num = 0;
 // static const unsigned short gf[N] = {0, 1, 2, 4, 8, 16, 32, 64, 128, 29, 58, 116, 232, 205, 135, 19, 38, 76, 152, 45, 90, 180, 117, 234, 201, 143, 3, 6, 12, 24, 48, 96, 192, 157, 39, 78, 156, 37, 74, 148, 53, 106, 212, 181, 119, 238, 193, 159, 35, 70, 140, 5, 10, 20, 40, 80, 160, 93, 186, 105, 210, 185, 111, 222, 161, 95, 190, 97, 194, 153, 47, 94, 188, 101, 202, 137, 15, 30, 60, 120, 240, 253, 231, 211, 187, 107, 214, 177, 127, 254, 225, 223, 163, 91, 182, 113, 226, 217, 175, 67, 134, 17, 34, 68, 136, 13, 26, 52, 104, 208, 189, 103, 206, 129, 31, 62, 124, 248, 237, 199, 147, 59, 118, 236, 197, 151, 51, 102, 204, 133, 23, 46, 92, 184, 109, 218, 169, 79, 158, 33, 66, 132, 21, 42, 84, 168, 77, 154, 41, 82, 164, 85, 170, 73, 146, 57, 114, 228, 213, 183, 115, 230, 209, 191, 99, 198, 145, 63, 126, 252, 229, 215, 179, 123, 246, 241, 255, 227, 219, 171, 75, 150, 49, 98, 196, 149, 55, 110, 220, 165, 87, 174, 65, 130, 25, 50, 100, 200, 141, 7, 14, 28, 56, 112, 224, 221, 167, 83, 166, 81, 162, 89, 178, 121, 242, 249, 239, 195, 155, 43, 86, 172, 69, 138, 9, 18, 36, 72, 144, 61, 122, 244, 245, 247, 243, 251, 235, 203, 139, 11, 22, 44, 88, 176, 125, 250, 233, 207, 131, 27, 54, 108, 216, 173, 71, 142};
 // static const unsigned short fg[N] = {0, 1, 2, 26, 3, 51, 27, 199, 4, 224, 52, 239, 28, 105, 200, 76, 5, 101, 225, 15, 53, 142, 240, 130, 29, 194, 106, 249, 201, 9, 77, 114, 6, 139, 102, 48, 226, 37, 16, 34, 54, 148, 143, 219, 241, 19, 131, 70, 30, 182, 195, 126, 107, 40, 250, 186, 202, 155, 10, 121, 78, 229, 115, 167, 7, 192, 140, 99, 103, 222, 49, 254, 227, 153, 38, 180, 17, 146, 35, 137, 55, 209, 149, 207, 144, 151, 220, 190, 242, 211, 20, 93, 132, 57, 71, 65, 31, 67, 183, 164, 196, 73, 127, 111, 108, 59, 41, 85, 251, 134, 187, 62, 203, 95, 156, 160, 11, 22, 122, 44, 79, 213, 230, 173, 116, 244, 168, 88, 8, 113, 193, 248, 141, 129, 100, 14, 104, 75, 223, 238, 50, 198, 255, 25, 228, 166, 154, 120, 39, 185, 181, 125, 18, 69, 147, 218, 36, 33, 138, 47, 56, 64, 210, 92, 150, 189, 208, 206, 145, 136, 152, 179, 221, 253, 191, 98, 243, 87, 212, 172, 21, 43, 94, 159, 133, 61, 58, 84, 72, 110, 66, 163, 32, 46, 68, 217, 184, 124, 165, 119, 197, 24, 74, 237, 128, 13, 112, 247, 109, 162, 60, 83, 42, 158, 86, 171, 252, 97, 135, 178, 188, 205, 63, 91, 204, 90, 96, 177, 157, 170, 161, 82, 12, 246, 23, 236, 123, 118, 45, 216, 80, 175, 214, 234, 231, 232, 174, 233, 117, 215, 245, 235, 169, 81, 89, 176};
 
-static unsigned short c[E * K + 1] = {0};
 
 unsigned short oinv(unsigned short a);
-
 unsigned short gf_mul(unsigned short in0, unsigned short in1)
 {
-  int i;
-
   uint32_t tmp;
   uint32_t t0;
   uint32_t t1;
@@ -73,7 +69,7 @@ unsigned short gf_mul(unsigned short in0, unsigned short in1)
 
   tmp = t0 * (t1 & 1);
 
-  for (i = 1; i < 12; i++)
+  for (int i = 1; i < 12; i++)
     tmp ^= (t0 * (t1 & (1 << i)));
 
   t = tmp & 0x7FC000;
@@ -91,9 +87,9 @@ unsigned short gf_mul(unsigned short in0, unsigned short in1)
 unsigned int
 ipow(unsigned int q, unsigned int u)
 {
-  unsigned int i, m = 1;
+  unsigned int m = 1;
 
-  for (i = 0; i < u; i++)
+  for (int i = 0; i < u; i++)
     m = gf[mlt(fg[m], fg[q])];
 
   printf("in ipow====%d\n", m);
@@ -105,7 +101,6 @@ ipow(unsigned int q, unsigned int u)
 unsigned short gf_mod(unsigned short a, unsigned short b)
 {
   int i = fg[b] % fg[a];
-  int k = 0;
 
   printf("a=%d b=%d\n", fg[a], fg[b]);
   if (i > 0)
@@ -114,8 +109,12 @@ unsigned short gf_mod(unsigned short a, unsigned short b)
   }
   if (i == 0)
     return 1;
-  if (fg[b] < fg[a])
+  if(i<0)
+    exit(1);
+if (fg[b] <= fg[a])
     return fg[b];
+
+  exit(1);
 }
 
 unsigned short gcd(unsigned short a, unsigned short b)
@@ -149,21 +148,19 @@ unsigned short gcd(unsigned short a, unsigned short b)
 /* output: out = in0*in1 */
 void GF_mul(unsigned short *out, unsigned short *in0, unsigned short *in1)
 {
-  int i, j;
-
   unsigned short prod[K * 2 - 1] = {0};
 
-  for (i = 0; i < K * 2 - 1; i++)
+  for (int i = 0; i < K * 2 - 1; i++)
     prod[i] = 0;
 
-  for (i = 0; i < K; i++)
+  for (int i = 0; i < K; i++)
   {
-    for (j = 0; j < K; j++)
+    for (int j = 0; j < K; j++)
       prod[i + j] ^= gf[mlt(fg[in0[i]], fg[in1[j]])];
   }
   //
 
-  for (i = (K - 1) * 2; i >= K; i--)
+  for (int i = (K - 1) * 2; i >= K; i--)
   {
 
   if(K==256){
@@ -240,7 +237,7 @@ void GF_mul(unsigned short *out, unsigned short *in0, unsigned short *in1)
 
   }
 
-  for (i = 0; i < K; i++)
+  for (int i = 0; i < K; i++)
     out[i] = prod[i];
 }
 
@@ -248,42 +245,41 @@ void GF_mul(unsigned short *out, unsigned short *in0, unsigned short *in1)
 vec renritu(MTX a)
 {
   unsigned short p, d;
-  int i, j, k;
   vec v = {0};
 
-  for (i = 0; i < K; i++)
+  for (int i = 0; i < K; i++)
   {
     p = a.x[i][i];
 
-    for (j = 0; j < (K + 1); j++)
+    for (int j = 0; j < (K + 1); j++)
     {
       a.x[i][j] = gf[mlt(fg[a.x[i][j]], oinv(p))];
     }
 
-    for (j = 0; j < K; j++)
+    for (int j = 0; j < K; j++)
     {
       if (i != j)
       {
         d = a.x[j][i];
 
-        for (k = i; k < (K + 1); k++)
+        for (int k = i; k < (K + 1); k++)
         {
           a.x[j][k] = a.x[j][k] ^ gf[mlt(fg[d], fg[a.x[i][k]])];
         }
       }
     }
   }
-  for (i = 0; i < K; i++)
+  for (int i = 0; i < K; i++)
   {
     if (a.x[i][i] != 1)
       // exit(1);
-      for (j = 0; j < K + 1; j++)
+      for (int j = 0; j < K + 1; j++)
         printf("%d,", a.x[i][j]);
     printf("\n");
   }
   printf("\n");
 
-  for (i = 0; i < K; i++)
+  for (int i = 0; i < K; i++)
   {
     v.x[i] = a.x[i][K];
     // v.x[128]=1;
@@ -300,19 +296,18 @@ int mykey(unsigned short *out, vec x)
 {
   unsigned short mat[K + 1][K] = {0};
   MTX a = {0};
-  int i, j, k;
 
   // fill matrix
 
   mat[0][0] = 1;
 
-  for (i = 1; i < K; i++)
+  for (int i = 1; i < K; i++)
     mat[0][i] = 0;
 
-  for (i = 0; i < K; i++)
+  for (int i = 0; i < K; i++)
     mat[1][i] = x.x[i];
 
-  for (j = 2; j <= K; j++)
+  for (int j = 2; j <= K; j++)
   {
     // for(i=0;i<128;i++)
     // mat[j][i]=gf[mlt(fg[mat[j-1][i]],fg[x.x[i]])];
@@ -324,9 +319,9 @@ int mykey(unsigned short *out, vec x)
   }
   // exit(1);
   //
-  for (i = 0; i < K; i++)
+  for (int i = 0; i < K; i++)
   {
-    for (j = 0; j < K + 1; j++)
+    for (int j = 0; j < K + 1; j++)
     {
       a.x[i][j] = mat[j][i];
       printf("%d,", mat[j][i]);
@@ -345,13 +340,13 @@ int mykey(unsigned short *out, vec x)
   // printsage(v);
   // printf("\n");
 
-  for (i = 0; i < K; i++)
+  for (int i = 0; i < K; i++)
   {
     out[i] = v.x[i];
     printf("%d,", out[i]);
   }
   printf("\n");
-  // exit(1);
+  return 0;
 }
 
 unsigned int gf_div(unsigned int a, unsigned int b)
@@ -366,6 +361,8 @@ unsigned int gf_div(unsigned int a, unsigned int b)
     return (N - i);
   if (i < 0)
     return 1 - i;
+
+return 0;
 }
 
 static uint8_t xtime(uint8_t x)
@@ -390,7 +387,7 @@ static uint8_t Multiply(uint8_t x, uint8_t y)
 unsigned short
 oinv(unsigned short a)
 {
-  int i;
+
 
   if (a == 0)
     return 0;
@@ -406,7 +403,7 @@ oinv(unsigned short a)
 unsigned short
 equ(unsigned short a, unsigned short b)
 {
-  int i;
+
 
   return gf[mlt(oinv(a), fg[b])];
 }
@@ -422,10 +419,10 @@ void wait2(void)
 // 多項式の次数(default)
 int deg(vec a)
 {
-  int i, n = 0, flg = 0;
+  int n = 0, flg = 0;
 
   // #pragma omp parallel for
-  for (i = 0; i < DEG; i++)
+  for (int i = 0; i < DEG; i++)
   {
     if (a.x[i] > 0)
     {
@@ -441,11 +438,11 @@ int deg(vec a)
 
 int primitive(vec x)
 {
-  int i, j, k = deg(x), l;
+  int k = deg(x), l;
 
-  for (i = 0; i < k; i++)
+  for (int i = 0; i < k; i++)
   {
-    for (j = i; j < k; j++)
+    for (int j = i; j < k; j++)
     {
       if (i != j)
       {
@@ -472,7 +469,7 @@ bool op_verify(const OP f)
 {
   bool end = false;
   unsigned short n_max = 0;
-  for (int i = 0; i < DEG; i++)
+  for (int  i = 0; i < DEG; i++)
   {
     if (end && (f.t[i].n != 0 || f.t[i].a != 0))
     {
@@ -502,12 +499,11 @@ bool op_verify(const OP f)
 
 vec vadd(vec a, vec b)
 {
-  int i;
   vec c = {0};
 
   // printf("deg=%d %d\n",deg(a),deg(b));
 
-  for (i = 0; i < DEG; i++)
+  for (int i = 0; i < DEG; i++)
     c.x[i] = a.x[i] ^ b.x[i];
 
   return c;
@@ -518,13 +514,13 @@ vec vterml(vec f, oterm t)
 {
   // f = conv(f);
   // ssert(op_verify(f));
-  int i;
+
   vec h = {0};
 
   // f=conv(f);
   // k = deg (o2v(f));
 
-  for (i = 0; i < DEG; i++)
+  for (int i = 0; i < DEG; i++)
   {
     // h.t[i].n = f.t[i].n + t.n;
     if (f.x[i] > 0)
@@ -539,11 +535,10 @@ vec vterml(vec f, oterm t)
 // リーディグタームを抽出(default)
 oterm vLT(vec f)
 {
-  int i;
   oterm t = {0};
 
   // k = deg (o2v (f));
-  for (i = 0; i < DEG; i++)
+  for (int i = 0; i < DEG; i++)
   {
     // printf("a=%d %d\n",f.t[i].a,f.t[i].n);
     if (f.x[i] > 0)
@@ -559,11 +554,9 @@ oterm vLT(vec f)
 // 多項式を表示する(default)
 void printpol(vec a)
 {
-  int i, n;
+  int  n = deg(a);
 
-  n = deg(a);
-
-  for (i = n; i > -1; i--)
+  for (int i = n; i > -1; i--)
   {
     if (a.x[i] > 0)
     {
@@ -582,7 +575,7 @@ void printpol(vec a)
 int mul = 0, mul2 = 0;
 vec vmul_2(vec a, vec b)
 {
-  int i, j, k, l;
+  int k, l;
   vec c = {0};
   if (deg(a) > 128 && deg(b) > 128)
     mul++;
@@ -591,9 +584,9 @@ vec vmul_2(vec a, vec b)
   k = deg(a);
   l = deg(b);
 
-  for (i = 0; i < k + 1; i++)
+  for (int i = 0; i < k + 1; i++)
   {
-    for (j = 0; j < l + 1; j++)
+    for (int j = 0; j < l + 1; j++)
     // if (a.x[i] > 0)
     {
       c.x[i + j] ^= gf[mlt(fg[a.x[i]], fg[b.x[j]])];
@@ -612,9 +605,9 @@ typedef struct
 
 tri wake(vec x, int D)
 {
-  int i;
   tri v = {0};
-  for (i = 0; i < D; i++)
+
+  for (int i = 0; i < D; i++)
   {
     v.a.x[i] ^= x.x[i];
     v.b.x[i] ^= x.x[i + D];
@@ -639,10 +632,9 @@ tri kake(tri x, tri y)
 
 vec tas(tri n, int D)
 {
-  int i;
   vec e = {0};
 
-  for (i = 0; i < D; i++)
+  for (int i = 0; i < D; i++)
   {
     e.x[i] ^= n.a.x[i];
     e.x[i + D] ^= n.b.x[i];
@@ -658,31 +650,30 @@ vec tas(tri n, int D)
 // カラツバ法：3/4だけ早くなるｗ
 vec karatuba(vec f, vec g)
 {
-  int i;
-  vec f1 = {0}, f2 = {0}, g1 = {0}, g2 = {0}, f3 = {0}, g3 = {0}, a = {0}, b = {0}, c = {0}, d = {0}, e;
-  vec o1, o2, o3, o4, o5, o6, x4, y1, y2, y3, y4, y5, y6, y7 = {0}, z1, z2, z3, z4, z5, z6, z7 = {0}, w1, w2, w3, w4, w5, w6, w7, v1, v2, v3, v4, v5, v6, v7, x1, x2, x3, x5, x6, x7 = {0};
+  vec f1 = {0}, f2 = {0}, g1 = {0}, g2 = {0}, f3 = {0}, g3 = {0}, a = {0};
+  vec o1, o2, o3, x4,x5,x6,x7, y1, y2, y3, y4, y5, y6, y7 = {0}, z1, z2, z3, z4, z5, z6, z7 = {0}, w1, w2, w3, v1, v2, v3, x1, x2, x3;
   if (deg(f) > 255 || deg(g) > 255)
     exit(1);
 
-  int j = deg(f) + deg(g);
+//  int j = deg(f) + deg(g);
 
-  for (i = 0; i < 128; i++)
+  for (int i = 0; i < 128; i++)
   {
     f1.x[i] = f.x[i];
     g1.x[i] = g.x[i];
   }
-  for (i = 128; i < 256; i++)
+  for (int i = 128; i < 256; i++)
   {
     f2.x[i - 128] = f.x[i];
     g2.x[i - 128] = g.x[i];
   }
-  for (i = 0; i < 128; i++)
+  for (int i = 0; i < 128; i++)
   {
     f3.x[i] = f.x[i] ^ f.x[i + 128];
     g3.x[i] = g.x[i] ^ g.x[i + 128];
   }
 
-  for (i = 0; i < 64; i++)
+  for (int i = 0; i < 64; i++)
   {
     x1.x[i] = f1.x[i];
     x2.x[i] = f1.x[i + 64];
@@ -714,7 +705,7 @@ vec karatuba(vec f, vec g)
   y6 = vmul_2(v2, o2);
   z6 = vadd(vadd(vmul_2(v3, o3), x6), y6);
 
-  for (i = 0; i < 128; i++)
+  for (int i = 0; i < 128; i++)
   {
     x7.x[i] ^= x4.x[i];
     x7.x[i + 128] ^= y4.x[i];
@@ -727,7 +718,7 @@ vec karatuba(vec f, vec g)
     z7.x[i + 64] ^= z6.x[i];
   }
 
-  for (i = 0; i < 256; i++)
+  for (int i = 0; i < 256; i++)
   {
     a.x[i] ^= x7.x[i];
     a.x[i + 256] ^= y7.x[i];
@@ -740,9 +731,9 @@ vec karatuba(vec f, vec g)
 // カラツバ法：3/4だけ早くなるｗ
 vec karatubaka(vec f, vec g)
 {
-  int i, k;
-  vec f1 = {0}, f2 = {0}, g1 = {0}, g2 = {0}, f3 = {0}, g3 = {0}, a = {0}, b = {0}, c = {0}, d = {0}, e;
-  vec o1 = {0}, o2 = {0}, o3 = {0}, o4 = {0}, o5 = {0}, o6 = {0}, y1 = {0}, y2 = {0}, y3 = {0}, y4, y5, y6, y7 = {0}, z1 = {0}, z2 = {0}, z3 = {0}, z4, z5, z6, z7 = {0}, w1 = {0}, w2 = {0}, w3 = {0}, w4, w5, w6, w7, v1 = {0}, v2 = {0}, v3 = {0}, v4, v5, v6, v7, x1 = {0}, x2 = {0}, x3 = {0}, x5, x6, x7 = {0};
+
+  vec f1 = {0}, f2 = {0}, g1 = {0}, g2 = {0};
+  vec y1 = {0}, y2 = {0}, y3 = {0}, y7 = {0}, z1 = {0}, z2 = {0}, z3 = {0}, z7 = {0}, w1 = {0}, w2 = {0}, w3 = {0}, x1 = {0}, x2 = {0}, x3 = {0}, x7 = {0};
   if (deg(f) > 255 || deg(g) > 255)
   {
     printf("too big! %d %d\n", deg(f), deg(g));
@@ -752,26 +743,26 @@ vec karatubaka(vec f, vec g)
     printf("\n");
     // exit(1);
   }
-  int j = deg(f) + deg(g);
+  //int j = deg(f) + deg(g);
 
-  for (i = 0; i < 128; i++)
+  for (int i = 0; i < 128; i++)
   {
     f1.x[i] = f.x[i];
     g1.x[i] = g.x[i];
   }
-  for (i = 128; i < 256; i++)
+  for (int i = 128; i < 256; i++)
   {
     f2.x[i - 128] = f.x[i];
     g2.x[i - 128] = g.x[i];
   }
-  for (i = 0; i < 128; i++)
-  {
-    f3.x[i] = f.x[i] ^ f.x[i + 128];
-    g3.x[i] = g.x[i] ^ g.x[i + 128];
-  }
-  vec xx[9], yy[9], vv[9], zz[9], ww[9], oo[9], pp[9], qq[9], rr[9], ss[9], xa[9], xb[9], xc[9], ya[9], yb[9], yc[9], za[9], zb[9], zc[9];
+ // for (int i = 0; i < 128; i++)
+ // {
+ //   f3.x[i] = f.x[i] ^ f.x[i + 128];
+ //   g3.x[i] = g.x[i] ^ g.x[i + 128];
+ // }
+  vec xx[9], yy[9], vv[9], zz[9], ww[9], oo[9], xa[9], xb[9], xc[9], ya[9], yb[9], yc[9];
 
-  for (i = 0; i < 64; i++)
+  for (int i = 0; i < 64; i++)
   {
     x1.x[i] = f1.x[i];
     x2.x[i] = f1.x[i + 64];
@@ -779,9 +770,9 @@ vec karatubaka(vec f, vec g)
     y1.x[i] = f2.x[i];
     y2.x[i] = f2.x[i + 64];
     y3.x[i] = f2.x[i] ^ f2.x[i + 64];
-    v1.x[i] = f3.x[i];
-    v2.x[i] = f3.x[i + 64];
-    v3.x[i] = f3.x[i] ^ f3.x[i + 64];
+    //v1.x[i] = f3.x[i];
+    //v2.x[i] = f3.x[i + 64];
+    //v3.x[i] = f3.x[i] ^ f3.x[i + 64];
 
     z1.x[i] = g1.x[i];
     z2.x[i] = g1.x[i + 64];
@@ -789,14 +780,14 @@ vec karatubaka(vec f, vec g)
     w1.x[i] = g2.x[i];
     w2.x[i] = g2.x[i + 64];
     w3.x[i] = g2.x[i] ^ g2.x[i + 64];
-    o1.x[i] = g3.x[i];
-    o2.x[i] = g3.x[i + 64];
-    o3.x[i] = g3.x[i] ^ g3.x[i + 64];
+    //o1.x[i] = g3.x[i];
+    //o2.x[i] = g3.x[i + 64];
+    //o3.x[i] = g3.x[i] ^ g3.x[i + 64];
   }
 
-  for (k = 0; k < 2; k++)
+  for (int k = 0; k < 2; k++)
   {
-    for (i = 0; i < 32; i++)
+    for (int i = 0; i < 32; i++)
     {
       xx[k].x[i] = x1.x[i + 32 * k];
       xx[2].x[i] = x1.x[i] ^ x1.x[i + 32];
@@ -810,12 +801,12 @@ vec karatubaka(vec f, vec g)
       ww[2].x[i] = y2.x[i] ^ y2.x[32 + i];
       oo[k].x[i] = y3.x[i + 32 * k];
       oo[2].x[i] = y3.x[i] ^ y3.x[32 + i];
-      pp[k].x[i] = v1.x[i + 32 * k];
-      pp[2].x[i] = v1.x[i] ^ v1.x[32 + i];
-      qq[k].x[i] = v2.x[i + 32 * k];
-      qq[2].x[i] = v2.x[i] ^ v2.x[32 + i];
-      rr[k].x[i] = v3.x[i + 32 * k];
-      rr[2].x[i] = v3.x[i] ^ v3.x[32 + i];
+      //pp[k].x[i] = v1.x[i + 32 * k];
+      //pp[2].x[i] = v1.x[i] ^ v1.x[32 + i];
+      //qq[k].x[i] = v2.x[i + 32 * k];
+      //qq[2].x[i] = v2.x[i] ^ v2.x[32 + i];
+      //rr[k].x[i] = v3.x[i + 32 * k];
+      //rr[2].x[i] = v3.x[i] ^ v3.x[32 + i];
 
       xa[k].x[i] = z1.x[i + 32 * k];
       xa[2].x[i] = z1.x[i] ^ z1.x[i + 32];
@@ -829,17 +820,17 @@ vec karatubaka(vec f, vec g)
       yb[2].x[i] = w2.x[i] ^ w2.x[i + 32];
       yc[k].x[i] = w3.x[i + 32 * k];
       yc[2].x[i] = w3.x[i] ^ w3.x[i + 32];
-      za[k].x[i] = o1.x[i + 32 * k];
-      za[2].x[i] = o1.x[i] ^ o1.x[i + 32];
-      zb[k].x[i] = o2.x[i + 32 * k];
-      zb[2].x[i] = o2.x[i] ^ o2.x[i + 32];
-      zc[k].x[i] = o3.x[i + 32 * k];
-      zc[2].x[i] = o3.x[i] ^ o3.x[i + 32];
+      //za[k].x[i] = o1.x[i + 32 * k];
+      //za[2].x[i] = o1.x[i] ^ o1.x[i + 32];
+      //zb[k].x[i] = o2.x[i + 32 * k];
+      //zb[2].x[i] = o2.x[i] ^ o2.x[i + 32];
+      //zc[k].x[i] = o3.x[i + 32 * k];
+      //zc[2].x[i] = o3.x[i] ^ o3.x[i + 32];
     }
   }
 
-  vec aa[3], bb[3], cc[3], dd[3], ee[3], ff[3], gg[3], hh[3], nn[3], mm[3];
-  for (k = 0; k < 2; k++)
+  vec aa[3], bb[3], cc[3], dd[3], ee[3], ff[3], gg[3], hh[3];
+  for (int k = 0; k < 2; k++)
   {
     aa[k] = vmul_2(xx[k], xa[k]);
     bb[k] = vmul_2(yy[k], xb[k]);
@@ -861,9 +852,9 @@ vec karatubaka(vec f, vec g)
   // hh[2]=vadd(vadd(vmul_2(qq[2],zb[2]),hh[0]),hh[1]);
   // nn[2]=vadd(vadd(vmul_2(rr[2],zc[2]),nn[0]),nn[1]);
 
-  vec oo1 = {0}, oo2 = {0}, oo3 = {0}, oo4 = {0}, oo5 = {0}, oo6 = {0}, oo7 = {0}, oo8 = {0}, oo9 = {0};
+  vec oo1 = {0}, oo2 = {0}, oo3 = {0}, oo4 = {0}, oo5 = {0};
   // exit(1);
-  for (i = 0; i < 64; i++)
+  for (int i = 0; i < 64; i++)
   {
     x7.x[i] = aa[0].x[i];
     x7.x[i + 64] = aa[1].x[i];
@@ -895,12 +886,12 @@ vec karatubaka(vec f, vec g)
     oo5.x[i] = hh[0].x[i];
     oo5.x[i + 64] = hh[1].x[i];
     // oo5.x[i+32]^=hh[2].x[i];
-    oo6.x[i] = nn[0].x[i];
-    oo6.x[i + 64] = nn[1].x[i];
+    //oo6.x[i] = nn[0].x[i];
+    //oo6.x[i + 64] = nn[1].x[i];
     // oo6.x[i+32]^=nn[2].x[i];
   }
   vec oe[3] = {0}, ooo = {0};
-  for (i = 0; i < 128; i++)
+  for (int i = 0; i < 128; i++)
   {
     oe[0].x[i] = x7.x[i];
     oe[0].x[i + 128] = y7.x[i];
@@ -912,7 +903,7 @@ vec karatubaka(vec f, vec g)
     oe[2].x[i + 128] = oo5.x[i];
     // oe[2].x[i+64]^=oo6.x[i];
   }
-  for (i = 0; i < 256; i++)
+  for (int i = 0; i < 256; i++)
   {
     ooo.x[i] = oe[0].x[i];
     ooo.x[i + 256] = oe[1].x[i];
@@ -996,14 +987,13 @@ vec vmod(vec f, vec g)
 vec vcoef(vec v)
 {
   unsigned short n, k = deg(v);
-  int i;
 
   // if(v.x[0]==0)
   // return v;
 
   if (v.x[0] > 1)
     n = oinv(v.x[0]);
-  for (i = 0; i < k + 1; i++)
+  for (int i = 0; i < k + 1; i++)
     v.x[i] = gf[mlt(n, fg[v.x[i]])];
 
   return v;
@@ -1011,13 +1001,13 @@ vec vcoef(vec v)
 
 vec rev(vec a, int n)
 {
-  vec vx = (a), tmp = {0};
-  int k = deg((a)), i;
-  OP t = {0};
+  vec tmp = {0};
+  int k=deg(a);
+
 
   // printf("k=%d\n", k);
   //  exit(1);
-  for (i = 0; i < k + 1; i++)
+  for (int i = 0; i < k + 1; i++)
     tmp.x[n - i] = a.x[i];
   // printpol(tmp);
   // printf("\n");
@@ -1028,8 +1018,7 @@ vec rev(vec a, int n)
 
 vec deli(vec a, vec b)
 {
-  int i = 0;
-  OP t;
+
   vec v = {0};
 
   // printpol(a);
@@ -1043,7 +1032,7 @@ vec deli(vec a, vec b)
   //exit(1);
   }
   */
-  for (i = 0; i < deg(b); i++)
+  for (int i = 0; i < deg(b); i++)
     v.x[i] = a.x[i];
 
   return v;
@@ -1053,11 +1042,11 @@ vec deli(vec a, vec b)
 vec coeff(vec f)
 {
   unsigned short d = vLT(f).a;
-  int i, k;
+  int  k;
 
   k = deg((f)) + 1;
 
-  for (i = 0; i < k; i++)
+  for (int i = 0; i < k; i++)
     f.x[i] = gf[mlt(fg[f.x[i]], oinv(d))];
 
   return f;
@@ -1067,9 +1056,8 @@ vec coeff(vec f)
 vec kof(vec a, vec b)
 {
   unsigned short u = oinv(b.x[0]), k = deg(a);
-  int i;
 
-  for (i = 0; i < k + 1; i++)
+  for (int i = 0; i < k + 1; i++)
     a.x[i] = gf[mlt(u, fg[a.x[i]])];
 
   return a;
@@ -1113,13 +1101,12 @@ int chkinv(vec b, vec e, vec d)
 
 vec kara(vec a, vec b)
 {
-  tri z, w, c, za, zb, zc, a1, a2, a3, b1, b2, b3, c1, c2, c3, d1, d2, d3;
-  tri za1, za2, za3, zb1, zb2, zb3, zc1, zc2, zc3;
-  tri aa1, aa2, aa3, bb1, bb2, bb3, cc1, cc2, cc3;
-  tri x1, x2, x3, v1, v2, v3, w1, w2, w3, s1, s2, s3;
-  tri x4, x5, x6;
+  tri z, w, c, za, zb, zc;
+  tri aa1, aa2, aa3;
+  tri x1, x2, x3;
+  
   vec d;
-  int i;
+  
 
   z = wake(a, 128);
 
@@ -1230,7 +1217,7 @@ int atom(unsigned short a)
 vec vpowmod(vec f, vec mod)
 {
   vec v = {0};
-  vec ret = {0}, s = {0}, t = {0};
+  vec ret = {0};
 
   int n = N;
   v.x[0] = 1;
@@ -1258,10 +1245,10 @@ vec vpowmod(vec f, vec mod)
 
 int fequ(vec a, vec b)
 {
-  int k = deg(a), l = deg(b), i;
+  int k = deg(a), l = deg(b);
   if (k != l)
     return 1;
-  for (i = 0; i < k; i++)
+  for (int i = 0; i < k; i++)
     if (a.x[i] != b.x[i])
       return 1;
 
@@ -1271,18 +1258,18 @@ int fequ(vec a, vec b)
 vec jorju(vec ww, vec xx)
 {
   // unsigned short f[K + 1] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0}; //big indian
-  OP g, w;
-  int i, count = 0;
-  vec e[10] = {0}, v = {0}, x = {0}, z = {0}, ee = {0}, y = {0}, tt = {0};
-  int l = -1, m, n;
-  int ii = 0;
+  
+
+  vec v = {0}, x = {0}, z = {0}, y = {0};
+  int m, n;
+
   // irreducible goppa code (既役多項式が必要なら、ここのコメントを外すこと。)
-  vec q = {0}, r = {0}, c = {0}, dd = {0};
+  vec q = {0}, r = {0};
 
   if (deg(ww) < deg(xx))
     return ww;
 
-  vec ff = ww, gg = xx, rr = {0}, vv = {0};
+  vec ff = ww, gg = xx;
 
   // vv.x[0]=9;
   m = deg(ww);
@@ -1312,7 +1299,7 @@ vec jorju(vec ww, vec xx)
   {
     r = vmul_2(gg, q);
   }
-  vec www = {0};
+
   y = vadd(ff, r);
 
   return y;
@@ -1321,13 +1308,10 @@ vec jorju(vec ww, vec xx)
 int cnty = 0;
 vec vpp(vec f, vec mod)
 {
-  int i;
-  vec t = {0}, s = {0};
-  t = f;
-  s = f;
+  vec s = f;
 
   // 繰り返し２乗法
-  for (i = 1; i < E + 1; i++)
+  for (int i = 1; i < E + 1; i++)
   {
     s = vmod(vmul_2(s, s), mod);
   }
@@ -1337,13 +1321,12 @@ vec vpp(vec f, vec mod)
 
 unsigned short v2a(oterm a)
 {
-  int j;
 
   if (a.a == 0)
     return 0;
 
   // printf("aa=%d\n",a.a);
-  for (j = 0; j < N; j++)
+  for (int j = 0; j < N; j++)
   {
     if (gf[j] == a.a && a.a > 0)
     {
@@ -1358,17 +1341,17 @@ unsigned short v2a(oterm a)
 
 void printsage(vec a)
 {
-  int i, j, k = deg(a);
+  int k = deg(a);
   oterm b;
 
   printf("poly=");
-  for (i = 0; i < DEG; i++)
+  for (int i = 0; i < DEG; i++)
   {
     if (a.x[i] > 0)
     {
       b.a = a.x[i];
       b.n = i;
-      j = v2a(b);
+      int j = v2a(b);
       // printf("%d,==ba\n",b.a);
       // printf ("X**%d+", i); //for GF2
       printf("B('a^%d')*X**%d", j, i); // for GF(2^m)
@@ -1380,18 +1363,17 @@ void printsage(vec a)
 
 void fprintsage(vec a, FILE *fp)
 {
-  int i, j;
   oterm b;
 
   //  fp=fopen("dat","w");
   fprintf(fp, "poly=");
-  for (i = 0; i < DEG; i++)
+  for (int i = 0; i < DEG; i++)
   {
     if (a.x[i] > 0)
     {
       b.a = a.x[i];
       b.n = i;
-      j = v2a(b);
+      int j = v2a(b);
       // printf("%d,==ba\n",b.a);
       // printf ("X**%d+", i); //for GF2
       if (i == K)
@@ -1409,8 +1391,8 @@ void fprintsage(vec a, FILE *fp)
 // gcd
 vec vgcd(vec xx, vec yy)
 {
-  vec tt = {0}, tmp, h = {0}, ss = {0}, ee = {0};
-  ee.x[K] = 1;
+  vec tt = {0}, tmp, h = {0};
+  
 
   h.x[0] = 1;
   // h.x[0] = 0;
@@ -1446,11 +1428,11 @@ vec vgcd(vec xx, vec yy)
 unsigned short
 chk(vec f)
 {
-  int i, flg = 0;
-  vec x = {0};
+  int flg = 0;
+
 
   // x = o2v(f);
-  for (i = 0; i < DEG; i++)
+  for (int i = 0; i < DEG; i++)
   {
     if (f.x[i] > 0)
     {
@@ -1466,9 +1448,8 @@ chk(vec f)
 
 OP init_pol(OP f)
 {
-  int i;
 
-  for (i = 0; i < DEG; i++)
+  for (int i = 0; i < DEG; i++)
   {
     f.t[i].a = 0;
     f.t[i].n = 0;
@@ -1503,31 +1484,22 @@ ginit(unsigned short *g)
     }
   }
 
-  for (j = 0; j < K + 1; j++)
+  for (int j = 0; j < K + 1; j++)
     gg[j] = g[K - j];
 
   memcpy(g, gg, sizeof(K + 1));
 }
 
-// 配列からベクトル表現の多項式へ変換する
-vec Setvec(int n)
-{
-  int i;
-  vec v = {0};
-
-  return v;
-}
 
 OP ww[T] = {0};
 
 // 配列の値を係数として多項式に設定する
 vec setpol(unsigned short f[], int n)
 {
-  OP g;
-  vec a, v = {0};
-  int i;
 
-  for (i = 0; i < n; i++)
+  vec v = {0};
+
+  for (int i = 0; i < n; i++)
   {
     v.x[n - 1 - i] = f[i];
   }
@@ -1539,7 +1511,7 @@ vec setpol(unsigned short f[], int n)
 
 vec mkpol()
 {
-  int i, j, k, flg, ii = 0;
+  int  j, k, flg, ii = 0;
   vec w = {0};
   static unsigned short g[K + 1] = {0};
 
@@ -1560,7 +1532,7 @@ vec mkpol()
       exit(1);
     }
 
-    for (i = 0; i < K; i++)
+    for (int i = 0; i < K; i++)
     {
       if (g[K - 1] > 0)
         flg = 1;
@@ -1591,8 +1563,8 @@ vec mkpol()
 // GF(2^m) then set m in this function.
 int ben_or(vec f)
 {
-  int i, n; //, pid;
-  OP uu;
+  int n; //, pid;
+
   vec s = {0}, u = {0}, r = {0};
   vec v = {0}; //, ff=o2v(f);
   // if GF(8192) is 2^m and m==13 or if GF(4096) and m==12 if GF(16384) is testing
@@ -1601,7 +1573,7 @@ int ben_or(vec f)
 
   v.x[1] = 1;
   s = (v);
-  // for (i = 0; i < K / 2; i++)
+  // for (int i = 0; i < K / 2; i++)
   r = s;
   n = deg((f));
 
@@ -1613,10 +1585,8 @@ int ben_or(vec f)
   if (n == 0)
     return -1;
 
-  i = 0;
-
   // r(x)^{q^i} square pow mod
-  for (i = 0; i < K / 2; i++)
+  for (int i = 0; i < K / 2; i++)
   {
     printf(":i=%d", i);
     // irreducible over GH(8192) 2^13
@@ -1641,12 +1611,12 @@ int ben_or(vec f)
 unsigned short
 trace(vec f, unsigned short x)
 {
-  int i, d;
+  int  d;
   unsigned short u = 0;
 
   d = deg(f);
 
-  for (i = 0; i < d + 1; i++)
+  for (int i = 0; i < d + 1; i++)
   {
     u ^= gf[mlt(fg[f.x[i]], gf_pow(f.x[i], fg[x]))];
   }
@@ -1658,7 +1628,7 @@ unsigned short dd[DEG][DEG] = {0};
 
 void get_irrpoly(void)
 {
-  int i, j, l, ii = 0;
+  int j, l, ii = 0;
   vec w = {0};
   FILE *fp;
   unsigned short ta[DEG] = {0};
@@ -1691,7 +1661,7 @@ aa:
   }
 
   // 多項式の値が0でないことを確認
-  for (i = 0; i < N; i++)
+  for (int i = 0; i < N; i++)
   {
     ta[i] = trace(w, i);
     if (ta[i] == 0)
@@ -1720,11 +1690,11 @@ aa:
 int irr_poly_to_file()
 {
   vec w, x, y, z;
-  int b = -1, l = -1, k1 = 0, k2 = 0, k3 = 0, k4 = 0, a = -1, c = -1, i = 0;
+  int b = -1, l = -1, k1 = 0, k2 = 0, k3 = 0, k4 = 0, a = -1, c = -1;
   FILE *f1, *f2, *f3, *f4;
   int pid[5] = {0};
 
-  for (i = 0; i < 3 && (pid[i] = fork()) > 0; i++)
+  for (int i = 0; i < 3 && (pid[i] = fork()) > 0; i++)
     printf("%d\n", pid[i]);
   // exit(1);
   f1 = fopen("dat.sage", "w");
@@ -1742,7 +1712,6 @@ int irr_poly_to_file()
   fprintf(f4, "B=GF(2^%d,'a')\n", E);
   fprintf(f4, "F.<X>=B[]\n");
 
-  i = 0;
   while (1)
   {
 
@@ -1849,36 +1818,35 @@ int irr_poly_to_file()
 
 void compare()
 {
-  int i, j;
   MTX a = {0};
-  vec pp = {0}, x = {0}, v = {0};
+  vec pp = {0}, v = {0};
 
   do
   {
-    for (i = 0; i < K; i++)
+    for (int i = 0; i < K; i++)
       pp.x[i] = rand() % N;
     MTX opu = {0};
-    vec cc = {0};
+
 
     opu.x[0][0] = 1;
-    for (i = 1; i < K; i++)
+    for (int i = 1; i < K; i++)
       opu.x[0][i] = 0; // rand() % N;
 
-    for (i = 0; i < K; i++)
+    for (int i = 0; i < K; i++)
       opu.x[1][i] = pp.x[i];
 
-    for (i = 0; i < K; i++)
+    for (int i = 0; i < K; i++)
     {
-      for (j = 2; j <= K; j++)
+      for (int j = 2; j <= K; j++)
       {
         opu.x[j][i] = gf[mltn(j, fg[pp.x[i]])];
         // GF_mul2(opu.x[j], opu.x[j - 1], pp.x);
       }
     }
 
-    for (i = 0; i < K; i++)
+    for (int i = 0; i < K; i++)
     {
-      for (j = 0; j < K + 1; j++)
+      for (int j = 0; j < K + 1; j++)
       {
         a.x[i][j] = opu.x[j][i];
         printf("%d,", opu.x[j][i]);
@@ -1888,11 +1856,6 @@ void compare()
     printf("\n");
 
     v = renritu(a);
-
-    for (i = 0; i < K; i++)
-      x.x[K - i + 1] = v.x[i];
-    x.x[K] = 1;
-
     v.x[K] = 1;
 
     printsage(v);
@@ -1903,10 +1866,10 @@ void compare()
 
 void speed()
 {
-  int i;
+
   vec f, g, q, r;
 
-  for (i = 0; i < 100000; i++)
+  for (int i = 0; i < 100000; i++)
   {
     // vmul_2(f,g);
     karatuba(f, g);
@@ -1922,7 +1885,7 @@ void speed()
   printf("===q\n\n");
   printpol(r);
   printf("\naaa\n");
-  for (i = 0; i < deg(r); i++)
+  for (int i = 0; i < deg(r); i++)
     if (q.x[i] != r.x[i])
       printf("i=%d, %d %d\n", i, q.x[i], r.x[i]);
   exit(1);
@@ -1930,21 +1893,19 @@ void speed()
 // 言わずもがな
 int main(void)
 {
-  vec g, w;
-  unsigned int i, j, count = 0;
-  vec e[10] = {0}, v = {0}, x = {0}, z = {0}, ee = {0}, y = {0}, tt = {0}, ww, xx, f;
-  int l = -1, m, n;
+
+
+  vec v = {0}, tt = {0};
+  int l = -1;
   int ii = 0;
   // irreducible goppa code (既役多項式が必要なら、ここのコメントを外すこと。)
-  vec q = {0}, r = {0};
-  unsigned short ff[256] = {1, 1, 1, 1};
-  unsigned short gg[256] = {0, 0, 1, 1};
-  MTX a = {0};
-  char rr[16] = {0};
+  //vec q = {0}, r = {0};
+  //unsigned short ff[256] = {1, 1, 1, 1};
+  //unsigned short gg[256] = {0, 0, 1, 1};
+
+
 
   srand(clock());
-  i = 4;
-  j = 8;
   printf("%d\n", gf[gf_mod(gf[5], gf[8])]);
   // exit(1);
 
@@ -1954,7 +1915,7 @@ if(K==16 || K==32 || K==64 || K==128 || K==256){
   l = -1;
   while (l < 0)
   {
-    for (i = 0; i < K; i++)
+    for (int i = 0; i < K; i++)
       pp.x[i] = rand() % N;
     mykey(tt.x, pp);
     tt.x[K] = 1;

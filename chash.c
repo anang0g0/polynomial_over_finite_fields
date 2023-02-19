@@ -28,7 +28,7 @@ char password[password_length + 1];
 
 unsigned long xor128(void)
 {
-  unsigned int a = 0;
+  unsigned int  a = 0;
 
   static unsigned long x = 123456789, y = 362436069, z = 521288629, w = 88675123;
   unsigned long t;
@@ -48,7 +48,7 @@ void seed(void)
 
   char str[str_length + 1];
   time_t t;
-  int i, j, k, rnd;
+  int k, rnd;
 
   // * 乱数の初期化
 
@@ -56,9 +56,9 @@ void seed(void)
 
   // * 乱数生成とパスワードの生成
 
-  for (i = 0; i < str_length; i++)
+  for (int  i = 0; i < str_length; i++)
   {
-    for (j = 0; j < 2; j++)
+    for (int j = 0; j < 2; j++)
     {
       k = i * 2 + j;
       do
@@ -75,12 +75,12 @@ void seed(void)
 
   // * パスワードの出力
 
-  //    printf("生成パスワード：%s",password);
+  //    print f("生成パスワード：%s",password);
 
   return;
 }
 
-int mlt(int x, int y)
+int  mlt(int  x, int  y)
 {
 
   if (x == 0 || y == 0)
@@ -89,7 +89,7 @@ int mlt(int x, int y)
   return ((x + y - 2) % (M - 1)) + 1;
 }
 
-int mltn(int n, int x)
+int  mltn(int  n, int  x)
 {
   if (n == 0)
     return 1;
@@ -98,14 +98,13 @@ int mltn(int n, int x)
   return mlt(x, mltn(n - 1, x));
 }
 
-int mltn2(int n, int x)
+int  mltn2(int  n, int  x)
 {
-  int i, j;
 
   if (n == 0)
     return 1;
-  i = x;
-  for (j = 0; j < n - 1; j++)
+  int i = x;
+  for (int j = 0; j < n - 1; j++)
     i = mlt(i, x);
 
   return i;
@@ -113,15 +112,15 @@ int mltn2(int n, int x)
 
 void rondom_permtation(unsigned char *a)
 {
-  int i, j, x;
+  int  j, x;
 
   //  srand(clock() + time(&t));
 
-  for (i = 0; i < K; i++)
+  for (int i = 0; i < K; i++)
   {
     a[i] = i;
   }
-  for (i = 0; i < K - 2; i++)
+  for (int i = 0; i < K - 2; i++)
   {
     // rand from i+1 to F-1
     j = (rand() % (K - 1 - i)) + i + 1;
@@ -138,20 +137,3 @@ void rondom_permtation(unsigned char *a)
   }
 }
 
-int print_uint128(__uint128_t n)
-{
-  if (n == 0)
-    return printf("0\n");
-
-  char str[40] = {0};              // log10(1 << 128) + '\0'
-  char *s = str + sizeof(str) - 1; // start at the end
-  while (n != 0)
-  {
-    if (s == str)
-      return -1; // never happens
-
-    *--s = "0123456789"[n % 10]; // save last digit
-    n /= 10;                     // drop it
-  }
-  return printf("%s", s);
-}
