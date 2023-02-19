@@ -652,8 +652,8 @@ vec karatuba(vec f, vec g)
 {
   vec f1 = {0}, f2 = {0}, g1 = {0}, g2 = {0}, f3 = {0}, g3 = {0}, a = {0};
   vec o1, o2, o3, x4,x5,x6,x7, y1, y2, y3, y4, y5, y6, y7 = {0}, z1, z2, z3, z4, z5, z6, z7 = {0}, w1, w2, w3, v1, v2, v3, x1, x2, x3;
-  if (deg(f) > 255 || deg(g) > 255)
-    exit(1);
+  //if (deg(f) > 255 || deg(g) > 255)
+  //  exit(1);
 
 //  int j = deg(f) + deg(g);
 
@@ -734,6 +734,7 @@ vec karatubaka(vec f, vec g)
 
   vec f1 = {0}, f2 = {0}, g1 = {0}, g2 = {0};
   vec y1 = {0}, y2 = {0}, y3 = {0}, y7 = {0}, z1 = {0}, z2 = {0}, z3 = {0}, z7 = {0}, w1 = {0}, w2 = {0}, w3 = {0}, x1 = {0}, x2 = {0}, x3 = {0}, x7 = {0};
+/*
   if (deg(f) > 255 || deg(g) > 255)
   {
     printf("too big! %d %d\n", deg(f), deg(g));
@@ -744,7 +745,7 @@ vec karatubaka(vec f, vec g)
     // exit(1);
   }
   //int j = deg(f) + deg(g);
-
+*/
   for (int i = 0; i < 128; i++)
   {
     f1.x[i] = f.x[i];
@@ -986,7 +987,7 @@ vec vmod(vec f, vec g)
 
 vec vcoef(vec v)
 {
-  unsigned short n, k = deg(v);
+  unsigned short n=0, k = deg(v);
 
   // if(v.x[0]==0)
   // return v;
@@ -1313,7 +1314,8 @@ vec vpp(vec f, vec mod)
   // 繰り返し２乗法
   for (int i = 1; i < E + 1; i++)
   {
-    s = vmod(vmul_2(s, s), mod);
+  // s = vmod(kara(s,s),mod);
+   s=vmod(vmul_2(s, s), mod);
   }
 
   return s;
@@ -1468,8 +1470,8 @@ ginit(unsigned short *g)
   // printf("in ginit\n");
 
   g[K] = 1;          // xor128();
-  g[0] = rand() % 2; // or N
-  k = rand() % 2;    //(K - 1);
+  g[0] = rand() % N; // or N
+  k = rand() % (K-1);    //(K - 1);
   if (k > 0)
   {
     while (count < k)
@@ -1867,12 +1869,12 @@ void compare()
 void speed()
 {
 
-  vec f, g, q, r;
+  vec f=mkpol(), g=mkpol(), q, r;
 
-  for (int i = 0; i < 100000; i++)
+  for (int i = 0; i < 10000; i++)
   {
     // vmul_2(f,g);
-    karatuba(f, g);
+     karatuba(f, g);
     // karatubaka(f,f);
     // kara(f,g);
   }
@@ -1902,7 +1904,6 @@ int main(void)
   //vec q = {0}, r = {0};
   //unsigned short ff[256] = {1, 1, 1, 1};
   //unsigned short gg[256] = {0, 0, 1, 1};
-
 
 
   srand(clock());
