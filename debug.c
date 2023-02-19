@@ -1,8 +1,8 @@
+/* Obtain a backtrace and print it to stdout. */
 #include <stdio.h>
 #include <stdlib.h>
 #include <execinfo.h>
 
-/* Obtain a backtrace and print it to stdout. */
 void print_trace(void)
 {
   void *array[10];
