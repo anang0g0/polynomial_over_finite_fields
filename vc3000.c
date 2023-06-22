@@ -22,9 +22,9 @@
 #include <unistd.h>
 #include <sys/types.h>
 // #include "1024.h"
-#include "8192.h"
+//#include "8192.h"
 // #include "2048.h"
-//#include "4096.h"
+#include "4096.h"
 // #include "512.h"
 #include "global.h"
 #include "struct.h"
@@ -1907,13 +1907,15 @@ int main(void)
 
 
   srand(clock());
-  printf("%d\n", gf[gf_mod(gf[5], gf[8])]);
+  
   // exit(1);
 
   vec pp = {0};
 
 if(K==16 || K==32 || K==64 || K==128 || K==256){
   l = -1;
+  printf("%d\n", gf[gf_mod(gf[5], gf[8])]);
+  /*
   while (l < 0)
   {
     for (int i = 0; i < K; i++)
@@ -1928,13 +1930,19 @@ if(K==16 || K==32 || K==64 || K==128 || K==256){
       exit(1);
     }
   }
-}else{
+  */
+}else
+{
+    printf("a");
   l= -1;
   while (l<0) 
   {
     l= -1;
+    printf("a");
     v = mkpol();
+    printf("bb");
     l = ben_or(v);
+
     printf("irr=%d\n", l);
     if (l == 0)
     {
