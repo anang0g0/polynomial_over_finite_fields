@@ -1921,13 +1921,15 @@ printf("%d\n",ben_or(x));
     g = mkpol(); //setpol(f, K + 1);
     if (ben_or(g) == 0)
     {
-      printsage((g));
-      printf(" is irreducible\n");
+      //printpol((g));
+      //printf(" is irreducible\n");
       exit(1);
     }
     else
     {
+      printpol(g);
       printf("reducible\n");
+      exit(1);
     }
   }
 
