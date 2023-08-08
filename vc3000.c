@@ -1571,6 +1571,7 @@ return 1;
 return 0;
 }
 
+
 // GF(2^m) then set m in this function.
 int ben_or(vec f)
 {
@@ -1607,17 +1608,14 @@ int ben_or(vec f)
     u = vadd(r, (s));
     u = vgcd(f, u);
     printpol(u);
-    if(fequ(f,u)==0)
-    return 0;
 
     if ((deg(u) > 0) || vLT(u).a == 0)
     {
+    if(fequ(f,u)==0 && is_bin(f)==0)
+    return 0;
       // flg[i]= -1;
-      if(fequ(u,f)==0 && is_bin(f)==0)
-      return 0;
-      return -1;
       printf("ae\n");
-    
+      return -1;
     }
   }
 
