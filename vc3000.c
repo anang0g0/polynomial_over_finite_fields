@@ -1247,8 +1247,6 @@ vec vpowmod(vec f, vec mod)
 int fequ(vec a, vec b)
 {
   int k = deg(a), l = deg(b);
-  if(k<l)
-  k=l;
   if (k != l)
     return 1;
   for (int i = 0; i < k; i++)
@@ -1564,6 +1562,7 @@ vec mkpol()
   return w;
 }
 
+
 int is_bin(vec v){
 int k=deg(v);
 for(int i=0;i<k+1;i++)
@@ -1571,7 +1570,6 @@ if(v.x[i]>1)
 return 1;
 return 0;
 }
-
 
 // GF(2^m) then set m in this function.
 int ben_or(vec f)
@@ -1601,26 +1599,26 @@ int ben_or(vec f)
   // r(x)^{q^i} square pow mod
   for (int i = 0; i < K / 2; i++)
   {
-  vec c;
     printf(":i=%d", i);
     // irreducible over GH(8192) 2^13
     r = vpp(r, f);
     // if(r.x[0]==65535)
     // return -1;
-    c = vadd(r, (s));
-    u = vgcd(f, c);
+    u = vadd(r, (s));
+    u = vgcd(f, u);
     printpol(u);
+    if(fequ(f,u)==0)
+    return 0;
 
     if ((deg(u) > 0) || vLT(u).a == 0)
     {
-    if(fequ(u,f)==0 && is_bin(f)==0)
-    return 0;
-    return -1;
       // flg[i]= -1;
+      if(fequ(u,f)==0 && is_bin(f)==0)
+      return 0;
+      return -1;
       printf("ae\n");
+    
     }
-    if(fequ(f,u)==0)
-    return 0;
   }
 
   return 0;
@@ -1909,7 +1907,6 @@ void speed()
       printf("i=%d, %d %d\n", i, q.x[i], r.x[i]);
   exit(1);
 }
-
 // 言わずもがな
 int main(void)
 {
@@ -1937,7 +1934,7 @@ if(K==8 || K==16 || K==32 || K==64 || K==128 || K==256){
   while (l < 0)
   {
     for (int i = 0; i < K; i++)
-      pp.x[i] = rand() % 2;
+      pp.x[i] = rand() % N;
     mykey(tt.x, pp);
     tt.x[K] = 1;
     if (ben_or(tt) == 0)
