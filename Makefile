@@ -1,5 +1,5 @@
 all:
-		gcc -Wall -g -pg vc3000.c debug.c chash.c 
+		gcc -Wall -g -O3 vc3000.c debug.c chash.c 
 
 clang:
 		clang -O3 -pg -mtune=znver2 -march=znver2 vc3000.c debug.c shuffle.c 
