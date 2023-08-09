@@ -21,9 +21,10 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include <sys/types.h>
-#include "8192.h"
+// #include "1024.h"
+//#include "8192.h"
 // #include "2048.h"
-//#include "4096.h"
+#include "4096.h"
 // #include "512.h"
 #include "global.h"
 #include "struct.h"
@@ -56,7 +57,7 @@ int num = 0;
 
 
 unsigned short oinv(unsigned short a);
-unsigned short gf_mul2(unsigned short in0, unsigned short in1)
+unsigned short gf_mul(unsigned short in0, unsigned short in1)
 {
   uint32_t tmp;
   uint32_t t0;
@@ -80,25 +81,6 @@ unsigned short gf_mul2(unsigned short in0, unsigned short in1)
   tmp ^= t >> 12;
 
   return tmp & ((1 << 12) - 1);
-}
-
-
-uint32_t gf_mul(uint32_t in0, uint32_t in1, int m) {
-    uint32_t tmp = 0;
-
-    for (int i = 0; i < m; i++) {
-        if ((in1 >> i) & 1) {
-            tmp ^= (in0 << i);
-        }
-    }
-
-    for (int i = m - 1; i >= m; i--) {
-        if ((tmp >> i) & 1) {
-            tmp ^= (1 << (i - m));
-        }
-    }
-
-    return tmp;
 }
 
 // 整数のべき乗
@@ -1488,8 +1470,9 @@ ginit(unsigned short *g)
   // printf("in ginit\n");
 
   g[K] = 1;          // xor128();
-  g[0] = 1; //rand() % N; // or N
-  k = rand() % (K);    //(K - 1);
+  while(g[0]==0)
+  g[0] = rand() % 2; // 2 or N
+  k = rand() % (K-1);    //(K - 1);
   if (k > 0)
   {
     while (count < k)
@@ -1498,7 +1481,7 @@ ginit(unsigned short *g)
       j = rand() % (K);
       if (j < K && j > 0 && g[j] == 0)
       {
-        g[j] = rand() % N; // or N;
+        g[j] = rand() % 2; // or N;
         count++;
       }
     }
@@ -1522,8 +1505,9 @@ vec setpol(unsigned short f[], int n)
   for (int i = 0; i < n; i++)
   {
     v.x[n - 1 - i] = f[i];
+  //  printf("%d,",f[i]);
   }
-
+//exit(1);
   //  g = v2o(a);
 
   return v;
@@ -1580,16 +1564,6 @@ vec mkpol()
   return w;
 }
 
-
-int is_bin(vec v){
-int k=deg(v);
-for(int i=0;i<k+1;i++)
-if(v.x[i]>1)
-return 1;
-return 0;
-}
-
-
 // GF(2^m) then set m in this function.
 int ben_or(vec f)
 {
@@ -1625,19 +1599,17 @@ int ben_or(vec f)
     // return -1;
     u = vadd(r, (s));
     u = vgcd(f, u);
-    printpol(u);
 
-    if ((deg(u) > 0) || vLT(u).a == 0)
+    if (deg(u) > 0  || vLT(u).a == 0)
     {
-    if(fequ(f,u)==0) // && is_bin(f)==0)
-    return 0;
+    if(fequ(u,f)==1){
       // flg[i]= -1;
       printf("ae\n");
       return -1;
+      }
     }
-    
   }
-    //if(vLT(u).a==1 && vLT(u).n==0)
+
   return 0;
 }
 
@@ -1874,7 +1846,7 @@ void compare()
       for (int j = 2; j <= K; j++)
       {
         opu.x[j][i] = gf[mltn(j, fg[pp.x[i]])];
-        // GF_mul(opu.x[j], opu.x[j - 1], pp.x);
+        // GF_mul2(opu.x[j], opu.x[j - 1], pp.x);
       }
     }
 
@@ -1924,94 +1896,42 @@ void speed()
       printf("i=%d, %d %d\n", i, q.x[i], r.x[i]);
   exit(1);
 }
-// 言わずもがな
+
+
+
 int main(void)
 {
+  unsigned short f[K + 1] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0}; //big indian
+  vec g;
+  int i;
 
-
-  vec v = {0}, tt = {0};
-  int l = -1;
-  int ii = 0;
-  // irreducible goppa code (既役多項式が必要なら、ここのコメントを外すこと。)
-  //vec q = {0}, r = {0};
-  //unsigned short ff[256] = {1, 1, 1, 1};
-  //unsigned short gg[256] = {0, 0, 1, 1};
-
-
+vec x;
+static unsigned short gx[K + 1] = {1, 0, 0, 0, 0, 1, 1,1,0,1,0,1,1};
+x=setpol(gx,K+1);
+printpol(x);
+printf("%d\n",ben_or(x));
+//exit(1);
   srand(clock());
-  
-  // exit(1);
-
-  vec pp = {0};
-
-if(K==8 || K==16 || K==32 || K==64 || K==128 || K==256){
-  l = -1;
-  printf("%d\n", gf[gf_mod(gf[5], gf[8])]);
-  
-  while (l < 0)
+  //test , usage and example
+  //for (i = 0; i < N; i++)
+  while(1)
   {
-    for (int i = 0; i < K; i++)
-      pp.x[i] = rand() % 2;
-    mykey(tt.x, pp);
-    tt.x[K] = 1;
-    if (ben_or(tt) == 0)
+    memset(&g, 0,sizeof(g));
+    //f[K] = i;
+    g = mkpol(); //setpol(f, K + 1);
+    if (ben_or(g) == 0)
     {
-      printf("\n");
-      printsage(tt);
-      printf(" ==irr\n");
+      //printpol((g));
+      //printf(" is irreducible\n");
+      exit(1);
+    }
+    else
+    {
+      printpol(g);
+      printf("reducible\n");
       exit(1);
     }
   }
-  
-}else
-
-{
-    printf("a");
-  l= -1;
-/*
-vec vv={1,0,1,1,1,0,0,1};
-vv.x[0]=1;
-vv.x[1]=0;
-vv.x[2]=0;
-vv.x[3]=0;
-vv.x[4]=1;
-vv.x[5]=1;
-vv.x[6]=1;
-vv.x[7]=0;
-vv.x[8]=1;
-*/
-  while (l<0) 
-  {
-    l= -1;
-    printf("a");
-    v = mkpol();
-    printf("bb");
-    l = ben_or(v);
-
-    printf("irr=%d\n", l);
-    if (l == 0)
-    {
-      printsage(v);
-      printf(" ==irr\n");
-      exit(1);
-      ii++;
-    }
-    //exit(1);
-    if (ii > 300)
-    {
-      printf("too many error\n");
-      exit(1);
-    }
-    // ii++;
-    //
-  }
-  printf("aa\n");
-}
-//    exit(1);
-
-  // multi_process();
-  // irr_poly_to_file();
-  // get_irrpoly();
 
   return 0;
 }
