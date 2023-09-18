@@ -1498,7 +1498,7 @@ ginit(unsigned short *g)
       j = rand() % (K);
       if (j < K && j > 0 && g[j] == 0)
       {
-        g[j] = rand() % N; // or N;
+        g[j] = rand() % 2; // or N;
         count++;
       }
     }
@@ -1948,7 +1948,7 @@ if(K==8 || K==16 || K==32 || K==64 || K==128 || K==256){
   l = -1;
   printf("%d\n", gf[gf_mod(gf[5], gf[8])]);
   
-  while (l < 0)
+  //while (l < 0)
   {
     for (int i = 0; i < K; i++)
       pp.x[i] = rand() % 2;
@@ -1963,23 +1963,12 @@ if(K==8 || K==16 || K==32 || K==64 || K==128 || K==256){
     }
   }
   
-}else
+}
+//else
 
 {
     printf("a");
   l= -1;
-/*
-vec vv={1,0,1,1,1,0,0,1};
-vv.x[0]=1;
-vv.x[1]=0;
-vv.x[2]=0;
-vv.x[3]=0;
-vv.x[4]=1;
-vv.x[5]=1;
-vv.x[6]=1;
-vv.x[7]=0;
-vv.x[8]=1;
-*/
   while (l<0) 
   {
     l= -1;
