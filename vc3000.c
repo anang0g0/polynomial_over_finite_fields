@@ -21,7 +21,8 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include <sys/types.h>
-#include "8192.h"
+#include "chash.c"
+//#include "8192.h"
 // #include "2048.h"
 //#include "4096.h"
 // #include "512.h"
@@ -1488,7 +1489,7 @@ ginit(unsigned short *g)
   // printf("in ginit\n");
 
   g[K] = 1;          // xor128();
-  g[0] = 1; //rand() % N; // or N
+  g[0] = rand() % N; // or N
   k = rand() % (K);    //(K - 1);
   if (k > 0)
   {
@@ -1629,8 +1630,8 @@ int ben_or(vec f)
 
     if ((deg(u) > 0) || vLT(u).a == 0)
     {
-    if(fequ(f,u)==0) // && is_bin(f)==0)
-    return 0;
+    //if(fequ(f,u)==0) // && is_bin(f)==0)
+    //return 0;
       // flg[i]= -1;
       printf("ae\n");
       return -1;
@@ -1924,6 +1925,8 @@ void speed()
       printf("i=%d, %d %d\n", i, q.x[i], r.x[i]);
   exit(1);
 }
+
+
 // 言わずもがな
 int main(void)
 {

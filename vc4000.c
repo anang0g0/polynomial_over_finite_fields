@@ -21,10 +21,11 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include <sys/types.h>
+#include "chash.c"
 // #include "1024.h"
 //#include "8192.h"
 // #include "2048.h"
-#include "4096.h"
+//#include "4096.h"
 // #include "512.h"
 #include "global.h"
 #include "struct.h"
@@ -1471,7 +1472,7 @@ ginit(unsigned short *g)
 
   g[K] = 1;          // xor128();
   while(g[0]==0)
-  g[0] = rand() % 2; // 2 or N
+  g[0] = rand() % N; // 2 or N
   k = rand() % (K-1);    //(K - 1);
   if (k > 0)
   {
@@ -1481,7 +1482,7 @@ ginit(unsigned short *g)
       j = rand() % (K);
       if (j < K && j > 0 && g[j] == 0)
       {
-        g[j] = rand() % 2; // or N;
+        g[j] = rand() % N; // or N;
         count++;
       }
     }
@@ -1602,7 +1603,8 @@ int ben_or(vec f)
 
     if (deg(u) > 0  || vLT(u).a == 0)
     {
-    if(fequ(u,f)==1){
+    //if(fequ(u,f)==1)
+    {
       // flg[i]= -1;
       printf("ae\n");
       return -1;
@@ -1921,15 +1923,16 @@ printf("%d\n",ben_or(x));
     g = mkpol(); //setpol(f, K + 1);
     if (ben_or(g) == 0)
     {
-      //printpol((g));
-      //printf(" is irreducible\n");
+      printf("\n");
+      printsage((g));
+      printf(" is irreducible\n");
       exit(1);
     }
     else
     {
-      printpol(g);
+      printsage(g);
       printf("reducible\n");
-      exit(1);
+      //exit(1);
     }
   }
 
