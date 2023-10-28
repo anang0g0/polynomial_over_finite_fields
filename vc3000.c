@@ -1499,7 +1499,7 @@ ginit(unsigned short *g)
       j = rand() % (K);
       if (j < K && j > 0 && g[j] == 0)
       {
-        g[j] = rand() % 2; // or N;
+        g[j] = rand() % N; // or N;
         count++;
       }
     }
