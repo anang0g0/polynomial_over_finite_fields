@@ -22,7 +22,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include "chash.c"
-//#include "8192.h"
+#include "8192.h"
 // #include "2048.h"
 //#include "4096.h"
 // #include "512.h"

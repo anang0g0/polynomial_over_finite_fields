@@ -23,7 +23,7 @@
 #include <sys/types.h>
 #include "chash.c"
 // #include "1024.h"
-//#include "8192.h"
+#include "8192.h"
 // #include "2048.h"
 //#include "4096.h"
 // #include "512.h"
@@ -289,6 +289,8 @@ vec renritu(MTX a)
 
   return v;
 }
+
+vec sol(MTX a);
 
 /* input: f, element in GF((2^m)^t) */
 /* output: out, minimal polynomial of f */
@@ -1632,6 +1634,72 @@ trace(vec f, unsigned short x)
   return u;
 }
 
+// #define NN 16
+vec sol(MTX a)
+{
+    unsigned short p, d;
+    int i, j, k;
+    vec v = {0};
+
+    for (i = 0; i < K / 2; i++)
+    {
+        p = a.x[i][i];
+
+        for (j = 0; j < (K / 2 + 1); j++)
+        {
+            a.x[i][j] = gf[mlt(fg[a.x[i][j]], oinv(p))];
+        }
+
+        for (j = 0; j < K / 2; j++)
+        {
+            if (i != j)
+            {
+                d = a.x[j][i];
+
+                for (k = i; k < (K / 2 + 1); k++)
+                {
+                    a.x[j][k] = a.x[j][k] ^ gf[mlt(fg[d], fg[a.x[i][k]])];
+                }
+            }
+        }
+    }
+    for (i = 0; i < K / 2; i++)
+    {
+        if (a.x[i][i] != 1)
+        {
+            for (j = 0; j < K / 2 + 1; j++)
+                printf("a%d,", fg[a.x[i][j]]);
+            printf("\n");
+        }
+    }
+    printf("\n");
+    //exit(1);
+    vec x = {0};
+    for (i = 0; i < K / 2; i++)
+    {
+        x.x[K / 2 - i] = a.x[i][K / 2];
+        // printf(" x%d = %d\n", i, v.x[i]);
+    }
+
+    x.x[0] = 1;
+    int count = 0;
+    vec pol = {0};
+    pol = setpol(x.x, K / 2 + 1);
+    printpol((pol));
+    printf(" ==key\n");
+    for (i = 0; i < N; i++)
+    {
+        if (trace(pol, i) == 0)
+        {
+            printf("%d i=%d\n", i, fg[i]);
+            v.x[count++] = i;
+        }
+    }
+
+    return v;
+}
+
+
 unsigned short dd[DEG][DEG] = {0};
 
 void get_irrpoly(void)
@@ -1904,8 +1972,8 @@ void speed()
 int main(void)
 {
   unsigned short f[K + 1] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0}; //big indian
-  vec g;
-  int i;
+  vec g,tt={0};
+  int i,l,ii;
 
 vec x;
 static unsigned short gx[K + 1] = {1, 0, 0, 0, 0, 1, 1,1,0,1,0,1,1};
@@ -1916,25 +1984,32 @@ printf("%d\n",ben_or(x));
   srand(clock());
   //test , usage and example
   //for (i = 0; i < N; i++)
-  while(1)
+
+l=-1;
+vec pp={0};
+
+if(K==8 || K==16 || K==32 || K==64 || K==128 || K==256){
+  l = -1;
+  printf("%d\n", gf[gf_mod(gf[5], gf[8])]);
+  
+  while (l < 0)
   {
-    memset(&g, 0,sizeof(g));
-    //f[K] = i;
-    g = mkpol(); //setpol(f, K + 1);
-    if (ben_or(g) == 0)
+    for (int i = 0; i < K; i++)
+      pp.x[i] = rand() % N;
+    mykey(tt.x, pp);
+    tt.x[K] = 1;
+    //tt.x[0]=1;
+    if (ben_or(tt) == 0)
     {
       printf("\n");
-      printsage((g));
-      printf(" is irreducible\n");
+      printsage(tt);
+      printf(" ==irr\n");
       exit(1);
     }
-    else
-    {
-      printsage(g);
-      printf("reducible\n");
-      //exit(1);
-    }
   }
+  
+}
+
 
   return 0;
 }
