@@ -23,9 +23,9 @@
 #include <sys/types.h>
 #include "chash.c"
 // #include "1024.h"
-#include "8192.h"
+// #include "8192.h"
 // #include "2048.h"
-//#include "4096.h"
+// #include "4096.h"
 // #include "512.h"
 #include "global.h"
 #include "struct.h"
@@ -55,7 +55,6 @@ int num = 0;
 // GF(2^8)
 // static const unsigned short gf[N] = {0, 1, 2, 4, 8, 16, 32, 64, 128, 29, 58, 116, 232, 205, 135, 19, 38, 76, 152, 45, 90, 180, 117, 234, 201, 143, 3, 6, 12, 24, 48, 96, 192, 157, 39, 78, 156, 37, 74, 148, 53, 106, 212, 181, 119, 238, 193, 159, 35, 70, 140, 5, 10, 20, 40, 80, 160, 93, 186, 105, 210, 185, 111, 222, 161, 95, 190, 97, 194, 153, 47, 94, 188, 101, 202, 137, 15, 30, 60, 120, 240, 253, 231, 211, 187, 107, 214, 177, 127, 254, 225, 223, 163, 91, 182, 113, 226, 217, 175, 67, 134, 17, 34, 68, 136, 13, 26, 52, 104, 208, 189, 103, 206, 129, 31, 62, 124, 248, 237, 199, 147, 59, 118, 236, 197, 151, 51, 102, 204, 133, 23, 46, 92, 184, 109, 218, 169, 79, 158, 33, 66, 132, 21, 42, 84, 168, 77, 154, 41, 82, 164, 85, 170, 73, 146, 57, 114, 228, 213, 183, 115, 230, 209, 191, 99, 198, 145, 63, 126, 252, 229, 215, 179, 123, 246, 241, 255, 227, 219, 171, 75, 150, 49, 98, 196, 149, 55, 110, 220, 165, 87, 174, 65, 130, 25, 50, 100, 200, 141, 7, 14, 28, 56, 112, 224, 221, 167, 83, 166, 81, 162, 89, 178, 121, 242, 249, 239, 195, 155, 43, 86, 172, 69, 138, 9, 18, 36, 72, 144, 61, 122, 244, 245, 247, 243, 251, 235, 203, 139, 11, 22, 44, 88, 176, 125, 250, 233, 207, 131, 27, 54, 108, 216, 173, 71, 142};
 // static const unsigned short fg[N] = {0, 1, 2, 26, 3, 51, 27, 199, 4, 224, 52, 239, 28, 105, 200, 76, 5, 101, 225, 15, 53, 142, 240, 130, 29, 194, 106, 249, 201, 9, 77, 114, 6, 139, 102, 48, 226, 37, 16, 34, 54, 148, 143, 219, 241, 19, 131, 70, 30, 182, 195, 126, 107, 40, 250, 186, 202, 155, 10, 121, 78, 229, 115, 167, 7, 192, 140, 99, 103, 222, 49, 254, 227, 153, 38, 180, 17, 146, 35, 137, 55, 209, 149, 207, 144, 151, 220, 190, 242, 211, 20, 93, 132, 57, 71, 65, 31, 67, 183, 164, 196, 73, 127, 111, 108, 59, 41, 85, 251, 134, 187, 62, 203, 95, 156, 160, 11, 22, 122, 44, 79, 213, 230, 173, 116, 244, 168, 88, 8, 113, 193, 248, 141, 129, 100, 14, 104, 75, 223, 238, 50, 198, 255, 25, 228, 166, 154, 120, 39, 185, 181, 125, 18, 69, 147, 218, 36, 33, 138, 47, 56, 64, 210, 92, 150, 189, 208, 206, 145, 136, 152, 179, 221, 253, 191, 98, 243, 87, 212, 172, 21, 43, 94, 159, 133, 61, 58, 84, 72, 110, 66, 163, 32, 46, 68, 217, 184, 124, 165, 119, 197, 24, 74, 237, 128, 13, 112, 247, 109, 162, 60, 83, 42, 158, 86, 171, 252, 97, 135, 178, 188, 205, 63, 91, 204, 90, 96, 177, 157, 170, 161, 82, 12, 246, 23, 236, 123, 118, 45, 216, 80, 175, 214, 234, 231, 232, 174, 233, 117, 215, 245, 235, 169, 81, 89, 176};
-
 
 unsigned short oinv(unsigned short a);
 unsigned short gf_mul(unsigned short in0, unsigned short in1)
@@ -110,9 +109,9 @@ unsigned short gf_mod(unsigned short a, unsigned short b)
   }
   if (i == 0)
     return 1;
-  if(i<0)
+  if (i < 0)
     exit(1);
-if (fg[b] <= fg[a])
+  if (fg[b] <= fg[a])
     return fg[b];
 
   exit(1);
@@ -164,78 +163,85 @@ void GF_mul(unsigned short *out, unsigned short *in0, unsigned short *in1)
   for (int i = (K - 1) * 2; i >= K; i--)
   {
 
-  if(K==256){
-    // GF(2^256) from sage
-    prod[i - K + 10] ^= prod[i];
-    prod[i - K + 5] ^= prod[i];
-    prod[i - K + 2] ^= prod[i];
-    prod[i - K + 0] ^= prod[i];
-  }
-    if(K==128){
-       //128
-        prod[i - K + 7] ^= prod[i];
-        prod[i - K + 2] ^= prod[i];
-        prod[i - K + 1] ^= prod[i];
-        prod[i - K + 0] ^= prod[i];
+    if (K == 256)
+    {
+      // GF(2^256) from sage
+      prod[i - K + 10] ^= prod[i];
+      prod[i - K + 5] ^= prod[i];
+      prod[i - K + 2] ^= prod[i];
+      prod[i - K + 0] ^= prod[i];
     }
-    if(K==64){
-        prod[i - K + 33] ^= prod[i];
-        prod[i - K + 30] ^= prod[i];
-        prod[i - K + 26] ^= prod[i];
-        prod[i - K + 25] ^= prod[i];
-        prod[i - K + 24] ^= prod[i];
-        prod[i - K + 23] ^= prod[i];
-        prod[i - K + 22] ^= prod[i];
-        prod[i - K + 21] ^= prod[i];
-        prod[i - K + 20] ^= prod[i];
-        prod[i - K + 18] ^= prod[i];
-        prod[i - K + 13] ^= prod[i];
-        prod[i - K + 12] ^= prod[i];
-        prod[i - K + 11] ^= prod[i];
-        prod[i - K + 10] ^= prod[i];
-        prod[i - K + 7] ^= prod[i];
-        prod[i - K + 5] ^= prod[i];
-        prod[i - K + 4] ^= prod[i];
-        prod[i - K + 2] ^= prod[i];
-        prod[i - K + 1] ^= prod[i];
-        prod[i - K + 0] ^= prod[i];
+    if (K == 128)
+    {
+      // 128
+      prod[i - K + 7] ^= prod[i];
+      prod[i - K + 2] ^= prod[i];
+      prod[i - K + 1] ^= prod[i];
+      prod[i - K + 0] ^= prod[i];
     }
-    if(K==32){
-    //32
-        prod[i - K + 15] ^= prod[i];
-        prod[i - K + 9] ^= prod[i];
-        prod[i - K + 7] ^= prod[i];
-        prod[i - K + 4] ^= prod[i];
-        prod[i - K + 3] ^= prod[i];
-        prod[i - K + 0] ^= prod[i];
+    if (K == 64)
+    {
+      prod[i - K + 33] ^= prod[i];
+      prod[i - K + 30] ^= prod[i];
+      prod[i - K + 26] ^= prod[i];
+      prod[i - K + 25] ^= prod[i];
+      prod[i - K + 24] ^= prod[i];
+      prod[i - K + 23] ^= prod[i];
+      prod[i - K + 22] ^= prod[i];
+      prod[i - K + 21] ^= prod[i];
+      prod[i - K + 20] ^= prod[i];
+      prod[i - K + 18] ^= prod[i];
+      prod[i - K + 13] ^= prod[i];
+      prod[i - K + 12] ^= prod[i];
+      prod[i - K + 11] ^= prod[i];
+      prod[i - K + 10] ^= prod[i];
+      prod[i - K + 7] ^= prod[i];
+      prod[i - K + 5] ^= prod[i];
+      prod[i - K + 4] ^= prod[i];
+      prod[i - K + 2] ^= prod[i];
+      prod[i - K + 1] ^= prod[i];
+      prod[i - K + 0] ^= prod[i];
     }
-    if(K==16){
-    //16
-        prod[i - K + 5] ^= prod[i];
-        prod[i - K + 3] ^= prod[i];
-        prod[i - K + 2] ^= prod[i];
-        prod[i - K + 0] ^= prod[i];
+    if (K == 32)
+    {
+      // 32
+      prod[i - K + 15] ^= prod[i];
+      prod[i - K + 9] ^= prod[i];
+      prod[i - K + 7] ^= prod[i];
+      prod[i - K + 4] ^= prod[i];
+      prod[i - K + 3] ^= prod[i];
+      prod[i - K + 0] ^= prod[i];
     }
-    if(K==8){
-    //8
-        prod[i - K + 4] ^= prod[i];
-        prod[i - K + 3] ^= prod[i];
-        prod[i - K + 2] ^= prod[i];
-        prod[i - K + 0] ^= prod[i];
+    if (K == 16)
+    {
+      // 16
+      prod[i - K + 5] ^= prod[i];
+      prod[i - K + 3] ^= prod[i];
+      prod[i - K + 2] ^= prod[i];
+      prod[i - K + 0] ^= prod[i];
     }
-    if(K==6){
-    //6
-        prod[i - K + 4] ^= prod[i];
-        prod[i - K + 3] ^= prod[i];
-        prod[i - K + 1] ^= prod[i];
-        prod[i - K + 0] ^= prod[i];
+    if (K == 8)
+    {
+      // 8
+      prod[i - K + 4] ^= prod[i];
+      prod[i - K + 3] ^= prod[i];
+      prod[i - K + 2] ^= prod[i];
+      prod[i - K + 0] ^= prod[i];
     }
-    if(K==4){
-    //4
-        prod[i - K + 1] ^= prod[i];
-        prod[i - K + 0] ^= prod[i];
+    if (K == 6)
+    {
+      // 6
+      prod[i - K + 4] ^= prod[i];
+      prod[i - K + 3] ^= prod[i];
+      prod[i - K + 1] ^= prod[i];
+      prod[i - K + 0] ^= prod[i];
     }
-
+    if (K == 4)
+    {
+      // 4
+      prod[i - K + 1] ^= prod[i];
+      prod[i - K + 0] ^= prod[i];
+    }
   }
 
   for (int i = 0; i < K; i++)
@@ -365,7 +371,7 @@ unsigned int gf_div(unsigned int a, unsigned int b)
   if (i < 0)
     return 1 - i;
 
-return 0;
+  return 0;
 }
 
 static uint8_t xtime(uint8_t x)
@@ -391,7 +397,6 @@ unsigned short
 oinv(unsigned short a)
 {
 
-
   if (a == 0)
     return 0;
 
@@ -406,7 +411,6 @@ oinv(unsigned short a)
 unsigned short
 equ(unsigned short a, unsigned short b)
 {
-
 
   return gf[mlt(oinv(a), fg[b])];
 }
@@ -472,7 +476,7 @@ bool op_verify(const OP f)
 {
   bool end = false;
   unsigned short n_max = 0;
-  for (int  i = 0; i < DEG; i++)
+  for (int i = 0; i < DEG; i++)
   {
     if (end && (f.t[i].n != 0 || f.t[i].a != 0))
     {
@@ -557,7 +561,7 @@ oterm vLT(vec f)
 // 多項式を表示する(default)
 void printpol(vec a)
 {
-  int  n = deg(a);
+  int n = deg(a);
 
   for (int i = n; i > -1; i--)
   {
@@ -569,6 +573,10 @@ void printpol(vec a)
       if (i > 0)
         printf("+");
     }
+  }
+  if(deg(a)==0){
+  printf("\n%d\n",a.x[0]);
+  exit(1);
   }
   printf("\n");
 
@@ -654,11 +662,11 @@ vec tas(tri n, int D)
 vec karatuba(vec f, vec g)
 {
   vec f1 = {0}, f2 = {0}, g1 = {0}, g2 = {0}, f3 = {0}, g3 = {0}, a = {0};
-  vec o1, o2, o3, x4,x5,x6,x7, y1, y2, y3, y4, y5, y6, y7 = {0}, z1, z2, z3, z4, z5, z6, z7 = {0}, w1, w2, w3, v1, v2, v3, x1, x2, x3;
-  //if (deg(f) > 255 || deg(g) > 255)
-  //  exit(1);
+  vec o1, o2, o3, x4, x5, x6, x7, y1, y2, y3, y4, y5, y6, y7 = {0}, z1, z2, z3, z4, z5, z6, z7 = {0}, w1, w2, w3, v1, v2, v3, x1, x2, x3;
+  // if (deg(f) > 255 || deg(g) > 255)
+  //   exit(1);
 
-//  int j = deg(f) + deg(g);
+  //  int j = deg(f) + deg(g);
 
   for (int i = 0; i < 128; i++)
   {
@@ -737,18 +745,18 @@ vec karatubaka(vec f, vec g)
 
   vec f1 = {0}, f2 = {0}, g1 = {0}, g2 = {0};
   vec y1 = {0}, y2 = {0}, y3 = {0}, y7 = {0}, z1 = {0}, z2 = {0}, z3 = {0}, z7 = {0}, w1 = {0}, w2 = {0}, w3 = {0}, x1 = {0}, x2 = {0}, x3 = {0}, x7 = {0};
-/*
-  if (deg(f) > 255 || deg(g) > 255)
-  {
-    printf("too big! %d %d\n", deg(f), deg(g));
-    printpol(f);
-    printf("\n");
-    printpol(g);
-    printf("\n");
-    // exit(1);
-  }
-  //int j = deg(f) + deg(g);
-*/
+  /*
+    if (deg(f) > 255 || deg(g) > 255)
+    {
+      printf("too big! %d %d\n", deg(f), deg(g));
+      printpol(f);
+      printf("\n");
+      printpol(g);
+      printf("\n");
+      // exit(1);
+    }
+    //int j = deg(f) + deg(g);
+  */
   for (int i = 0; i < 128; i++)
   {
     f1.x[i] = f.x[i];
@@ -759,11 +767,11 @@ vec karatubaka(vec f, vec g)
     f2.x[i - 128] = f.x[i];
     g2.x[i - 128] = g.x[i];
   }
- // for (int i = 0; i < 128; i++)
- // {
- //   f3.x[i] = f.x[i] ^ f.x[i + 128];
- //   g3.x[i] = g.x[i] ^ g.x[i + 128];
- // }
+  // for (int i = 0; i < 128; i++)
+  // {
+  //   f3.x[i] = f.x[i] ^ f.x[i + 128];
+  //   g3.x[i] = g.x[i] ^ g.x[i + 128];
+  // }
   vec xx[9], yy[9], vv[9], zz[9], ww[9], oo[9], xa[9], xb[9], xc[9], ya[9], yb[9], yc[9];
 
   for (int i = 0; i < 64; i++)
@@ -774,9 +782,9 @@ vec karatubaka(vec f, vec g)
     y1.x[i] = f2.x[i];
     y2.x[i] = f2.x[i + 64];
     y3.x[i] = f2.x[i] ^ f2.x[i + 64];
-    //v1.x[i] = f3.x[i];
-    //v2.x[i] = f3.x[i + 64];
-    //v3.x[i] = f3.x[i] ^ f3.x[i + 64];
+    // v1.x[i] = f3.x[i];
+    // v2.x[i] = f3.x[i + 64];
+    // v3.x[i] = f3.x[i] ^ f3.x[i + 64];
 
     z1.x[i] = g1.x[i];
     z2.x[i] = g1.x[i + 64];
@@ -784,9 +792,9 @@ vec karatubaka(vec f, vec g)
     w1.x[i] = g2.x[i];
     w2.x[i] = g2.x[i + 64];
     w3.x[i] = g2.x[i] ^ g2.x[i + 64];
-    //o1.x[i] = g3.x[i];
-    //o2.x[i] = g3.x[i + 64];
-    //o3.x[i] = g3.x[i] ^ g3.x[i + 64];
+    // o1.x[i] = g3.x[i];
+    // o2.x[i] = g3.x[i + 64];
+    // o3.x[i] = g3.x[i] ^ g3.x[i + 64];
   }
 
   for (int k = 0; k < 2; k++)
@@ -805,12 +813,12 @@ vec karatubaka(vec f, vec g)
       ww[2].x[i] = y2.x[i] ^ y2.x[32 + i];
       oo[k].x[i] = y3.x[i + 32 * k];
       oo[2].x[i] = y3.x[i] ^ y3.x[32 + i];
-      //pp[k].x[i] = v1.x[i + 32 * k];
-      //pp[2].x[i] = v1.x[i] ^ v1.x[32 + i];
-      //qq[k].x[i] = v2.x[i + 32 * k];
-      //qq[2].x[i] = v2.x[i] ^ v2.x[32 + i];
-      //rr[k].x[i] = v3.x[i + 32 * k];
-      //rr[2].x[i] = v3.x[i] ^ v3.x[32 + i];
+      // pp[k].x[i] = v1.x[i + 32 * k];
+      // pp[2].x[i] = v1.x[i] ^ v1.x[32 + i];
+      // qq[k].x[i] = v2.x[i + 32 * k];
+      // qq[2].x[i] = v2.x[i] ^ v2.x[32 + i];
+      // rr[k].x[i] = v3.x[i + 32 * k];
+      // rr[2].x[i] = v3.x[i] ^ v3.x[32 + i];
 
       xa[k].x[i] = z1.x[i + 32 * k];
       xa[2].x[i] = z1.x[i] ^ z1.x[i + 32];
@@ -824,12 +832,12 @@ vec karatubaka(vec f, vec g)
       yb[2].x[i] = w2.x[i] ^ w2.x[i + 32];
       yc[k].x[i] = w3.x[i + 32 * k];
       yc[2].x[i] = w3.x[i] ^ w3.x[i + 32];
-      //za[k].x[i] = o1.x[i + 32 * k];
-      //za[2].x[i] = o1.x[i] ^ o1.x[i + 32];
-      //zb[k].x[i] = o2.x[i + 32 * k];
-      //zb[2].x[i] = o2.x[i] ^ o2.x[i + 32];
-      //zc[k].x[i] = o3.x[i + 32 * k];
-      //zc[2].x[i] = o3.x[i] ^ o3.x[i + 32];
+      // za[k].x[i] = o1.x[i + 32 * k];
+      // za[2].x[i] = o1.x[i] ^ o1.x[i + 32];
+      // zb[k].x[i] = o2.x[i + 32 * k];
+      // zb[2].x[i] = o2.x[i] ^ o2.x[i + 32];
+      // zc[k].x[i] = o3.x[i + 32 * k];
+      // zc[2].x[i] = o3.x[i] ^ o3.x[i + 32];
     }
   }
 
@@ -890,8 +898,8 @@ vec karatubaka(vec f, vec g)
     oo5.x[i] = hh[0].x[i];
     oo5.x[i + 64] = hh[1].x[i];
     // oo5.x[i+32]^=hh[2].x[i];
-    //oo6.x[i] = nn[0].x[i];
-    //oo6.x[i + 64] = nn[1].x[i];
+    // oo6.x[i] = nn[0].x[i];
+    // oo6.x[i + 64] = nn[1].x[i];
     // oo6.x[i+32]^=nn[2].x[i];
   }
   vec oe[3] = {0}, ooo = {0};
@@ -990,7 +998,7 @@ vec vmod(vec f, vec g)
 
 vec vcoef(vec v)
 {
-  unsigned short n=0, k = deg(v);
+  unsigned short n = 0, k = deg(v);
 
   // if(v.x[0]==0)
   // return v;
@@ -1006,8 +1014,7 @@ vec vcoef(vec v)
 vec rev(vec a, int n)
 {
   vec tmp = {0};
-  int k=deg(a);
-
+  int k = deg(a);
 
   // printf("k=%d\n", k);
   //  exit(1);
@@ -1046,7 +1053,7 @@ vec deli(vec a, vec b)
 vec coeff(vec f)
 {
   unsigned short d = vLT(f).a;
-  int  k;
+  int k;
 
   k = deg((f)) + 1;
 
@@ -1067,6 +1074,16 @@ vec kof(vec a, vec b)
   return a;
 }
 
+vec koeff(unsigned short a,vec x){
+  vec f={0};
+  int c=deg(x);
+
+  for(int i=0;i<deg(x)+1;i++)
+  f.x[i]=gf[mlt(fg[a],fg[x.x[i]])];
+
+return f;
+}
+
 vec vinv(vec a)
 {
   vec v = {0}, x = {0};
@@ -1075,32 +1092,51 @@ vec vinv(vec a)
   x.x[2] = 1;
   v.x[0] = 1;
 
-  if (a.x[0] > 1)
-    a = vcoef(a);
+  //if (a.x[0] > 1)
+  //  a = vcoef(a);
+  
 
   i = 1;
-  while (i < K + 1)
+  while (i < K)
   {
-    v = vmul_2(vmul_2(v, v), a);
-    if (i > 2)
+      //koeff(2,~) 
+    v = (vmul_2(vmul_2(v, v), a));
+    printpol(v);
+    printf(" ==vvv\n");
+    //exit(1);
+    if (i > 1)
       x = vmul_2(x, x);
     v = deli(v, x);
     i *= 2;
+    //printpol(v);
+    //printf("\n");
   }
+  //v=kof(a,v);
+  printpol(v);
+  printf("jap\n");
 
   return v;
 }
 
 int chkinv(vec b, vec e, vec d)
 {
-  e = deli(vmul_2(b, e), d);
+  printf("\n\n");
+  printpol(vmul_2(coeff(b),coeff(e)));
+  //exit(1);
+
+  e = deli(vmul_2(coeff(b), coeff(e)), d);
+  printf("\n\n");
+  printpol(e);
+  printf("\n");
+  //exit(1);
+
   if (vLT(e).a != 1)
   {
     printpol(e);
-    printf(" fail-1!\n");
-    exit(1);
+    printf(" fail-1! %d %d\n",deg(e),e.x[0]);
+    return -1;
   }
-  return 0;
+  return 1;
 }
 
 vec kara(vec a, vec b)
@@ -1108,9 +1144,8 @@ vec kara(vec a, vec b)
   tri z, w, c, za, zb, zc;
   tri aa1, aa2, aa3;
   tri x1, x2, x3;
-  
+
   vec d;
-  
 
   z = wake(a, 128);
 
@@ -1262,7 +1297,6 @@ int fequ(vec a, vec b)
 vec jorju(vec ww, vec xx)
 {
   // unsigned short f[K + 1] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0}; //big indian
-  
 
   vec v = {0}, x = {0}, z = {0}, y = {0};
   int m, n;
@@ -1317,8 +1351,8 @@ vec vpp(vec f, vec mod)
   // 繰り返し２乗法
   for (int i = 1; i < E + 1; i++)
   {
-  // s = vmod(kara(s,s),mod);
-   s=vmod(vmul_2(s, s), mod);
+    // s = vmod(kara(s,s),mod);
+    s = vmod(vmul_2(s, s), mod);
   }
 
   return s;
@@ -1352,6 +1386,10 @@ void printsage(vec a)
   printf("poly=");
   for (int i = 0; i < DEG; i++)
   {
+    if(deg(a)==0){
+    printf("%d\n",a.x[0]);
+    break;
+    }
     if (a.x[i] > 0)
     {
       b.a = a.x[i];
@@ -1397,7 +1435,6 @@ void fprintsage(vec a, FILE *fp)
 vec vgcd(vec xx, vec yy)
 {
   vec tt = {0}, tmp, h = {0};
-  
 
   h.x[0] = 1;
   // h.x[0] = 0;
@@ -1435,7 +1472,6 @@ chk(vec f)
 {
   int flg = 0;
 
-
   // x = o2v(f);
   for (int i = 0; i < DEG; i++)
   {
@@ -1472,10 +1508,10 @@ ginit(unsigned short *g)
 
   // printf("in ginit\n");
 
-  g[K] = 1;          // xor128();
-  while(g[0]==0)
-  g[0] = rand() % N; // 2 or N
-  k = rand() % (K-1);    //(K - 1);
+  g[K] = 1; // xor128();
+  while (g[0] == 0)
+    g[0] = rand() % N;  // 2 or N
+  k = rand() % (K - 1); //(K - 1);
   if (k > 0)
   {
     while (count < k)
@@ -1496,7 +1532,6 @@ ginit(unsigned short *g)
   memcpy(g, gg, sizeof(K + 1));
 }
 
-
 OP ww[T] = {0};
 
 // 配列の値を係数として多項式に設定する
@@ -1508,17 +1543,17 @@ vec setpol(unsigned short f[], int n)
   for (int i = 0; i < n; i++)
   {
     v.x[n - 1 - i] = f[i];
-  //  printf("%d,",f[i]);
+    //  printf("%d,",f[i]);
   }
-//exit(1);
-  //  g = v2o(a);
+  // exit(1);
+  //   g = v2o(a);
 
   return v;
 }
 
 vec mkpol()
 {
-  int  j, k, flg, ii = 0;
+  int j, k, flg, ii = 0;
   vec w = {0};
   static unsigned short g[K + 1] = {0};
 
@@ -1597,19 +1632,20 @@ int ben_or(vec f)
   {
     printf(":i=%d", i);
     // irreducible over GH(8192) 2^13
-    r = vpp(r, f);
+    //r = vpowmod(r, f);
+    r=vpp(r,f);
     // if(r.x[0]==65535)
     // return -1;
     u = vadd(r, (s));
     u = vgcd(f, u);
 
-    if (deg(u) > 0  || vLT(u).a == 0)
+    if (deg(u) > 0 || vLT(u).a == 0)
     {
-    //if(fequ(u,f)==1)
-    {
-      // flg[i]= -1;
-      printf("ae\n");
-      return -1;
+      // if(fequ(u,f)==1)
+      {
+        // flg[i]= -1;
+        printf("ae\n");
+        return -1;
       }
     }
   }
@@ -1621,7 +1657,7 @@ int ben_or(vec f)
 unsigned short
 trace(vec f, unsigned short x)
 {
-  int  d;
+  int d;
   unsigned short u = 0;
 
   d = deg(f);
@@ -1637,68 +1673,67 @@ trace(vec f, unsigned short x)
 // #define NN 16
 vec sol(MTX a)
 {
-    unsigned short p, d;
-    int i, j, k;
-    vec v = {0};
+  unsigned short p, d;
+  int i, j, k;
+  vec v = {0};
 
-    for (i = 0; i < K / 2; i++)
+  for (i = 0; i < K / 2; i++)
+  {
+    p = a.x[i][i];
+
+    for (j = 0; j < (K / 2 + 1); j++)
     {
-        p = a.x[i][i];
-
-        for (j = 0; j < (K / 2 + 1); j++)
-        {
-            a.x[i][j] = gf[mlt(fg[a.x[i][j]], oinv(p))];
-        }
-
-        for (j = 0; j < K / 2; j++)
-        {
-            if (i != j)
-            {
-                d = a.x[j][i];
-
-                for (k = i; k < (K / 2 + 1); k++)
-                {
-                    a.x[j][k] = a.x[j][k] ^ gf[mlt(fg[d], fg[a.x[i][k]])];
-                }
-            }
-        }
-    }
-    for (i = 0; i < K / 2; i++)
-    {
-        if (a.x[i][i] != 1)
-        {
-            for (j = 0; j < K / 2 + 1; j++)
-                printf("a%d,", fg[a.x[i][j]]);
-            printf("\n");
-        }
-    }
-    printf("\n");
-    //exit(1);
-    vec x = {0};
-    for (i = 0; i < K / 2; i++)
-    {
-        x.x[K / 2 - i] = a.x[i][K / 2];
-        // printf(" x%d = %d\n", i, v.x[i]);
+      a.x[i][j] = gf[mlt(fg[a.x[i][j]], oinv(p))];
     }
 
-    x.x[0] = 1;
-    int count = 0;
-    vec pol = {0};
-    pol = setpol(x.x, K / 2 + 1);
-    printpol((pol));
-    printf(" ==key\n");
-    for (i = 0; i < N; i++)
+    for (j = 0; j < K / 2; j++)
     {
-        if (trace(pol, i) == 0)
-        {
-            printf("%d i=%d\n", i, fg[i]);
-            v.x[count++] = i;
-        }
-    }
+      if (i != j)
+      {
+        d = a.x[j][i];
 
-    return v;
+        for (k = i; k < (K / 2 + 1); k++)
+        {
+          a.x[j][k] = a.x[j][k] ^ gf[mlt(fg[d], fg[a.x[i][k]])];
+        }
+      }
+    }
+  }
+  for (i = 0; i < K / 2; i++)
+  {
+    if (a.x[i][i] != 1)
+    {
+      for (j = 0; j < K / 2 + 1; j++)
+        printf("a%d,", fg[a.x[i][j]]);
+      printf("\n");
+    }
+  }
+  printf("\n");
+  // exit(1);
+  vec x = {0};
+  for (i = 0; i < K / 2; i++)
+  {
+    x.x[K / 2 - i] = a.x[i][K / 2];
+    // printf(" x%d = %d\n", i, v.x[i]);
+  }
+
+  x.x[0] = 1;
+  int count = 0;
+  vec pol = {0};
+  pol = setpol(x.x, K / 2 + 1);
+  printpol((pol));
+  printf(" ==key\n");
+  for (i = 0; i < N; i++)
+  {
+    if (trace(pol, i) == 0)
+    {
+      printf("%d i=%d\n", i, fg[i]);
+      v.x[count++] = i;
+    }
+  }
+
+  return v;
 }
-
 
 unsigned short dd[DEG][DEG] = {0};
 
@@ -1903,7 +1938,6 @@ void compare()
       pp.x[i] = rand() % N;
     MTX opu = {0};
 
-
     opu.x[0][0] = 1;
     for (int i = 1; i < K; i++)
       opu.x[0][i] = 0; // rand() % N;
@@ -1943,12 +1977,12 @@ void compare()
 void speed()
 {
 
-  vec f=mkpol(), g=mkpol(), q, r;
+  vec f = mkpol(), g = mkpol(), q, r;
 
   for (int i = 0; i < 10000; i++)
   {
     // vmul_2(f,g);
-     karatuba(f, g);
+    karatuba(f, g);
     // karatubaka(f,f);
     // kara(f,g);
   }
@@ -1967,48 +2001,71 @@ void speed()
   exit(1);
 }
 
+vec prev(vec v){
 
+  v=koeff(equ(gf[mlt(fg[vinv(v).x[0]],fg[v.x[0]])],1),vinv(v));
+  //printpol(v);
+  return v;
+}
 
 int main(void)
 {
-  unsigned short f[K + 1] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0}; //big indian
-  vec g,tt={0};
-  int i,l,ii;
+  unsigned short f[K + 1] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0}; // big indian
+  vec g, tt = {0};
+  int i, l, ii;
 
-vec x;
-static unsigned short gx[K + 1] = {1, 0, 0, 0, 0, 1, 1,1,0,1,0,1,1};
-x=setpol(gx,K+1);
-printpol(x);
-printf("%d\n",ben_or(x));
-//exit(1);
+  vec x;
+  static unsigned short gx[K + 1] = {1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 1};
+  x = setpol(gx, K + 1);
+  printpol(x);
+  printf("%d\n", ben_or(x));
+  // exit(1);
   srand(clock());
-  //test , usage and example
-  //for (i = 0; i < N; i++)
+  // test , usage and example
+  // for (i = 0; i < N; i++)
 
-l=-1;
-vec pp={0};
-
-if(K==8 || K==16 || K==32 || K==64 || K==128 || K==256){
   l = -1;
-  printf("%d\n", gf[gf_mod(gf[5], gf[8])]);
-  
-  while (l < 0)
+  vec pp = {0};
+  vec ff={0};
+
+  ff.x[4]=1;
+  pp.x[0]=13;
+  pp.x[1]=12;
+  pp.x[2]=2;
+  pp.x[3]=1;
+
+  printpol(vmul_2(prev(pp),pp));
+  printf("\n");
+  exit(1);
+
+  if (K == 8 || K == 16 || K == 32 || K == 64 || K == 128 || K == 256)
   {
-    for (int i = 0; i < K; i++)
-      pp.x[i] = rand() % N;
-    mykey(tt.x, pp);
-    tt.x[K] = 1;
-    //tt.x[0]=1;
-    if (ben_or(tt) == 0)
+    l = -1;
+    printf("%d\n", gf[gf_mod(gf[5], gf[8])]);
+
+    while (l < 0)
     {
-      printf("\n");
-      printsage(tt);
-      printf(" ==irr\n");
-      exit(1);
+      for (int i = 0; i < K; i++)
+        pp.x[i] = rand() % N;
+      mykey(tt.x, pp);
+      tt.x[K] = 1;
+      // tt.x[0]=1;
+      if (ben_or(tt) == 0)
+      {
+        printf("\n");
+        printsage(tt);
+        printf(" ==irr\n");
+        printsage(prev(tt));
+        printf(" =1/f\n");
+        printf("\nflag=%d\n",chkinv(prev(tt),tt,tt));
+        printf("\n");
+        exit(1);
+      }
     }
   }
-  
-}
+
+  irr_poly_to_file();
+  get_irrpoly();
 
 
   return 0;
