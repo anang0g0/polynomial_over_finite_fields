@@ -1084,12 +1084,12 @@ vec koeff(unsigned short a,vec x){
 return f;
 }
 
-vec vinv(vec a)
+vec vinv(vec a,int k)
 {
   vec v = {0}, x = {0};
   int i;
 
-  x.x[2] = 1;
+  x.x[1] = 1;
   v.x[0] = 1;
 
   //if (a.x[0] > 1)
@@ -1097,21 +1097,20 @@ vec vinv(vec a)
   
 
   i = 1;
-  while (i < K)
+  while (i < k)
   {
-      //koeff(2,~) 
+    //koeff(2,~) 
     v = (vmul_2(vmul_2(v, v), a));
     printpol(v);
     printf(" ==vvv\n");
     //exit(1);
-    if (i > 1)
+    if (i > 0)
       x = vmul_2(x, x);
     v = deli(v, x);
     i *= 2;
     //printpol(v);
     //printf("\n");
   }
-  //v=kof(a,v);
   printpol(v);
   printf("jap\n");
 
@@ -1294,7 +1293,7 @@ int fequ(vec a, vec b)
   return 0;
 }
 
-vec jorju(vec ww, vec xx)
+vec jorju(vec ww, vec xx,int k)
 {
   // unsigned short f[K + 1] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0}; //big indian
 
@@ -1322,7 +1321,7 @@ vec jorju(vec ww, vec xx)
     o = oinv(xx.x[0]);
     o = gf[o];
   }
-  x = vinv(xx);
+  x = vinv(xx,k);
   v = vmul_2(ww, x);
   //  v=rev(v,m-n);
   //  y=vadd(ww,vmul_2(v,xx));
@@ -2001,9 +2000,9 @@ void speed()
   exit(1);
 }
 
-vec prev(vec v){
+vec prev(vec v,int k){
 
-  v=koeff(equ(gf[mlt(fg[vinv(v).x[0]],fg[v.x[0]])],1),vinv(v));
+  v=koeff(equ(gf[mlt(fg[vinv(v,k).x[0]],fg[v.x[0]])],1),vinv(v,k));
   //printpol(v);
   return v;
 }
@@ -2029,12 +2028,13 @@ int main(void)
   vec ff={0};
 
   ff.x[4]=1;
-  pp.x[0]=13;
-  pp.x[1]=12;
+  pp.x[0]=5;
+  pp.x[1]=3;
   pp.x[2]=2;
   pp.x[3]=1;
+  pp.x[6]=1;
 
-  printpol(vmul_2(prev(pp),pp));
+  printpol(vmul_2(prev(pp,8),pp));
   printf("\n");
   exit(1);
 
@@ -2055,9 +2055,9 @@ int main(void)
         printf("\n");
         printsage(tt);
         printf(" ==irr\n");
-        printsage(prev(tt));
+        printsage(prev(tt,4));
         printf(" =1/f\n");
-        printf("\nflag=%d\n",chkinv(prev(tt),tt,tt));
+        printf("\nflag=%d\n",chkinv(prev(tt,4),tt,tt));
         printf("\n");
         exit(1);
       }
